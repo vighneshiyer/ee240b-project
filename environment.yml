@@ -1,0 +1,13 @@
+name: ee240b-project
+channels:
+- conda-forge
+- defaults
+dependencies:
+- python=3.6
+- pip
+- numpy
+- scipy
+- matplotlib
+- dataclasses
+- jupyter
+- mypy
