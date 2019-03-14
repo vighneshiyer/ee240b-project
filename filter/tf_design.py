@@ -74,7 +74,7 @@ class BA:
 def design_lpf(spec: LPFSpec, ftype: FilterType) -> BA:
     # For a non-Bessel filter type, the regular scipy iirdesign function works and calculates the minimal order
     if ftype != FilterType.BESSEL:
-        filter = iirdesign(
+        f = iirdesign(
             wp=spec.passband_corner.freq,
             ws=spec.stopband_corner.freq,
             gpass=spec.passband_ripple,
@@ -83,25 +83,28 @@ def design_lpf(spec: LPFSpec, ftype: FilterType) -> BA:
             ftype=ftype.value,
             output='ba'
         )
-        return BA(filter[0], filter[1])
+        return BA(f[0], f[1])
     # For a Bessel filter iirfilter needs to be used with manual control of order
     else:
         order = 1
-        while True and order < 10:
+        pass_corner = spec.passband_corner.freq
+        while order < 10:
             b, a = iirfilter(
                 N=order,
-                Wn=[spec.passband_corner.freq],
+                Wn=[pass_corner],
                 rp=spec.passband_ripple,
                 rs=spec.stopband_atten,
                 btype='lowpass',
                 analog=True,
                 ftype=ftype.value,
                 output='ba')
-            w, h = freqs(b, a, worN=[spec.stopband_corner.freq])
-            if -20*np.log10(abs(h[0])) > spec.stopband_atten:
-                return BA(b, a)
-            else:
+            w, h = freqs(b, a, worN=[spec.passband_corner.freq, spec.stopband_corner.freq])
+            if -20*np.log10(abs(h[1])) < spec.stopband_atten:
                 order = order + 1
+            elif 20*np.log10(abs(h[0])) < -3:
+                pass_corner = pass_corner + 1e6
+            else:
+                return BA(b, a)
 
 
 def plot_filters(filters: Dict[FilterType, BA], spec: LPFSpec):
