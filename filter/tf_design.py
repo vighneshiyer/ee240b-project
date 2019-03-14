@@ -162,7 +162,6 @@ def plot_filters_group_delay(filters: Dict[FilterType, BA], spec: LPFSpec, ax: m
 
 
 # Computes the group delay for filter BA for a reasonable frequency range based on the spec
-# TODO: clean up the AngularFreq to be just a type alias to float with some extension functions
 def group_delay(ba: BA, spec: LPFSpec) -> (List[AngularFreq], List[float]):
     w = freq_range(spec)
     w, h = freqs(ba.B, ba.A, worN=w)
