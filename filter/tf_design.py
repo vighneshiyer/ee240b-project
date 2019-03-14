@@ -7,22 +7,12 @@ from dataclasses import dataclass
 import matplotlib.figure
 
 
-@dataclass(frozen=True)
-class OrdFreq:
-    freq: float
-
-    def to_w(self) -> 'AngularFreq': return AngularFreq(self.freq * 2 * math.pi)
-
-    def w(self) -> float: return self.freq * 2 * math.pi
+class OrdFreq(float):
+    def w(self) -> 'AngularFreq': return AngularFreq(self * 2 * math.pi)
 
 
-@dataclass(frozen=True)
-class AngularFreq:
-    freq: float
-
-    def to_f(self) -> OrdFreq: return OrdFreq(self.freq / (2 * math.pi))
-
-    def f(self) -> float: return self.freq / (2 * math.pi)
+class AngularFreq(float):
+    def f(self) -> OrdFreq: return OrdFreq(self / (2 * math.pi))
 
 
 @dataclass(frozen=True)
@@ -73,11 +63,11 @@ def design_lpf(spec: LPFSpec, ftype: FilterType) -> BA:
     # For a non-Bessel filter type, the regular scipy iirdesign function works and calculates the minimal order
     # But iteration on the passband corner is required to meet the group delay requirement
     if ftype != FilterType.BESSEL:
-        pass_corner = spec.passband_corner.freq
-        while pass_corner < spec.stopband_corner.freq:
+        pass_corner = spec.passband_corner
+        while pass_corner < spec.stopband_corner:
             f = iirdesign(
                 wp=pass_corner,
-                ws=spec.stopband_corner.freq,
+                ws=spec.stopband_corner,
                 gpass=spec.passband_ripple,
                 gstop=spec.stopband_atten,
                 analog=True,
@@ -93,7 +83,7 @@ def design_lpf(spec: LPFSpec, ftype: FilterType) -> BA:
     # Don't bother to control for the group delay spec since Bessel is very flat
     else:
         order = 1
-        pass_corner = spec.passband_corner.freq
+        pass_corner = spec.passband_corner
         while order < 10:
             f = iirfilter(
                 N=order,
@@ -104,7 +94,7 @@ def design_lpf(spec: LPFSpec, ftype: FilterType) -> BA:
                 analog=True,
                 ftype=ftype.value,
                 output='ba')
-            w, h = freqs(f[0], f[1], worN=[spec.passband_corner.freq, spec.stopband_corner.freq])
+            w, h = freqs(f[0], f[1], worN=[spec.passband_corner, spec.stopband_corner])
             ba = BA(f[0], f[1])
             if -20*np.log10(abs(h[1])) < spec.stopband_atten:
                 order = order + 1
@@ -117,8 +107,8 @@ def design_lpf(spec: LPFSpec, ftype: FilterType) -> BA:
 # Calculate a reasonable frequency range of analysis
 def freq_range(spec: LPFSpec):
     return np.logspace(
-        start=math.log10(spec.passband_corner.freq) - 0.5,
-        stop=math.log10(spec.stopband_corner.freq) + 0.5,
+        start=math.log10(spec.passband_corner) - 0.5,
+        stop=math.log10(spec.stopband_corner) + 0.5,
         num=1000)
 
 
@@ -173,7 +163,7 @@ def plot_filters_group_delay(filters: Dict[FilterType, BA], spec: LPFSpec, ax: m
 
 # Computes the group delay for filter BA for a reasonable frequency range based on the spec
 # TODO: clean up the AngularFreq to be just a type alias to float with some extension functions
-def group_delay(ba: BA, spec: LPFSpec) -> (List[float], List[float]):
+def group_delay(ba: BA, spec: LPFSpec) -> (List[AngularFreq], List[float]):
     w = freq_range(spec)
     w, h = freqs(ba.B, ba.A, worN=w)
     gdelay = (-np.diff(np.unwrap(np.angle(h))) / np.diff(w))
@@ -191,7 +181,7 @@ def find_nearest_idx(a: np.ndarray, v):
 # Calculates the maximum group delay variation across the passband
 def group_delay_variation(ba: BA, spec: LPFSpec) -> float:
     w, gdelay = group_delay(ba, spec)
-    passband_idx = find_nearest_idx(w, spec.passband_corner.freq)
+    passband_idx = find_nearest_idx(w, spec.passband_corner)
     max_gdelay = np.max(gdelay[0:passband_idx])
     min_gdelay = np.min(gdelay[0:passband_idx])
     return np.abs(max_gdelay - min_gdelay)
