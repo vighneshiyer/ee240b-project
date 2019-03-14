@@ -1,18 +1,35 @@
 from enum import Enum
-from typing import List
+from typing import List, Dict
 import numpy as np
 from scipy.signal import iirdesign, iirfilter, freqs, tf2zpk
 import math
 from dataclasses import dataclass
 import matplotlib.pyplot as plt
 from matplotlib.figure import figaspect
-plt.style.use('ggplot')
+
+
+@dataclass(frozen=True)
+class OrdFreq:
+    freq: float
+
+    def to_w(self) -> 'AngularFreq': return AngularFreq(self.freq * 2 * math.pi)
+
+    def w(self) -> float: return self.freq * 2 * math.pi
+
+
+@dataclass(frozen=True)
+class AngularFreq:
+    freq: float
+
+    def to_f(self) -> OrdFreq: return OrdFreq(self.freq / (2 * math.pi))
+
+    def f(self) -> float: return self.freq / (2 * math.pi)
 
 
 @dataclass(frozen=True)
 class LPFSpec:
-    passband_corner:        float  # In radians/sec
-    stopband_corner:        float  # In radians/sec
+    passband_corner:        AngularFreq
+    stopband_corner:        AngularFreq
     stopband_atten:         float  # In dB down from 0dB
     passband_ripple:        float  # In dB
     group_delay_variation:  float  # In seconds, maximum variation of group delay from low-freq to passband corner
@@ -33,21 +50,21 @@ class FilterType(Enum):
 
 @dataclass(frozen=True)
 class ZPK:
-    Z: List[complex]
-    P: List[complex]
-    K: float
+    Z: List[complex]  # Zeros of TF
+    P: List[complex]  # Poles of TF
+    K: float          # DC Gain
 
 
 @dataclass(frozen=True)
 class BA:
-    B: List[complex]
-    A: List[complex]
+    B: List[complex]  # Numerator polynomial coefficients
+    A: List[complex]  # Denominator polynomial coefficients
 
     def to_zpk(self) -> ZPK:
         zpk = tf2zpk(self.B, self.A)
         return ZPK(zpk[0], zpk[1], zpk[2])
 
-    def order(self) -> int: return len(self.A)
+    def order(self) -> int: return len(self.to_zpk().P)
 
     def dc_gain(self) -> float: return np.abs(self.B[0] / self.A[0])
 
@@ -55,58 +72,74 @@ class BA:
 # Design a minimum order LPF of filter type 'ftype'.
 # The function will increase the filter order until the stopband attenuation spec is met.
 def design_lpf(spec: LPFSpec, ftype: FilterType) -> BA:
-    #assert ftype != FilterType.BESSEL, "iirdesign doesn't support Bessel automatic order selection"
+    # For a non-Bessel filter type, the regular scipy iirdesign function works and calculates the minimal order
     if ftype != FilterType.BESSEL:
-        return iirdesign(
-            wp=spec.passband_corner,
-            ws=spec.stopband_corner,
+        filter = iirdesign(
+            wp=spec.passband_corner.freq,
+            ws=spec.stopband_corner.freq,
             gpass=spec.passband_ripple,
             gstop=spec.stopband_atten,
             analog=True,
             ftype=ftype.value,
             output='ba'
         )
+        return BA(filter[0], filter[1])
+    # For a Bessel filter iirfilter needs to be used with manual control of order
     else:
         order = 1
-        while True:
+        while True and order < 10:
             b, a = iirfilter(
                 N=order,
-                Wn=[spec.passband_corner],
+                Wn=[spec.passband_corner.freq],
                 rp=spec.passband_ripple,
                 rs=spec.stopband_atten,
                 btype='lowpass',
                 analog=True,
                 ftype=ftype.value,
                 output='ba')
-            w, h = freqs(b, a, worN=[spec.stopband_corner])
+            w, h = freqs(b, a, worN=[spec.stopband_corner.freq])
             if -20*np.log10(abs(h[0])) > spec.stopband_atten:
-                return order, b, a
+                return BA(b, a)
             else:
                 order = order + 1
 
 
-spec = LPFSpec(2*math.pi*20e6, 2*math.pi*200e6, 55, 1, 3e-9)
-b, a = design_lpf(spec, ftype=FilterType.BUTTERWORTH)
-order = len(a)
-w, h = freqs(b, a, worN=np.logspace(6, 10, 1000))
-f = w / (2*math.pi)
-db = 20*np.log10(abs(h))
-width, height = figaspect(1/6)
-fig, ax = plt.subplots(figsize=(width,height))
-plt.semilogx(f, db, linewidth=1.5)
-plt.xlabel('Frequency (Hz)')
-plt.ylabel('Amplitude response (dB)')
-plt.axvline(x=20e6, linestyle='--', linewidth=0.7, color='b')
-plt.axvline(x=200e6, linestyle='--', linewidth=0.7, color='g')
-plt.axhline(y=-3, linestyle='--', linewidth=0.7, color='r')
-plt.axhline(y=-55, linestyle='--', linewidth=0.7, color='m')
-plt.grid(True)
-ax.fill([f[0], 20e6, 20e6, f[0]], [3, 3, -3, -3], alpha=0.3)
-ax.fill([200e6, f[-1], f[-1], 200e6], [-55, -55, db[-1], db[-1]], alpha=0.3)
-plt.legend(['Filter Gain', 'Passband Corner', 'Stopband Corner', '-3dB Passband Attenuation',
-            '-55dB Stopband Attenuation', 'Passband Region', 'Stopband Region'])
-plt.tight_layout()
-plt.show()
-z, p, k = tf2zpk(b, a)
-print(order, z, p, k)
-print(b, a)
+def plot_filters(filters: Dict[FilterType, BA], spec: LPFSpec):
+    plt.style.use('ggplot')
+    width, height = figaspect(1/3)
+    fig, ax = plt.subplots(figsize=(width, height))
+    plot_w = np.logspace(
+            start=math.log10(spec.passband_corner.freq) - 0.5,
+            stop=math.log10(spec.stopband_corner.freq) + 0.5,
+            num=1000)
+    for ftype, ba in filters.items():
+        w, h = freqs(ba.B, ba.A, worN=plot_w)
+        f = w / (2*math.pi)
+        db = 20*np.log10(abs(h))
+        plt.semilogx(f, db, linewidth=2)
+    # Passband region
+    ax.fill([
+        AngularFreq(plot_w[0]).f(),
+        spec.passband_corner.f(),
+        spec.passband_corner.f(),
+        AngularFreq(plot_w[0]).f()
+    ], [spec.passband_ripple, spec.passband_ripple, -3, -3], alpha=0.1)
+    # Stopband region
+    ax.fill([
+        spec.stopband_corner.f(),
+        AngularFreq(plot_w[-1]).f(),
+        AngularFreq(plot_w[-1]).f(),
+        spec.stopband_corner.f()], [-spec.stopband_atten, -spec.stopband_atten, db[-1], db[-1]], alpha=0.1)
+    plt.axvline(x=spec.passband_corner.f(), linestyle='--', linewidth=0.7, color='b')
+    plt.axvline(x=spec.stopband_corner.f(), linestyle='--', linewidth=0.7, color='g')
+    plt.axhline(y=-3, linestyle='--', linewidth=0.7, color='r')
+    plt.axhline(y=-spec.stopband_atten, linestyle='--', linewidth=0.7, color='m')
+    plt.legend([*[x.value for x in filters.keys()],
+                'Passband Corner', 'Stopband Corner', '-3dB Passband Attenuation',
+                '-55dB Stopband Attenuation', 'Passband Region', 'Stopband Region'])
+    plt.xlabel('Frequency (Hz)')
+    plt.ylabel('Amplitude response (dB)')
+    plt.ylim([-spec.stopband_atten - 20, spec.passband_ripple + 2])
+    plt.grid(True)
+    plt.tight_layout()
+    plt.show()

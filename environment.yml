@@ -11,3 +11,6 @@ dependencies:
 - dataclasses
 - jupyter
 - mypy
+- pip:
+    - ahkab
+
