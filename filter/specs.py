@@ -21,11 +21,13 @@ class LPFSpec:
     stopband_atten:         float  # In dB down from 0dB
     passband_ripple:        float  # In dB
     group_delay_variation:  float  # In seconds, maximum variation of group delay from low-freq to passband corner
+    dynamic_range:          float  # In dB
 
     def __post_init__(self):
         assert self.passband_ripple > 0, "Can't have 0 ripple in the passband"
         assert self.stopband_atten > 0, "Attenuation should be given as a positive number " \
                                         "(-50dBc => stopband_atten = 50)"
+        assert self.dynamic_range > 0, "Dynamic range must be positive"
 
 
 @dataclass(frozen=True)
