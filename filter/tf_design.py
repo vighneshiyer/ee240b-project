@@ -5,11 +5,15 @@ import numpy as np
 from scipy.signal import iirdesign, iirfilter, freqs
 import math
 import matplotlib.figure
+from joblib import Memory
 
 """
 Design of the low-pass filter transfer function from specification to the zeros, poles, and DC gain required
 to achieve these specs using various filter types.
 """
+
+cachedir = './cache'
+memory = Memory(cachedir, verbose=0)
 
 
 class FilterType(Enum):
@@ -21,6 +25,7 @@ class FilterType(Enum):
 
 
 # Design a minimum order LPF of filter type 'ftype'.
+@memory.cache
 def design_lpf(spec: LPFSpec, ftype: FilterType) -> BA:
     # For a non-Bessel filter type, the regular scipy iirdesign function works and calculates the minimal order
     # But iteration on the passband corner is required to meet the group delay requirement
@@ -67,7 +72,7 @@ def design_lpf(spec: LPFSpec, ftype: FilterType) -> BA:
 
 
 # Calculate a reasonable frequency range of analysis
-def freq_range(spec: LPFSpec):
+def freq_range(spec: LPFSpec) -> List[AngularFreq]:
     return np.logspace(
         start=math.log10(spec.passband_corner) - 0.5,
         stop=math.log10(spec.stopband_corner) + 0.5,

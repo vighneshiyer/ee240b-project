@@ -8,6 +8,10 @@ from scipy.constants import k
 import scipy, scipy.interpolate
 from enum import Enum
 from filter.specs import LPFSpec, AngularFreq
+from joblib import Memory
+
+cachedir = './cache'
+memory = Memory(cachedir, verbose=1)
 
 sp.init_printing()
 
@@ -40,6 +44,7 @@ class FilterTopology(Enum):
     SK = 'sallen-key'
     MFB = 'multiple-feedback'
 
+@memory.cache
 def build_sk2(d, ro = False, gbw = None):
     """
     :param d: design_dict of all components & values (must be complete!)
@@ -81,6 +86,7 @@ def run_ac(circuit):
     aca = ahkab.new_ac(ac_params['start'], ac_params['stop'], ac_params['pts'])
     return ahkab.run(circuit, [opa, aca])['ac']
 
+@memory.cache
 def run_sym(circuit, source, print_tf = False):
     """
     :param circuit: ahkab circuit
@@ -234,7 +240,6 @@ design_dict = { #keys must match the instance names of each component in design
     'E2': nonideal_dict['Av'],
     'RO': nonideal_dict['RO']
 }
-
 lpf = build_sk2(design_dict)
 rac = run_ac(lpf)
 tf = run_sym(lpf, 'V1', True)
