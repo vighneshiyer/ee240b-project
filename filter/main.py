@@ -1,4 +1,5 @@
-from filter.tf_design import LPFSpec, FilterType, design_lpf, OrdFreq, plot_filters_gain, plot_filters_group_delay, group_delay_variation
+from filter.tf_design import FilterType, design_lpf, plot_filters_gain, plot_filters_group_delay, group_delay_variation
+from filter.specs import LPFSpec, OrdFreq
 from matplotlib.figure import figaspect
 import matplotlib.pyplot as plt
 

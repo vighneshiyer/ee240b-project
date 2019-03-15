@@ -1,32 +1,15 @@
+from filter.specs import LPFSpec, AngularFreq, BA
 from enum import Enum
 from typing import List, Dict
 import numpy as np
-from scipy.signal import iirdesign, iirfilter, freqs, tf2zpk
+from scipy.signal import iirdesign, iirfilter, freqs
 import math
-from dataclasses import dataclass
 import matplotlib.figure
 
-
-class OrdFreq(float):
-    def w(self) -> 'AngularFreq': return AngularFreq(self * 2 * math.pi)
-
-
-class AngularFreq(float):
-    def f(self) -> OrdFreq: return OrdFreq(self / (2 * math.pi))
-
-
-@dataclass(frozen=True)
-class LPFSpec:
-    passband_corner:        AngularFreq
-    stopband_corner:        AngularFreq
-    stopband_atten:         float  # In dB down from 0dB
-    passband_ripple:        float  # In dB
-    group_delay_variation:  float  # In seconds, maximum variation of group delay from low-freq to passband corner
-
-    def __post_init__(self):
-        assert self.passband_ripple > 0, "Can't have 0 ripple in the passband"
-        assert self.stopband_atten > 0, "Attenuation should be given as a positive number " \
-                                        "(-50dBc => stopband_atten = 50)"
+"""
+Design of the low-pass filter transfer function from specification to the zeros, poles, and DC gain required
+to achieve these specs using various filter types.
+"""
 
 
 class FilterType(Enum):
@@ -35,27 +18,6 @@ class FilterType(Enum):
     CHEBYSHEV2 = 'cheby2'
     ELLIPTIC = 'ellip'
     BESSEL = 'bessel'
-
-
-@dataclass(frozen=True)
-class ZPK:
-    Z: List[complex]  # Zeros of TF
-    P: List[complex]  # Poles of TF
-    K: float          # DC Gain
-
-
-@dataclass(frozen=True)
-class BA:
-    B: List[complex]  # Numerator polynomial coefficients
-    A: List[complex]  # Denominator polynomial coefficients
-
-    def to_zpk(self) -> ZPK:
-        zpk = tf2zpk(self.B, self.A)
-        return ZPK(zpk[0], zpk[1], zpk[2])
-
-    def order(self) -> int: return len(self.to_zpk().P)
-
-    def dc_gain(self) -> float: return np.abs(self.B[0] / self.A[0])
 
 
 # Design a minimum order LPF of filter type 'ftype'.
