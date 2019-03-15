@@ -16,7 +16,8 @@ if __name__ == "__main__":
         stopband_corner=OrdFreq(200e6).w(),
         stopband_atten=55,
         passband_ripple=1,
-        group_delay_variation=3e-9
+        group_delay_variation=3e-9,
+        dynamic_range=50
     )
     ftype_specs = {}  # Dict[FilterType, BA]
     for ftype in FilterType:

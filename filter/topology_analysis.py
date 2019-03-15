@@ -7,27 +7,14 @@ from sympy import I
 from scipy.constants import k
 import scipy, scipy.interpolate
 from enum import Enum
-from filter.specs import LPFSpec, AngularFreq
+from filter.specs import LPFSpec, OrdFreq
 
 sp.init_printing()
-
-filter_list = ['sallen-key', 'multiple-feedback']
 
 nonideal_dict = {
     'Av': 100,
     'RO': 200,
     'Cload': 40e-15
-}
-
-specs_dict = {
-    'gain': 0,             #dB
-    'passband': 20e6,      #Hz
-    'pass_att': 3,         #dB
-    'stopband': 200e6,     #Hz
-    'stop_att': 55,        #dB
-    'grp_del': 3,          #ns
-    'gain_ripple': 1,      #dB
-    'snr': 50              #dB
 }
 
 ac_params = {
@@ -122,7 +109,7 @@ def subs_syms(tf, d):
 
     return subs_dict
 
-def check_specs(rac, tf, d, specs):
+def check_specs(rac, tf, d, spec: LPFSpec):
     """
     :param rac: AC analysis result
     :param tf: transfer function w/ gain, poles, zeros
@@ -146,27 +133,28 @@ def check_specs(rac, tf, d, specs):
         print("Pole #{}: {} + {}j ({} Hz)".format(i, sp.re(pole), sp.im(pole), sp.Abs(pole)))
 
     # Passband/stopband
-    spec_test = -20*np.log10(np.abs(hs(specs['passband'])))
-    if spec_test > specs['pass_att']:
+    spec_test = -20*np.log10(np.abs(hs(spec.passband_corner.f())))
+    if spec_test > 3:
         design_pass = False
-        print('Fails passband attenuation: {} dB > {} dB spec'.format(spec_test, specs['pass_att']))
+        print('Fails passband attenuation: {} dB > 3 dB spec'.format(spec_test))
     else:
         print('Passes passband attenuation!')
-    spec_test = -20*np.log10(np.abs(hs(specs['stopband'])))
-    if spec_test < specs['stop_att']:
+    spec_test = -20*np.log10(np.abs(hs(spec.stopband_corner.f())))
+    if spec_test < spec.stopband_atten:
         design_pass = False
-        print('Fails stopband attenuation: {} dB < {} dB spec'.format(spec_test, specs['stop_att']))
+        print('Fails stopband attenuation: {} dB < {} dB spec'.format(spec_test, spec.stopband_atten))
     else:
         print('Passes stopband attenuation!')
 
     # Group Delay (interpolate @ passband)
-    grp_del = (-np.diff(np.unwrap(np.angle(hs(rac.get_x())))) / np.diff(rac['f'])) * 1e9
+    grp_del = (-np.diff(np.unwrap(np.angle(hs(rac.get_x())))) / np.diff(rac['f']))
     grp_del_norm = grp_del - grp_del[0]
     grp_del_interp = scipy.interpolate.interp1d(rac['f'][1:], grp_del_norm)
-    spec_test = grp_del_interp(specs['passband'])
-    if spec_test > specs['grp_del']:
+    spec_test = grp_del_interp(spec.passband_corner.f())
+    if spec_test > spec.group_delay_variation:
         design_pass = False
-        print('Fails group delay: {} ns > {} ns spec'.format(spec_test, specs['grp_del']))
+        print('Fails group delay: {} ns > {} ns spec'.format(
+            spec_test*1e9, spec.group_delay_variation*1e9))
     else:
         print('Passes group delay!')
 
@@ -174,7 +162,7 @@ def check_specs(rac, tf, d, specs):
 
     return design_pass
 
-def check_dyn_range(circuit, srcs, tf, d, specs):
+def check_dyn_range(circuit, srcs, tf, d, spec: LPFSpec):
     """
     :param circuit: ahkab circuit
     :param srcs: List of all noise sources (strings)
@@ -202,23 +190,22 @@ def check_dyn_range(circuit, srcs, tf, d, specs):
         tfn = run_sym(circuit, s)
         subs_dict = subs_syms(tfn, d)
 
-        vi2 += sp.integrate(sp.Abs(((tfn['gain']/tf['gain']).subs(subs_dict))) * in2, (f, 1, specs['passband']))
+        vi2 += sp.integrate(sp.Abs(((tfn['gain']/tf['gain']).subs(subs_dict))) * in2, (f, 1, spec.passband_corner.f()))
 
     print("Total input referred noise power: {} V^2".format(vi2))
 
     # Assume allowable swing (zero-peak) is VDD/2 - V*
     vstar = 0.1
-    snr = 10**(specs['snr']/10)
-    vi_min = sp.sqrt(vi2*snr*2)
+    dr = 10**(spec.dynamic_range/10)
+    vi_min = sp.sqrt(vi2*dr*2)
 
     if vi_min > 0.6-vstar:
-        print('Fails dynamic range: voltage swing {} not attainable!'.format(vi_min))
+        print('Fails dynamic range: voltage swing of {} V not attainable!'.format(vi_min))
         design_pass = False
     else:
         print('Passes dynamic range!')
 
     return design_pass
-
 
 Rbase = 900
 m = 1.5
@@ -235,8 +222,16 @@ design_dict = { #keys must match the instance names of each component in design
     'RO': nonideal_dict['RO']
 }
 
+spec = LPFSpec(
+    passband_corner=OrdFreq(20e6).w(),
+    stopband_corner=OrdFreq(200e6).w(),
+    stopband_atten=55,
+    passband_ripple=1,
+    group_delay_variation=3e-9,
+    dynamic_range=50
+)
 lpf = build_sk2(design_dict)
 rac = run_ac(lpf)
 tf = run_sym(lpf, 'V1', True)
-check_specs(rac, tf, design_dict, specs_dict)
-check_dyn_range(lpf, ['INR1', 'INR2', 'INE1'], tf, design_dict, specs_dict)
+check_specs(rac, tf, design_dict, spec)
+check_dyn_range(lpf, ['INR1', 'INR2', 'INE1'], tf, design_dict, spec)
