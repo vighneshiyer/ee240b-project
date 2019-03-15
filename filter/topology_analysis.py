@@ -48,6 +48,20 @@ class SallenKeySpec:
     cp: Optional[float] = None  # for GBW
 
 
+@dataclass(frozen=True)
+class MFBSpec:
+    r1: float
+    r2: float
+    r3: float
+    c1: float
+    c2: float
+    e1: float
+    ro: Optional[float] = None  # output resistance of opamp
+    e2: Optional[float] = None  # gain for GBW
+    rp: Optional[float] = None  # for GBW
+    cp: Optional[float] = None  # for GBW
+
+
 def build_lpf(cascade: List[FT], fspecs: List, ro=False, gbw=False):
     """
     :param cascade: list of filter topologies in the cascade
@@ -128,6 +142,42 @@ def attach_stage(c: ahkab.Circuit, topology: FT, fspec, stages: int, pos: int, r
             c.add_isource('INE1_'+p, out_node, c.gnd, dc_value=0, ac_value=0)
         noise_srcs.append('INE1_'+p)
 
+    elif topology == FT.MFB:
+        if not isinstance(fspec, MFBSpec):
+            raise ValueError("Wrong specs given for MFB Filter!")
+
+        #Add components
+        c.add_resistor('R1_'+p, in_node, 'n1_'+p, fspec.r1)
+        subs_dict['R1_'+p] = fspec.r1
+        c.add_isource('INR1_'+p, in_node, 'n1_'+p, dc_value=0, ac_value=0)
+        noise_srcs.append('INR1_'+p)
+        c.add_resistor('R2_'+p, 'n1_'+p, out_node, fspec.r2)
+        subs_dict['R2_'+p] = fspec.r2
+        c.add_isource('INR2_'+p, 'n1_'+p, out_node, dc_value=0, ac_value=0)
+        noise_srcs.append('INR2_'+p)
+        c.add_resistor('R3_'+p, 'n1_'+p, 'n2_'+p, fspec.r2)
+        subs_dict['R3_'+p] = fspec.r2
+        c.add_isource('INR3_'+p, 'n1_'+p, 'n2_'+p, dc_value=0, ac_value=0)
+        noise_srcs.append('INR3_'+p)
+        c.add_capacitor('C1_'+p, 'n2_'+p, out_node, fspec.c1)
+        subs_dict['C1_'+p] = fspec.c1
+        c.add_capacitor('C2_'+p, 'n1_'+p, c.gnd, fspec.c2)
+        subs_dict['C2_'+p] = fspec.c2
+
+        #if gbw:
+
+        if ro:
+            c.add_vcvs('E1_'+p, 'ne_'+p, c.gnd, c.gnd, 'n2_'+p, fspec.e1)
+            subs_dict['E1_'+p] = fspec.e1
+            c.add_resistor('RO_'+p, out_node, 'ne_'+p, fspec.ro)
+            subs_dict['RO_'+p] = fspec.ro
+            c.add_isource('INE1_'+p, 'ne_'+p, c.gnd, dc_value=0, ac_value=0)
+        else:
+            c.add_vcvs('E1_'+p, out_node, c.gnd, c.gnd, 'n2_'+p, fspec.e1)
+            subs_dict['E1_'+p] = fspec.e1
+            c.add_isource('INE1_'+p, out_node, c.gnd, dc_value=0, ac_value=0)
+        noise_srcs.append('INE1_'+p)
+
     return c, subs_dict, noise_srcs
 
 
@@ -146,7 +196,7 @@ def run_sym(circuit, source, print_tf=False):
     """
     :param circuit: ahkab circuit
     :param source: name of the source for analysis
-    :param print_tf: print transfer function?
+    :param print_tf: print transfer function, poles, & zeros?
     :return: results for symbolic analysis
     """
     if not isinstance(source, str):
@@ -194,7 +244,7 @@ def check_specs(circuit, rac, tf, spec: LPFSpec, subs, noise_srcs):
     :param spec: target specs
     :param subs: dictionary of component value substitutions
     :param noise_srcs: list of noise sources
-    :return:
+    :return: lambdified transfer function
     """
     design_pass = True
 
@@ -226,7 +276,8 @@ def check_specs(circuit, rac, tf, spec: LPFSpec, subs, noise_srcs):
     else:
         print('Passes stopband attenuation!')
 
-    # Group Delay (interpolate @ passband)
+    # Group Delay
+    # TODO: this currently only checks group delay @ passband vs. at DC (wrong)
     grp_del = (-np.diff(np.unwrap(np.angle(hs(rac.get_x())))) / np.diff(rac['f']))
     grp_del_norm = grp_del - grp_del[0]
     grp_del_interp = scipy.interpolate.interp1d(rac['f'][1:], grp_del_norm)
@@ -265,14 +316,54 @@ def check_specs(circuit, rac, tf, spec: LPFSpec, subs, noise_srcs):
     vstar = 0.1
     dr = 10**(spec.dynamic_range/10)
     vi_min = sp.sqrt(vi2*dr*2)
-
+    print('Min reqd voltage swing for DR: {} V'.format(vi_min))
     if vi_min > 0.6-vstar:
         print('Fails dynamic range: voltage swing of {} V not attainable!'.format(vi_min))
         design_pass = False
     else:
         print('Passes dynamic range!')
 
-    return design_pass
+    print('Design pass? {}'.format(design_pass))
+
+    return hs
+
+
+def plot_final_filter(rac, hs, spec):
+    """
+    :param rac: AC analysis result
+    :param hs: lambdified transfer function
+    :param spec: target specs
+    :param subs: dictionary of component value substitutions
+    """
+
+    # Plot resulting gain, phase, group delay
+    fig, ax = plt.subplots()
+    pb = spec.passband_corner.f()
+    plt.axvline(x=pb, linestyle='--', linewidth=0.7, color='b', label='Passband Corner')
+    plt.axvline(x=pb, linestyle='--', linewidth=0.7, color='g', label='Stopband Corner')
+    plt.axhline(y=-3, linestyle='--', linewidth=0.7, color='r', label='-3dB Passband Attenuation')
+    plt.axhline(y=-spec.stopband_atten, linestyle='--', linewidth=0.7, color='m', label='-55dB Stopband Attenuation')
+    rip = spec.passband_ripple
+    ax.fill([rac['f'][0], pb, pb, rac['f'][0]], [rip, rip, -rip, -rip], alpha=0.3, label='Passband Ripple')
+    plt.semilogx(rac['f'], 20*np.log10(np.abs(hs(rac.get_x()))), '-', label='H(s) from symbolic')
+    plt.xlabel('Frequency [Hz]')
+    plt.ylabel('|H(s)| [dB]')
+    plt.title(lpf.title + " Transfer Function")
+    plt.legend(); plt.grid(True); plt.tight_layout();
+
+    fig, ax = plt.subplots()
+    plt.axvline(x=pb, linestyle='--', linewidth=0.7, color='g', label='Passband Corner')
+    group_delay = (-np.diff(np.unwrap(np.angle(hs(rac.get_x())))) / np.diff(rac['f'])) * 1e9
+    gdv = spec.group_delay_variation * 1e9
+    ax.fill([rac['f'][0], pb, pb, rac['f'][0]], [group_delay[0] + gdv, group_delay[0] + gdv, group_delay[0] - gdv, group_delay[0] - gdv], alpha=0.3, label='$\pm$ 3ns bound')
+    plt.semilogx(rac['f'][1:], (-np.diff(np.unwrap(np.angle(hs(rac.get_x())))) / np.diff(rac['f'])) * 1e9, '-', label='Group Delay from symbolic')
+    plt.xlabel('Frequency [Hz]')
+    plt.ylabel('Group Delay [ns]')
+    plt.title(lpf.title + " Group Delay")
+    plt.legend(); plt.grid(True); plt.tight_layout();
+
+    plt.show();
+
 
 spec = LPFSpec(
     passband_corner=OrdFreq(20e6).w(),
@@ -287,7 +378,7 @@ Rbase = 900
 m = 1.5
 Cbase = 9e-12
 n = 1.5
-sk0spec = SallenKeySpec(
+skspec = SallenKeySpec(
     r1=Rbase*m,
     r2=Rbase/m,
     c1=Cbase*n,
@@ -295,8 +386,18 @@ sk0spec = SallenKeySpec(
     e1=nonideal_dict['Av'],
     ro=nonideal_dict['RO']
 )
+mfbspec = MFBSpec(
+    r1=Rbase/m,
+    r2=Rbase/m,
+    r3=Rbase*m,
+    c1=Cbase*n,
+    c2=Cbase/n,
+    e1=nonideal_dict['Av'],
+    ro=nonideal_dict['RO']
+)
 
-lpf, subs, nsrcs = build_lpf([FT.SK, FT.SK], [sk0spec, sk0spec])
+lpf, subs, nsrcs = build_lpf([FT.SK, FT.MFB], [skspec, mfbspec])
 rac = run_ac(lpf)
 tf = run_sym(lpf, 'V1', True)
-check_specs(lpf, rac, tf, spec, subs, nsrcs)
+hs = check_specs(lpf, rac, tf, spec, subs, nsrcs)
+plot_final_filter(rac, hs, spec)

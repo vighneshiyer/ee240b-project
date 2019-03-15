@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 plt.style.use('ggplot')
 from filter.specs import LPFSpec, OrdFreq
 from filter.tf_design import FilterType, design_lpf, plot_filters_gain, plot_filters_group_delay, group_delay_variation
-from filter.topology_analysis import build_sk2, run_ac, run_sym, check_specs
+from filter.topology_analysis import *
 from filter.optimize import fit_filter_circuit
 
 
@@ -55,16 +55,6 @@ if __name__ == "__main__":
         'Cload': 40e-15
     }
 
-    specs_dict = {
-        'gain': 0,             #dB
-        'passband': 20e6,      #Hz
-        'pass_att': 3,         #dB
-        'stopband': 200e6,     #Hz
-        'stop_att': 55,        #dB
-        'grp_del': 3,          #ns
-        'gain_ripple': 1       #dB
-    }
-
     ac_params = {
         'start': 1e3,
         'stop': 1e9,
@@ -74,21 +64,29 @@ if __name__ == "__main__":
     m = 1.5
     Cbase = 9e-12
     n = 1.5
-    design_dict = { #keys must match the instance names of each component in design
-        'R1': Rbase*m,
-        'R2': Rbase/m,
-        'C1': Cbase*n,
-        'C2': Cbase/n,
-        'CL': nonideal_dict['Cload'],
-        'E1': nonideal_dict['Av'],
-        'E2': nonideal_dict['Av'],
-        'RO': nonideal_dict['RO']
-    }
+    sk0spec = SallenKeySpec(
+        r1=Rbase*m,
+        r2=Rbase/m,
+        c1=Cbase*n,
+        c2=Cbase/n,
+        e1=nonideal_dict['Av'],
+        ro=nonideal_dict['RO']
+    )
+    mfbspec = MFBSpec(
+        r1=Rbase/m,
+        r2=Rbase/m,
+        r3=Rbase*m,
+        c1=Cbase*n,
+        c2=Cbase/n,
+        e1=nonideal_dict['Av'],
+        ro=nonideal_dict['RO']
+    )
 
-    lpf = build_sk2(design_dict)
+    lpf, subs, nsrcs = build_lpf([FT.SK, FT.MFB], [skspec, mfbspec])
     rac = run_ac(lpf)
-    tf_v1 = run_sym(lpf, 'V1', False)
-    fit_filter_circuit(spec, ftype_specs[FilterType.BUTTERWORTH], tf_v1, design_dict)
+    tf = run_sym(lpf, 'V1', True)
+    hs = check_specs(lpf, rac, tf, spec, subs, nsrcs)
+    plot_final_filter(rac, hs, spec)
     """
     symb_poles = tf_v1['poles'][0]
     free_vars = list(symb_poles.free_symbols)
