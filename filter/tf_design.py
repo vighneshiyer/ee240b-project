@@ -103,6 +103,7 @@ def plot_filters_gain(filters: Dict[FilterType, BA], spec: LPFSpec, ax: matplotl
                '-55dB Stopband Attenuation', 'Passband Region', 'Stopband Region'])
     ax.set_xlabel('Frequency (Hz)')
     ax.set_ylabel('Amplitude response (dB)')
+    ax.set_title('Gain of Filter')
     ax.set_ylim(-spec.stopband_atten - 20, spec.passband_ripple + 2)
     ax.grid(True)
 
