@@ -24,7 +24,8 @@ specs_dict = {
     'pass_att': 3,         #dB
     'stopband': 200e6,     #Hz
     'stop_att': 55,        #dB
-    'grp_del': 3           #ns
+    'grp_del': 3,          #ns
+    'gain_ripple': 1       #dB
 }
 
 ac_params = {
@@ -104,8 +105,9 @@ def run_sym(circuit, source, print_tf = False):
 
     return tfs
 
-def check_specs(tf, d=None, specs=None):
+def check_specs(rac, tf, d, specs):
     """
+    :param rac: AC analysis result
     :param tf: transfer function w/ gain, poles, zeros
     :param d: design dictionary of values for R's & C's
     :param specs: target specs dictionary
@@ -113,18 +115,51 @@ def check_specs(tf, d=None, specs=None):
     """
     design_pass = True
 
-    # Get the design symbols by iterating through expression
-    #H = tf['gain']
-    #tf['gain'].free_symbols
+    # Substitute design variables into transfer function
     subs_dict = {}
-
     for sym in tf['gain'].free_symbols:
         print(sym)
         if str(sym) == 's':
             subs_dict[sym] = I*2*np.pi*f
         else:
             subs_dict[sym] = d[str(sym)]
-    print(subs_dict)
+
+    hs = sp.lambdify(f, tf['gain'].subs(subs_dict))
+
+    # Print poles/zeros
+    for i, z in enumerate(tf['zeros']):
+        zero = z.subs(subs_dict)/2/np.pi
+        print("Zero #{}: {} + {}j ({} Hz)".format(i, sp.re(zero), sp.im(zero), sp.Abs(zero)))
+    for i, p in enumerate(tf['poles']):
+        pole = p.subs(subs_dict)/2/np.pi
+        print("Pole #{}: {} + {}j ({} Hz)".format(i, sp.re(pole), sp.im(pole), sp.Abs(pole)))
+
+    # Passband/stopband
+    spec_test = -20*np.log10(np.abs(hs(specs['passband'])))
+    if spec_test > specs['pass_att']:
+        design_pass = False
+        print('Fails passband attenuation: {} dB > {} dB spec'.format(spec_test, specs['pass_att']))
+    else:
+        print('Passes passband attenuation!')
+    spec_test = -20*np.log10(np.abs(hs(specs['stopband'])))
+    if spec_test < specs['stop_att']:
+        design_pass = False
+        print('Fails stopband attenuation: {} dB < {} dB spec'.format(spec_test, specs['stop_att']))
+    else:
+        print('Passes stopband attenuation!')
+
+    # Group Delay (interpolate @ passband)
+    grp_del = (-np.diff(np.unwrap(np.angle(hs(rac.get_x())))) / np.diff(rac['f'])) * 1e9
+    grp_del_norm = grp_del - grp_del[0]
+    grp_del_interp = scipy.interpolate.interp1d(rac['f'], grp_del_norm)
+    spec_test = grp_del_interp(specs['passband'])
+    if spec_test > specs['grp_del']:
+        design_pass = False
+        print('Fails group delay: {} ns > {} ns spec'.format(spec_test, specs['grp_del']))
+    else:
+        print('Passes group delay!')
+
+    # Gain ripples
 
     return design_pass
 
@@ -146,7 +181,7 @@ design_dict = { #keys must match the instance names of each component in design
 lpf = build_sk2(design_dict)
 rac = run_ac(lpf)
 tf_v1 = run_sym(lpf, 'V1', True)
-check_specs(tf_v1, design_dict)
+check_specs(rac, tf_v1, design_dict, specs_dict)
 
 #    if topology not in filter_list:
 #        raise ValueError("'%s' is invalid filter topology." % topology)
