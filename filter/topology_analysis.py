@@ -7,7 +7,8 @@ from sympy import I
 from scipy.constants import k
 import scipy, scipy.interpolate
 from enum import Enum
-from typing import Optional
+from filter.specs import LPFSpec, AngularFreq
+
 sp.init_printing()
 
 filter_list = ['sallen-key', 'multiple-feedback']
@@ -25,7 +26,8 @@ specs_dict = {
     'stopband': 200e6,     #Hz
     'stop_att': 55,        #dB
     'grp_del': 3,          #ns
-    'gain_ripple': 1       #dB
+    'gain_ripple': 1,      #dB
+    'snr': 50              #dB
 }
 
 ac_params = {
@@ -49,9 +51,9 @@ def build_sk2(d, ro = False, gbw = None):
     sk2.add_capacitor('CL', 'out', sk2.gnd, nonideal_dict['Cload']) #load
 
     sk2.add_resistor('R1', 'in', 'n1', d['R1'])
-    sk2.add_isource('InR1', 'in', 'n1', dc_value=0, ac_value=0) #R1 noise current
+    sk2.add_isource('INR1', 'in', 'n1', dc_value=0, ac_value=0) #R1 noise current
     sk2.add_resistor('R2', 'n1', 'n2', d['R2'])
-    sk2.add_isource('InR2', 'n1', 'n2', dc_value=0, ac_value=0) #R2 noise current
+    sk2.add_isource('INR2', 'n1', 'n2', dc_value=0, ac_value=0) #R2 noise current
     sk2.add_capacitor('C1', 'n1', 'out', d['C1'])
     sk2.add_capacitor('C2', 'n2', sk2.gnd, d['C2'])
 
@@ -60,10 +62,10 @@ def build_sk2(d, ro = False, gbw = None):
     if ro:
         sk2.add_vcvs('E1', 'ne', sk2.gnd, 'n2', 'out', d['E1'])
         sk2.add_resistor('RO', 'out', 'ne', d['RO']) #DANGER: this blows up the solution
-        sk2.add_isource('InE1', 'ne', sk2.gnd, dc_value=0, ac_value=0) #op-amp total output noise current
+        sk2.add_isource('INE1', 'ne', sk2.gnd, dc_value=0, ac_value=0) #op-amp total output noise current
     else:
         sk2.add_vcvs('E1', 'out', sk2.gnd, 'n2', 'out', d['E1'])
-        sk2.add_isource('InE1', 'out', sk2.gnd, dc_value=0, ac_value=0) #op-amp total output noise current
+        sk2.add_isource('INE1', 'out', sk2.gnd, dc_value=0, ac_value=0) #op-amp total output noise current
 
     sk2.add_vsource('V1', 'in', sk2.gnd, dc_value=0, ac_value=1)
 
@@ -88,7 +90,7 @@ def run_sym(circuit, source, print_tf = False):
     if not isinstance(source, str):
         raise ValueError('Source name must be a string! e.g. \'V1\'')
 
-    r, tf = ahkab.run(circuit, ahkab.new_symbolic(source=source, verbose=4))['symbolic']
+    r, tf = ahkab.run(circuit, ahkab.new_symbolic(source=source, verbose=0))['symbolic']
 
     tfs = tf['VOUT/'+str(source)]
 
@@ -105,6 +107,21 @@ def run_sym(circuit, source, print_tf = False):
 
     return tfs
 
+def subs_syms(tf, d):
+    """
+    :param tf: transfer function
+    :param d: design dictionary of values for R's & C's
+    :return: dictionary with values to substitute for dictionary
+    """
+    subs_dict = {}
+    for sym in tf['gain'].free_symbols:
+        if str(sym) == 's':
+            subs_dict[sym] = I*2*np.pi*f
+        else:
+            subs_dict[sym] = d[str(sym)]
+
+    return subs_dict
+
 def check_specs(rac, tf, d, specs):
     """
     :param rac: AC analysis result
@@ -116,13 +133,7 @@ def check_specs(rac, tf, d, specs):
     design_pass = True
 
     # Substitute design variables into transfer function
-    subs_dict = {}
-    for sym in tf['gain'].free_symbols:
-        print(sym)
-        if str(sym) == 's':
-            subs_dict[sym] = I*2*np.pi*f
-        else:
-            subs_dict[sym] = d[str(sym)]
+    subs_dict = subs_syms(tf, d)
 
     hs = sp.lambdify(f, tf['gain'].subs(subs_dict))
 
@@ -151,7 +162,7 @@ def check_specs(rac, tf, d, specs):
     # Group Delay (interpolate @ passband)
     grp_del = (-np.diff(np.unwrap(np.angle(hs(rac.get_x())))) / np.diff(rac['f'])) * 1e9
     grp_del_norm = grp_del - grp_del[0]
-    grp_del_interp = scipy.interpolate.interp1d(rac['f'], grp_del_norm)
+    grp_del_interp = scipy.interpolate.interp1d(rac['f'][1:], grp_del_norm)
     spec_test = grp_del_interp(specs['passband'])
     if spec_test > specs['grp_del']:
         design_pass = False
@@ -162,6 +173,52 @@ def check_specs(rac, tf, d, specs):
     # Gain ripples
 
     return design_pass
+
+def check_dyn_range(circuit, srcs, tf, d, specs):
+    """
+    :param circuit: ahkab circuit
+    :param srcs: List of all noise sources (strings)
+    :param tf: Overall filter transfer function
+    :param d: Design dict
+    :param specs: Specs dict
+    :return: total integrated noise in passband
+    """
+    design_pass = True
+    vi2 = 0
+
+    print("Noise simulation temp: {} K".format(ahkab.constants.Tref))
+    kT4 = 4*k*ahkab.constants.Tref
+
+    # Assume opamp noise can be modeled as single transistor noise current w/ some gm
+    gamma = 2/3
+    gm = 0.005
+
+    for s in srcs:
+        if s.startswith('INR'):
+            in2 = kT4/d[s[2:]]
+        elif s.startswith('INE'):
+            in2 = kT4*gamma*gm
+
+        tfn = run_sym(circuit, s)
+        subs_dict = subs_syms(tfn, d)
+
+        vi2 += sp.integrate(sp.Abs(((tfn['gain']/tf['gain']).subs(subs_dict))) * in2, (f, 1, specs['passband']))
+
+    print("Total input referred noise power: {} V^2".format(vi2))
+
+    # Assume allowable swing (zero-peak) is VDD/2 - V*
+    vstar = 0.1
+    snr = 10**(specs['snr']/10)
+    vi_min = sp.sqrt(vi2*snr*2)
+
+    if vi_min > 0.6-vstar:
+        print('Fails dynamic range: voltage swing {} not attainable!'.format(vi_min))
+        design_pass = False
+    else:
+        print('Passes dynamic range!')
+
+    return design_pass
+
 
 Rbase = 900
 m = 1.5
@@ -180,9 +237,6 @@ design_dict = { #keys must match the instance names of each component in design
 
 lpf = build_sk2(design_dict)
 rac = run_ac(lpf)
-tf_v1 = run_sym(lpf, 'V1', True)
-check_specs(rac, tf_v1, design_dict, specs_dict)
-
-#    if topology not in filter_list:
-#        raise ValueError("'%s' is invalid filter topology." % topology)
-
+tf = run_sym(lpf, 'V1', True)
+check_specs(rac, tf, design_dict, specs_dict)
+check_dyn_range(lpf, ['INR1', 'INR2', 'INE1'], tf, design_dict, specs_dict)
