@@ -5,7 +5,7 @@ import sympy as sp
 from sympy.abc import f
 from sympy import I
 from scipy.constants import k
-import scipy, scipy.interpolate
+import scipy, scipy.interpolate, scipy.integrate
 from dataclasses import dataclass
 from enum import Enum
 from typing import Optional, List
@@ -18,9 +18,10 @@ memory = Memory(cachedir, verbose=1)
 sp.init_printing()
 
 nonideal_dict = {
-    'Av': 100,
-    'RO': 200,
-    'Cload': 40e-15
+    'Av': 30, # from HW1
+    'Cload': 40e-15,
+    'gamma': 2, # short-channel?
+    'gm': 0.01 #
 }
 
 ac_params = {
@@ -33,6 +34,7 @@ ac_params = {
 class FT(Enum):  # filter topology
     SK = 'sallen-key'
     MFB = 'multiple-feedback'
+    OTA3 = 'OTA with 3 passive components'
 
 
 @dataclass(frozen=True)
@@ -42,10 +44,8 @@ class SallenKeySpec:
     c1: float
     c2: float
     e1: float
-    ro: Optional[float] = None  # output resistance of opamp
-    e2: Optional[float] = None  # gain for GBW
-    rp: Optional[float] = None  # for GBW
-    cp: Optional[float] = None  # for GBW
+    ro: Optional[float] = None
+    bw: Optional[float] = None
 
 
 @dataclass(frozen=True)
@@ -56,13 +56,21 @@ class MFBSpec:
     c1: float
     c2: float
     e1: float
-    ro: Optional[float] = None  # output resistance of opamp
-    e2: Optional[float] = None  # gain for GBW
-    rp: Optional[float] = None  # for GBW
-    cp: Optional[float] = None  # for GBW
+    ro: Optional[float] = None
+    bw: Optional[float] = None
 
 
-def build_lpf(cascade: List[FT], fspecs: List, ro=False, gbw=False):
+@dataclass(frozen=True)
+class OTA3Spec:
+    r1: float
+    c1: float
+    c2: float
+    gm: float
+    ro: float
+    bw: Optional[float] = None
+
+
+def build_lpf(cascade: List[FT], fspecs: List, ro=False):
     """
     :param cascade: list of filter topologies in the cascade
     :param fspecs: list of filter specs
@@ -74,25 +82,25 @@ def build_lpf(cascade: List[FT], fspecs: List, ro=False, gbw=False):
     noise_srcs = []
     filt = ahkab.Circuit('LPF')
     for i, t in enumerate(cascade):
-        filt, s, n = attach_stage(filt, t, fspecs[i], len(cascade), i, ro, gbw)
+        filt, s, n = attach_stage(filt, t, fspecs[i], len(cascade), i, ro)
         subs_dict.update(s)
         noise_srcs = noise_srcs + n
     print(filt)
-    print(subs_dict)
-    print(noise_srcs)
+    print('Component substitutions:' + str(subs_dict))
+    print('Noise sources:' + str(noise_srcs))
     return filt, subs_dict, noise_srcs
 
 
 @memory.cache
-def attach_stage(c: ahkab.Circuit, topology: FT, fspec, stages: int, pos: int, ro=False, gbw=False):
+def attach_stage(c: ahkab.Circuit, topology: FT, fspec, stages: int, pos: int, noise_src=None, ro=False):
     """
     :param c: circuit to append to
     :param topology: filter topology to add
     :param fspec: components specs
     :param stages: total # of stages (to get in/out node correct)
     :param pos: position in cascade
+    :param noise_src: specify circuit with only a particular noise source
     :param ro: consider ro?
-    :param gbw: consider GBW?
     :return: filter, dict of subs for symbolic expressions, list noise sources
     """
     subs_dict = {}
@@ -128,8 +136,6 @@ def attach_stage(c: ahkab.Circuit, topology: FT, fspec, stages: int, pos: int, r
         c.add_capacitor('C2_'+p, 'n2_'+p, c.gnd, fspec.c2)
         subs_dict['C2_'+p] = fspec.c2
 
-        #if gbw:
-
         if ro:
             c.add_vcvs('E1_'+p, 'ne_'+p, c.gnd, 'n2_'+p, out_node, fspec.e1)
             subs_dict['E1_'+p] = fspec.e1
@@ -146,7 +152,7 @@ def attach_stage(c: ahkab.Circuit, topology: FT, fspec, stages: int, pos: int, r
         if not isinstance(fspec, MFBSpec):
             raise ValueError("Wrong specs given for MFB Filter!")
 
-        #Add components
+        # Add components
         c.add_resistor('R1_'+p, in_node, 'n1_'+p, fspec.r1)
         subs_dict['R1_'+p] = fspec.r1
         c.add_isource('INR1_'+p, in_node, 'n1_'+p, dc_value=0, ac_value=0)
@@ -164,8 +170,6 @@ def attach_stage(c: ahkab.Circuit, topology: FT, fspec, stages: int, pos: int, r
         c.add_capacitor('C2_'+p, 'n1_'+p, c.gnd, fspec.c2)
         subs_dict['C2_'+p] = fspec.c2
 
-        #if gbw:
-
         if ro:
             c.add_vcvs('E1_'+p, 'ne_'+p, c.gnd, c.gnd, 'n2_'+p, fspec.e1)
             subs_dict['E1_'+p] = fspec.e1
@@ -177,6 +181,29 @@ def attach_stage(c: ahkab.Circuit, topology: FT, fspec, stages: int, pos: int, r
             subs_dict['E1_'+p] = fspec.e1
             c.add_isource('INE1_'+p, out_node, c.gnd, dc_value=0, ac_value=0)
         noise_srcs.append('INE1_'+p)
+
+    elif topology == FT.OTA3:
+        if not isinstance(fspec, OTA3Spec):
+            raise ValueError("Wrong specs given for OTA w/ 3 passives filter!")
+
+        # Add components
+        c.add_resistor('R1_'+p, out_node, 'n1_'+p, fspec.r1)
+        subs_dict['R1_'+p] = fspec.r1
+        c.add_isource('INR1_'+p, out_node, 'n1_'+p, dc_value=0, ac_value=0)
+        noise_srcs.append('INR1_'+p)
+        c.add_capacitor('C1_'+p, out_node, c.gnd, fspec.c1)
+        subs_dict['C1_'+p] = fspec.c1
+        c.add_capacitor('C2_'+p, 'n1_'+p, c.gnd, fspec.c1)
+        subs_dict['C2_'+p] = fspec.c2
+
+        # Add OTA
+        c.add_vccs('G1_'+p, 'n1_'+p, c.gnd, in_node, out_node, fspec.gm)
+        subs_dict['G1_'+p] = fspec.gm
+        c.add_isource('ING1_'+p, 'n1_'+p, c.gnd, dc_value=0, ac_value=0)
+        noise_srcs.append('ING1_'+p)
+        c.add_resistor('RO_'+p, 'n1_'+p, c.gnd, fspec.ro)  # modeling resistor, noiseless
+        subs_dict['RO_'+p] = fspec.ro
+
 
     return c, subs_dict, noise_srcs
 
@@ -236,7 +263,7 @@ def subs_syms(tf, subs):
     return subs_dict
 
 
-def check_specs(circuit, rac, tf, spec: LPFSpec, subs, noise_srcs):
+def check_specs(circuit, rac, tf, spec: LPFSpec, subs, noise_srcs, bw_subs={}):
     """
     :param circuit: ahkab circuit
     :param rac: AC analysis result
@@ -244,6 +271,7 @@ def check_specs(circuit, rac, tf, spec: LPFSpec, subs, noise_srcs):
     :param spec: target specs
     :param subs: dictionary of component value substitutions
     :param noise_srcs: list of noise sources
+    :param amp_bw: dict of bandwidths (for each OTA/opamp) - must match instance name
     :return: lambdified transfer function
     """
     design_pass = True
@@ -251,15 +279,19 @@ def check_specs(circuit, rac, tf, spec: LPFSpec, subs, noise_srcs):
     # Substitute design variables into transfer function
     subs_dict = subs_syms(tf, subs)
 
-    hs = sp.lambdify(f, tf['gain'].subs(subs_dict))
-    print(hs)
+    # Convert gain into form gain/(1+s/w_bw)
+    for sym in subs_dict:
+        if str(sym) in bw_subs.keys():
+            bw_subs[str(sym)] = sym/(1+I*2*np.pi*f/bw_subs[str(sym)])
+
+    hs = sp.lambdify(f, tf['gain'].subs(bw_subs).subs(subs_dict))
 
     # Print poles/zeros
     for i, z in enumerate(tf['zeros']):
-        zero = z.subs(subs_dict)/2/np.pi
+        zero = z.subs(bw_subs).subs(subs_dict)/2/np.pi
         print("Zero #{}: {} + {}j ({} Hz)".format(i, sp.re(zero), sp.im(zero), sp.Abs(zero)))
     for i, p in enumerate(tf['poles']):
-        pole = p.subs(subs_dict)/2/np.pi
+        pole = p.subs(bw_subs).subs(subs_dict)/2/np.pi
         print("Pole #{}: {} + {}j ({} Hz)".format(i, sp.re(pole), sp.im(pole), sp.Abs(pole)))
 
     # Passband/stopband
@@ -296,19 +328,17 @@ def check_specs(circuit, rac, tf, spec: LPFSpec, subs, noise_srcs):
     print("Noise simulation temp: {} K".format(ahkab.constants.Tref))
     kT4 = 4*k*ahkab.constants.Tref
 
-    # Assume opamp noise can be modeled as single transistor noise current w/ some gm
-    gamma = 2/3
-    gm = 0.005
-
     # Integrate input-referred noise power using symbolic analysis
     for s in noise_srcs:
         if s.startswith('INR'):
             in2 = kT4/subs[s[2:]]
         elif s.startswith('INE'):
-            in2 = kT4*gamma*gm
+            in2 = kT4*nonideal_dict['gamma']*nonideal_dict['gm']
         tfn = run_sym(circuit, s)
-        vi2 += sp.integrate(sp.Abs(((tfn['gain']/tf['gain']).subs(subs_syms(tfn, subs)))) * in2,
-                            (f, 1, spec.passband_corner.f()))
+
+        # Just get the input-referred noise density at DC and multiply by the passband to speed up calculation
+        vni2 = sp.lambdify(f, sp.Abs(((tfn['gain']/tf['gain']).subs(bw_subs).subs(subs_syms(tfn, subs)))) * in2)
+        vi2 += vni2(0) * spec.passband_corner.f()
 
     print("Total input referred noise power: {} V^2".format(vi2))
 
@@ -340,7 +370,7 @@ def plot_final_filter(rac, hs, spec):
     fig, ax = plt.subplots()
     pb = spec.passband_corner.f()
     plt.axvline(x=pb, linestyle='--', linewidth=0.7, color='b', label='Passband Corner')
-    plt.axvline(x=pb, linestyle='--', linewidth=0.7, color='g', label='Stopband Corner')
+    plt.axvline(x=spec.stopband_corner.f(), linestyle='--', linewidth=0.7, color='g', label='Stopband Corner')
     plt.axhline(y=-3, linestyle='--', linewidth=0.7, color='r', label='-3dB Passband Attenuation')
     plt.axhline(y=-spec.stopband_atten, linestyle='--', linewidth=0.7, color='m', label='-55dB Stopband Attenuation')
     rip = spec.passband_ripple
@@ -355,7 +385,7 @@ def plot_final_filter(rac, hs, spec):
     plt.axvline(x=pb, linestyle='--', linewidth=0.7, color='g', label='Passband Corner')
     group_delay = (-np.diff(np.unwrap(np.angle(hs(rac.get_x())))) / np.diff(rac['f'])) * 1e9
     gdv = spec.group_delay_variation * 1e9
-    ax.fill([rac['f'][0], pb, pb, rac['f'][0]], [group_delay[0] + gdv, group_delay[0] + gdv, group_delay[0] - gdv, group_delay[0] - gdv], alpha=0.3, label='$\pm$ 3ns bound')
+    ax.fill([rac['f'][0], pb, pb, rac['f'][0]], [group_delay[0] + gdv, group_delay[0] + gdv, group_delay[0] - gdv, group_delay[0] - gdv], alpha=0.3, label='$\pm$ {}ns bound'.format(gdv))
     plt.semilogx(rac['f'][1:], (-np.diff(np.unwrap(np.angle(hs(rac.get_x())))) / np.diff(rac['f'])) * 1e9, '-', label='Group Delay from symbolic')
     plt.xlabel('Frequency [Hz]')
     plt.ylabel('Group Delay [ns]')
@@ -384,7 +414,7 @@ skspec = SallenKeySpec(
     c1=Cbase*n,
     c2=Cbase/n,
     e1=nonideal_dict['Av'],
-    ro=nonideal_dict['RO']
+    ro=nonideal_dict['Av']/nonideal_dict['gm']
 )
 mfbspec = MFBSpec(
     r1=Rbase/m,
@@ -393,11 +423,25 @@ mfbspec = MFBSpec(
     c1=Cbase*n,
     c2=Cbase/n,
     e1=nonideal_dict['Av'],
-    ro=nonideal_dict['RO']
+    ro=nonideal_dict['Av']/nonideal_dict['gm']
+)
+ota3spec = OTA3Spec(
+    r1=Rbase,
+    c1=Cbase,
+    c2=Cbase,
+    gm=nonideal_dict['gm'],
+    ro=nonideal_dict['Av']/nonideal_dict['gm'],
+    bw=1e8
 )
 
-lpf, subs, nsrcs = build_lpf([FT.SK, FT.MFB], [skspec, mfbspec])
+lpf, subs, nsrcs = build_lpf([FT.OTA3, FT.OTA3], [ota3spec, ota3spec])
+#lpf, subs, nsrcs = build_lpf([FT.SK, FT.MFB], [skspec, mfbspec])
 rac = run_ac(lpf)
 tf = run_sym(lpf, 'V1', True)
-hs = check_specs(lpf, rac, tf, spec, subs, nsrcs)
+#hs = check_specs(lpf, rac, tf, spec, subs, nsrcs)
+amp_bw = {
+    'G1_0': ota3spec.bw,
+    'G1_1': ota3spec.bw
+}
+hs = check_specs(lpf, rac, tf, spec, subs, nsrcs, amp_bw)
 plot_final_filter(rac, hs, spec)
