@@ -15,7 +15,6 @@ if __name__ == "__main__":
     parser.add_argument('--show-plots', dest='show_plots', action='store_true', help='show generated plots')
     args = parser.parse_args()
 
-
     spec = LPFSpec(
         passband_corner=OrdFreq(20e6).w(),
         stopband_corner=OrdFreq(200e6).w(),
@@ -45,9 +44,6 @@ if __name__ == "__main__":
         plot_filters_group_delay(ftype_specs, spec, ax)
         if args.save_plots:
             fig2.savefig('figs/tf_group_delay.pdf', bbox_inches='tight')
-
-    if args.show_plots:
-        plt.show()
 
     nonideal_dict = {
         'Av': 100,
@@ -82,22 +78,13 @@ if __name__ == "__main__":
         ro=nonideal_dict['RO']
     )
 
-    lpf, subs, nsrcs = build_lpf([FT.SK, FT.MFB], [skspec, mfbspec])
+    lpf, subs, nsrcs = build_lpf([FT.SK, FT.SK], [sk0spec, sk0spec])
     rac = run_ac(lpf)
     tf = run_sym(lpf, 'V1', True)
-    hs = check_specs(lpf, rac, tf, spec, subs, nsrcs)
-    plot_final_filter(rac, hs, spec)
-    """
-    symb_poles = tf_v1['poles'][0]
-    free_vars = list(symb_poles.free_symbols)
-    print(free_vars)
-    free_vars = list(filter(lambda x: 'R2' in str(x) or 'C2' in str(x), free_vars))
-    print(free_vars)
-    sol = sp.nonlinsolve([
-        tf_v1['poles'][0] - zpk.P[0],
-        tf_v1['poles'][1] - zpk.P[1]
-    ], free_vars)
-    sp.pprint(sol)
-    print(sol)
-    """
-    #check_specs(rac, tf_v1, design_dict, specs_dict)
+    fit_filter_circuit(ftype_specs[FilterType.BUTTERWORTH], tf, [sk0spec, sk0spec])
+    #hs = check_specs(lpf, rac, tf, spec, subs, nsrcs)
+    if args.show_plots:
+        plot_final_filter(rac, hs, spec)
+
+    if args.show_plots:
+        plt.show()
