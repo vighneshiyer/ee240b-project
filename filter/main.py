@@ -48,7 +48,9 @@ if __name__ == "__main__":
     nonideal_dict = {
         'Av': 100,
         'RO': 200,
-        'Cload': 40e-15
+        'Cload': 40e-15,
+        'gamma': 2, # short-channel?
+        'gm': 0.01 #
     }
 
     ac_params = {
@@ -77,14 +79,25 @@ if __name__ == "__main__":
         e1=nonideal_dict['Av'],
         ro=nonideal_dict['RO']
     )
+    ota3spec = OTA3Spec(
+        r1=Rbase,
+        c1=Cbase,
+        c2=Cbase,
+        gm=nonideal_dict['gm'],
+        ro=nonideal_dict['Av']/nonideal_dict['gm'],
+        bw=1e8
+    )
 
-    lpf, subs, nsrcs = build_lpf([FT.SK, FT.SK], [sk0spec, sk0spec])
+
+    lpf, subs, nsrcs = build_lpf([FT.OTA3, FT.OTA3], [ota3spec, ota3spec])
+    #lpf, subs, nsrcs = build_lpf([FT.SK, FT.SK], [sk0spec, sk0spec])
     rac = run_ac(lpf)
     tf = run_sym(lpf, 'V1', True)
-    fit_filter_circuit(ftype_specs[FilterType.BUTTERWORTH], tf, [sk0spec, sk0spec])
-    #hs = check_specs(lpf, rac, tf, spec, subs, nsrcs)
+    #fit_filter_circuit(ftype_specs[FilterType.BUTTERWORTH], tf, [sk0spec, sk0spec])
+    amp_bw = {
+        'G1_0': ota3spec.bw,
+        'G1_1': ota3spec.bw
+    }
+    hs = check_specs(lpf, rac, tf, spec, subs, nsrcs, amp_bw)
     if args.show_plots:
         plot_final_filter(rac, hs, spec)
-
-    if args.show_plots:
-        plt.show()

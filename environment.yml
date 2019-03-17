@@ -14,4 +14,4 @@ dependencies:
 - joblib
 - pip:
     - ahkab
-
+    - SchemDraw

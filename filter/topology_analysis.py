@@ -70,12 +70,11 @@ class OTA3Spec:
     bw: Optional[float] = None
 
 
-def build_lpf(cascade: List[FT], fspecs: List, ro=False):
+def build_lpf(cascade: List[FT], fspecs: List, ro=False):# -> (ahkab.Circuit, Dict[,], List[]):
     """
     :param cascade: list of filter topologies in the cascade
     :param fspecs: list of filter specs
     :param ro: consider ro?
-    :param gbw: consider GBW?
     :return: filter, dict of subs for symbolic expressions, list noise sources
     """
     subs_dict = {}
@@ -203,7 +202,6 @@ def attach_stage(c: ahkab.Circuit, topology: FT, fspec, stages: int, pos: int, n
         noise_srcs.append('ING1_'+p)
         c.add_resistor('RO_'+p, 'n1_'+p, c.gnd, fspec.ro)  # modeling resistor, noiseless
         subs_dict['RO_'+p] = fspec.ro
-
 
     return c, subs_dict, noise_srcs
 
@@ -378,7 +376,7 @@ def plot_final_filter(rac, hs, spec):
     plt.semilogx(rac['f'], 20*np.log10(np.abs(hs(rac.get_x()))), '-', label='H(s) from symbolic')
     plt.xlabel('Frequency [Hz]')
     plt.ylabel('|H(s)| [dB]')
-    plt.title(lpf.title + " Transfer Function")
+    plt.title(" Transfer Function")
     plt.legend(); plt.grid(True); plt.tight_layout();
 
     fig, ax = plt.subplots()
@@ -389,59 +387,60 @@ def plot_final_filter(rac, hs, spec):
     plt.semilogx(rac['f'][1:], (-np.diff(np.unwrap(np.angle(hs(rac.get_x())))) / np.diff(rac['f'])) * 1e9, '-', label='Group Delay from symbolic')
     plt.xlabel('Frequency [Hz]')
     plt.ylabel('Group Delay [ns]')
-    plt.title(lpf.title + " Group Delay")
-    plt.legend(); plt.grid(True); plt.tight_layout();
+    plt.title(" Group Delay")
+    plt.legend(); plt.grid(True); plt.tight_layout()
 
-    plt.show();
+    plt.show()
 
 
-spec = LPFSpec(
-    passband_corner=OrdFreq(20e6).w(),
-    stopband_corner=OrdFreq(200e6).w(),
-    stopband_atten=55,
-    passband_ripple=1,
-    group_delay_variation=3e-9,
-    dynamic_range=50
-)
+if __name__ == "__main__":
+    spec = LPFSpec(
+        passband_corner=OrdFreq(20e6).w(),
+        stopband_corner=OrdFreq(200e6).w(),
+        stopband_atten=55,
+        passband_ripple=1,
+        group_delay_variation=3e-9,
+        dynamic_range=50
+    )
 
-Rbase = 900
-m = 1.5
-Cbase = 9e-12
-n = 1.5
-skspec = SallenKeySpec(
-    r1=Rbase*m,
-    r2=Rbase/m,
-    c1=Cbase*n,
-    c2=Cbase/n,
-    e1=nonideal_dict['Av'],
-    ro=nonideal_dict['Av']/nonideal_dict['gm']
-)
-mfbspec = MFBSpec(
-    r1=Rbase/m,
-    r2=Rbase/m,
-    r3=Rbase*m,
-    c1=Cbase*n,
-    c2=Cbase/n,
-    e1=nonideal_dict['Av'],
-    ro=nonideal_dict['Av']/nonideal_dict['gm']
-)
-ota3spec = OTA3Spec(
-    r1=Rbase,
-    c1=Cbase,
-    c2=Cbase,
-    gm=nonideal_dict['gm'],
-    ro=nonideal_dict['Av']/nonideal_dict['gm'],
-    bw=1e8
-)
+    Rbase = 900
+    m = 1.5
+    Cbase = 9e-12
+    n = 1.5
+    skspec = SallenKeySpec(
+        r1=Rbase*m,
+        r2=Rbase/m,
+        c1=Cbase*n,
+        c2=Cbase/n,
+        e1=nonideal_dict['Av'],
+        ro=nonideal_dict['Av']/nonideal_dict['gm']
+    )
+    mfbspec = MFBSpec(
+        r1=Rbase/m,
+        r2=Rbase/m,
+        r3=Rbase*m,
+        c1=Cbase*n,
+        c2=Cbase/n,
+        e1=nonideal_dict['Av'],
+        ro=nonideal_dict['Av']/nonideal_dict['gm']
+    )
+    ota3spec = OTA3Spec(
+        r1=Rbase,
+        c1=Cbase,
+        c2=Cbase,
+        gm=nonideal_dict['gm'],
+        ro=nonideal_dict['Av']/nonideal_dict['gm'],
+        bw=1e8
+    )
 
-lpf, subs, nsrcs = build_lpf([FT.OTA3, FT.OTA3], [ota3spec, ota3spec])
-#lpf, subs, nsrcs = build_lpf([FT.SK, FT.MFB], [skspec, mfbspec])
-rac = run_ac(lpf)
-tf = run_sym(lpf, 'V1', True)
-#hs = check_specs(lpf, rac, tf, spec, subs, nsrcs)
-amp_bw = {
-    'G1_0': ota3spec.bw,
-    'G1_1': ota3spec.bw
-}
-hs = check_specs(lpf, rac, tf, spec, subs, nsrcs, amp_bw)
-plot_final_filter(rac, hs, spec)
+    lpf, subs, nsrcs = build_lpf([FT.OTA3, FT.OTA3], [ota3spec, ota3spec])
+    #lpf, subs, nsrcs = build_lpf([FT.SK, FT.MFB], [skspec, mfbspec])
+    rac = run_ac(lpf)
+    tf = run_sym(lpf, 'V1', True)
+    #hs = check_specs(lpf, rac, tf, spec, subs, nsrcs)
+    amp_bw = {
+        'G1_0': ota3spec.bw,
+        'G1_1': ota3spec.bw
+    }
+    hs = check_specs(lpf, rac, tf, spec, subs, nsrcs, amp_bw)
+    plot_final_filter(rac, hs, spec)

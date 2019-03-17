@@ -85,30 +85,27 @@ def plot_filters_gain(filters: Dict[FilterType, BA], spec: LPFSpec, ax: matplotl
         w, h = freqs(ba.B, ba.A, worN=plot_w)
         f = w / (2*math.pi)
         db = 20*np.log10(abs(h))
-        ax.semilogx(f, db, linewidth=2)
-    # Passband region
+        ax.semilogx(f, db, linewidth=2, label=ftype.value)
     ax.fill([
         AngularFreq(plot_w[0]).f(),
         spec.passband_corner.f(),
         spec.passband_corner.f(),
         AngularFreq(plot_w[0]).f()
-    ], [spec.passband_ripple, spec.passband_ripple, -3, -3], alpha=0.1)
-    # Stopband region
+    ], [spec.passband_ripple, spec.passband_ripple, -3, -3], alpha=0.1, label='Passband Region')
     ax.fill([
         spec.stopband_corner.f(),
         AngularFreq(plot_w[-1]).f(),
         AngularFreq(plot_w[-1]).f(),
-        spec.stopband_corner.f()], [-spec.stopband_atten, -spec.stopband_atten, db[-1], db[-1]], alpha=0.1)
-    ax.axvline(x=spec.passband_corner.f(), linestyle='--', linewidth=0.7, color='b')
-    ax.axvline(x=spec.stopband_corner.f(), linestyle='--', linewidth=0.7, color='g')
-    ax.axhline(y=-3, linestyle='--', linewidth=0.7, color='r')
-    ax.axhline(y=-spec.stopband_atten, linestyle='--', linewidth=0.7, color='m')
-    ax.legend([*[x.value for x in filters.keys()],
-               'Passband Corner', 'Stopband Corner', '-3dB Passband Attenuation',
-               '-55dB Stopband Attenuation', 'Passband Region', 'Stopband Region'])
-    ax.set_xlabel('Frequency (Hz)')
-    ax.set_ylabel('Amplitude response (dB)')
-    ax.set_title('Gain of Filter')
+        spec.stopband_corner.f()
+    ], [-spec.stopband_atten, -spec.stopband_atten, db[-1], db[-1]], alpha=0.1, label='Stopband Region')
+    ax.axvline(x=spec.passband_corner.f(), linestyle='--', linewidth=0.7, color='b', label='Passband Corner')
+    ax.axvline(x=spec.stopband_corner.f(), linestyle='--', linewidth=0.7, color='g', label='Stopband Corner')
+    ax.axhline(y=-3, linestyle='--', linewidth=0.7, color='r', label='-3dB Passband Attenuation')
+    ax.axhline(y=-spec.stopband_atten, linestyle='--', linewidth=0.7, color='m', label='-55dB Stopband Attenuation')
+    ax.legend()
+    ax.set_xlabel('Frequency [Hz]')
+    ax.set_ylabel('|H(s)| [dB]')
+    ax.set_title('Filter Gain')
     ax.set_ylim(-spec.stopband_atten - 20, spec.passband_ripple + 2)
     ax.grid(True)
 
@@ -116,15 +113,12 @@ def plot_filters_gain(filters: Dict[FilterType, BA], spec: LPFSpec, ax: matplotl
 def plot_filters_group_delay(filters: Dict[FilterType, BA], spec: LPFSpec, ax: matplotlib.figure.Axes):
     for ftype, ba in filters.items():
         w, gdelay = group_delay(ba, spec)
-        ax.semilogx(w[1:] / (2*math.pi), gdelay*1e9, linewidth=2)
-    ax.axvline(x=20e6, linestyle='--', linewidth=0.7, color='g')
-    # TODO: fix up the acceptable region of variation
-    #ax.fill([f[0], 20e6, 20e6, f[0]], [group_delay[0] + 3, group_delay[0] + 3, group_delay[0] - 3, group_delay[0] - 3],
-            #alpha=0.3)
-    ax.set_xlabel('Frequency (Hz)')
-    ax.set_ylabel('Group Delay (ns)')
-    ax.set_title('Group Delay of Filter')
-    ax.legend([*[x.value for x in filters.keys()], 'Passband Corner', '$\pm$ 3ns Bound'])
+        ax.semilogx(w[1:] / (2*math.pi), gdelay*1e9, linewidth=2, label=ftype.value)
+    ax.axvline(x=20e6, linestyle='--', linewidth=0.7, color='g', label='Passband Corner')
+    ax.set_xlabel('Frequency [Hz]')
+    ax.set_ylabel('Group Delay [ns]')
+    ax.set_title('Group Delay')
+    ax.legend()
     ax.set_ylim(0, 30)
     ax.grid(True)
 
