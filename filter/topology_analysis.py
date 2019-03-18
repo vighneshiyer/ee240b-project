@@ -91,7 +91,7 @@ def build_lpf(cascade: List[FT], fspecs: List, ro=False):# -> (ahkab.Circuit, Di
 
 
 @memory.cache
-def attach_stage(c: ahkab.Circuit, topology: FT, fspec, stages: int, pos: int, noise_src=None, ro=False):
+def attach_stage(c: ahkab.Circuit, topology: FT, fspec, stages: int, pos: int, noise_src=None, ro=False, cl=False):
     """
     :param c: circuit to append to
     :param topology: filter topology to add
@@ -100,6 +100,7 @@ def attach_stage(c: ahkab.Circuit, topology: FT, fspec, stages: int, pos: int, n
     :param pos: position in cascade
     :param noise_src: specify circuit with only a particular noise source
     :param ro: consider ro?
+    :param cl: include CL (load cap) on the output of the final stage
     :return: filter, dict of subs for symbolic expressions, list noise sources
     """
     subs_dict = {}
@@ -112,8 +113,9 @@ def attach_stage(c: ahkab.Circuit, topology: FT, fspec, stages: int, pos: int, n
         in_node = 'int_'+str(pos-1)
     if pos == stages-1:
         out_node = 'out'
-        c.add_capacitor('CL', out_node, c.gnd, nonideal_dict['Cload'])  # load
-        subs_dict['CL'] = nonideal_dict['Cload']
+        if cl:
+            c.add_capacitor('CL', out_node, c.gnd, nonideal_dict['Cload'])  # load
+            subs_dict['CL'] = nonideal_dict['Cload']
     else:
         out_node = 'int_'+str(pos)
 
@@ -200,8 +202,9 @@ def attach_stage(c: ahkab.Circuit, topology: FT, fspec, stages: int, pos: int, n
         subs_dict['G1_'+p] = fspec.gm
         c.add_isource('ING1_'+p, 'n1_'+p, c.gnd, dc_value=0, ac_value=0)
         noise_srcs.append('ING1_'+p)
-        c.add_resistor('RO_'+p, 'n1_'+p, c.gnd, fspec.ro)  # modeling resistor, noiseless
-        subs_dict['RO_'+p] = fspec.ro
+        if ro:
+            c.add_resistor('RO_'+p, 'n1_'+p, c.gnd, fspec.ro)  # modeling resistor, noiseless
+            subs_dict['RO_'+p] = fspec.ro
 
     return c, subs_dict, noise_srcs
 

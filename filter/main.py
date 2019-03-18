@@ -13,6 +13,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Design a low-pass filter')
     parser.add_argument('--save-plots', dest='save_plots', action='store_true', help='save generated plots in figs/')
     parser.add_argument('--show-plots', dest='show_plots', action='store_true', help='show generated plots')
+    parser.add_argument('--ota-analysis', dest='ota_analysis', action='store_true', help='perform symbolic analysis of an OTA filter')
     args = parser.parse_args()
 
     spec = LPFSpec(
@@ -29,8 +30,8 @@ if __name__ == "__main__":
         print("Filter type {} requires order {} with group delay {}ns".format(
             ftype.value, ba.order(),
             round(group_delay_variation(ba, spec)*1e9, 3)))
-        print("\t{}".format(ba.to_zpk()))
-        print("\t{}".format(ba))
+        print("\tPoles: {}".format(ba.to_zpk().P))
+        print("\tZeros: {}".format(ba.to_zpk().Z))
         ftype_specs[ftype] = ba
 
     if args.save_plots or args.show_plots:
@@ -88,16 +89,25 @@ if __name__ == "__main__":
         bw=1e8
     )
 
-
-    lpf, subs, nsrcs = build_lpf([FT.OTA3, FT.OTA3], [ota3spec, ota3spec])
-    #lpf, subs, nsrcs = build_lpf([FT.SK, FT.SK], [sk0spec, sk0spec])
-    rac = run_ac(lpf)
-    tf = run_sym(lpf, 'V1', True)
-    #fit_filter_circuit(ftype_specs[FilterType.BUTTERWORTH], tf, [sk0spec, sk0spec])
-    amp_bw = {
-        'G1_0': ota3spec.bw,
-        'G1_1': ota3spec.bw
-    }
-    hs = check_specs(lpf, rac, tf, spec, subs, nsrcs, amp_bw)
-    if args.show_plots:
-        plot_final_filter(rac, hs, spec)
+    if args.ota_analysis:
+        lpf, subs, nsrcs = build_lpf([FT.OTA3], [ota3spec])
+        rac = run_ac(lpf)
+        tf = run_sym(lpf, 'V1', True)
+        C1_0, C2_0, G1_0, R1_0 = sp.symbols('C1_0 C2_0 G1_0 R1_0')
+        C, R, gm, s, g1 = sp.symbols('C R g_m s g_1')
+        tf_gain = tf['gain'].subs({C1_0: C, C2_0: C, R1_0: R, G1_0: gm})
+        denom_simple = sp.fraction(tf_gain)[1].expand().collect(s)
+        tf_gain = sp.fraction(tf_gain)[0] / denom_simple
+        sp.pprint(tf_gain.subs({R: 1/g1}).simplify())
+        #fit_filter_circuit(ftype_specs[FilterType.BUTTERWORTH], tf, [sk0spec, sk0spec])
+        amp_bw = {
+            'G1_0': ota3spec.bw,
+            'G1_1': ota3spec.bw
+        }
+        poles = tf['poles']
+        poles = list(map(lambda p: p.subs({C1_0: C, C2_0: C, R1_0: R, G1_0: gm}), poles))
+        sp.pprint(poles)
+        #sp.pprint(tf['zeros'])
+        #hs = check_specs(lpf, rac, tf, spec, subs, nsrcs, amp_bw)
+        if args.show_plots:
+            plot_final_filter(rac, hs, spec)
