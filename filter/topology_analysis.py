@@ -70,7 +70,7 @@ class OTA3Spec:
     bw: Optional[float] = None
 
 
-def build_lpf(cascade: List[FT], fspecs: List, ro=False):# -> (ahkab.Circuit, Dict[,], List[]):
+def build_lpf(cascade: List[FT], fspecs: List, ro=False, cl=False):# -> (ahkab.Circuit, Dict[,], List[]):
     """
     :param cascade: list of filter topologies in the cascade
     :param fspecs: list of filter specs
@@ -81,7 +81,7 @@ def build_lpf(cascade: List[FT], fspecs: List, ro=False):# -> (ahkab.Circuit, Di
     noise_srcs = []
     filt = ahkab.Circuit('LPF')
     for i, t in enumerate(cascade):
-        filt, s, n = attach_stage(filt, t, fspecs[i], len(cascade), i, ro)
+        filt, s, n = attach_stage(filt, t, fspecs[i], len(cascade), i, ro, cl)
         subs_dict.update(s)
         noise_srcs = noise_srcs + n
     print(filt)
