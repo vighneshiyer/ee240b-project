@@ -3,6 +3,7 @@ from filter.tf_design import FilterType, design_lpf, plot_filters_gain, plot_fil
 from filter.lut_construction import construct_ideal_lut, construct_ota_lut
 from filter.topology_analysis import *
 from scipy.signal import freqs
+from scipy.integrate import quad
 import argparse
 import sympy as sp
 from matplotlib.figure import figaspect
@@ -114,11 +115,14 @@ if __name__ == "__main__":
         ro_idx = nonideal_lut_header.index("ro")
         wbw_idx = nonideal_lut_header.index("wbw")
         gm_idx = nonideal_lut_header.index("gm")
+        Id_idx = nonideal_lut_header.index("idc")
 
+        full_lut = []
+        full_lut_header = nonideal_lut_header + ["R"] + ["C"]
+        R_idx = full_lut_header.index("R")
+        C_idx = full_lut_header.index("C")
         for nonideal_lut_line in nonideal_lut:
-            print(nonideal_lut_line)
             sym_gain_subs = sym_gain.subs({ro: nonideal_lut_line[ro_idx], wbw: nonideal_lut_line[wbw_idx], gm0: nonideal_lut_line[gm_idx]})
-            sp.pprint(sym_gain_subs)
             sym_gain_lambda = sp.lambdify([R, C, s], sym_gain_subs)
 
             w = freq_range(spec, 50)
@@ -144,56 +148,69 @@ if __name__ == "__main__":
             res = minimize(cost, x0=ideal_lut[70][0:2], method='Nelder-Mead',
                            options={'maxfev': 10000, 'xatol': 1e-3, 'fatol': 1e-12, 'adaptive': False})
 
-            print(res)
-            print(ideal_lut[70])
+            full_lut.append(np.append(nonideal_lut_line, res.x))
 
-        # Dynamic range
+        def analyze_noise_power():
+            for lut_line in full_lut:
+                print("LUT Line: {}".format(lut_line))
+                vi2 = 0
+                kT4 = 4*k*ahkab.constants.Tref
+                subs['R1_0'] = lut_line[R_idx]
+                subs['C1_0'] = lut_line[C_idx]
+                subs['C2_0'] = lut_line[C_idx]
+                subs['G1_0'] = lut_line[gm_idx]
+                subs['RO_0'] = lut_line[ro_idx]
 
-        vi2 = 0
-        print("Noise simulation temp: {} K".format(ahkab.constants.Tref))
-        kT4 = 4*k*ahkab.constants.Tref
-        subs['R1_0'] = ideal_lut[0][0]
-        subs['C1_0'] = ideal_lut[0][1]
-        subs['C2_0'] = ideal_lut[0][1]
-        subs['G1_0'] = ideal_lut[0][2]
-        subs['RO_0'] = 20 / ideal_lut[0][2]
+                # Integrate input-referred noise power using symbolic analysis
+                for s in nsrcs:
+                    if s.startswith('INR'):
+                        in2 = kT4/subs[s[2:]]
+                    elif s.startswith('INE') or s.startswith('ING'):
+                        in2 = kT4*nonideal_dict['gamma']*lut_line[gm_idx]
+                    tfn = run_sym(lpf, s)
 
-        # Integrate input-referred noise power using symbolic analysis
-        for s in nsrcs:
-            if s.startswith('INR'):
-                in2 = kT4/subs[s[2:]]
-            elif s.startswith('INE') or s.startswith('ING'):
-                in2 = kT4*nonideal_dict['gamma']*nonideal_dict['gm']
-            tfn = run_sym(lpf, s)
-            sp.pprint(tfn['gain'])
+                    # Just get the input-referred noise density at DC and multiply by the passband to speed up calculation
+                    vni2 = sp.lambdify(f, sp.Abs(((tfn['gain']/tf['gain']).subs(subs_syms(tfn, subs))))**2 * in2)
+                    vi2 += quad(vni2, 1, spec.passband_corner.f())[0]
 
-            # Just get the input-referred noise density at DC and multiply by the passband to speed up calculation
-            vni2 = sp.lambdify(f, sp.Abs(((tfn['gain']/tf['gain']).subs(subs_syms(tfn, subs)))) * in2)
-            vi2 += vni2(0) * spec.passband_corner.f()
-            print(vi2)
+                    # Input referred noise of 2nd stage (assuming same R and C)
+                    vni2_2 = sp.lambdify(f, sp.Abs(((tfn['gain']/tf['gain']**2).subs(subs_syms(tfn, subs))))**2 * in2)
+                    vi2 += quad(vni2, 1, spec.passband_corner.f())[0]
 
-        """
-        print("Total input referred noise power: {} V^2".format(vi2))
+                print("\tTotal input referred noise power: {} V^2".format(vi2))
 
-        # Assume allowable swing (zero-peak) is VDD/2 - V*
-        dr = 10**(spec.dynamic_range/10)
-        vi_min = sp.sqrt(vi2*dr*2)
-        print('Min reqd voltage swing for DR: {} V'.format(vi_min))
-        if vi_min > 0.2:
-            print('Fails dynamic range: voltage swing of {} V not attainable!'.format(vi_min))
-            design_pass = False
-        else:
-            print('Passes dynamic range!')
-        """
+                # Assume allowable swing (zero-peak) is VDD/2 - V*
+                dr = 10**(spec.dynamic_range/10)
+                vi_min = sp.sqrt(vi2*dr*2)
+                print('\tMin reqd voltage swing for DR: {} V'.format(vi_min))
+                if vi_min > 0.2:
+                    print('\tFails dynamic range: voltage swing of {} V not attainable!'.format(vi_min))
+                else:
+                    print('\tPasses dynamic range!')
 
-        def power(gm0, ro):
-            # Lookup/interpolate Id
-            Id = 3e-3
-            diff_factor = 2
-            vdd = 1.2
-            stages = 2
-            branches = 2
-            return diff_factor * Id * vdd * stages * branches
+                def power(Id):
+                    diff_factor = 2
+                    vdd = 1.2
+                    stages = 2
+                    branches = 2
+                    return diff_factor * Id * vdd * stages * branches
 
+                p = power(lut_line[Id_idx])
+                print("\tPower: {} W".format(p))
+                yield(vi2, p)
+
+        noise_power_data = list(analyze_noise_power())
+
+        fig, ax1 = plt.subplots(figsize=figaspect(1/3))
+
+        ax2 = ax1.twinx()
+        ax1.plot([x[Id_idx] for x in full_lut], [x[0] for x in noise_power_data])
+        ax2.plot([x[Id_idx] for x in full_lut], [x[1] for x in noise_power_data])
+
+        ax1.set_xlabel('$I_{ds}$')
+        ax1.set_ylabel('Noise Power [$V^2$]')
+        ax2.set_ylabel('Estimated Static Power [W]')
+
+        plt.savefig('figs/noise_power.pdf')
         if args.show_plots:
             plot_final_filter(rac, hs, spec)
