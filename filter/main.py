@@ -1,4 +1,5 @@
-from filter.tf_design import FilterType, design_lpf, plot_filters_gain, plot_filters_group_delay, group_delay_variation, freq_range
+from filter.tf_design import FilterType, design_lpf, plot_filters_gain, plot_filters_group_delay, group_delay_variation, \
+    freq_range, find_nearest_idx
 from filter.lut_construction import construct_ideal_lut
 from filter.topology_analysis import *
 from scipy.signal import freqs
@@ -123,9 +124,19 @@ if __name__ == "__main__":
         w, h = freqs(chosen_filter.B, chosen_filter.A, worN=w)
 
         def cost(y):
-            #print(y)
+            passband_atten = 20*np.log10(abs(sym_gain_lambda(y[0], y[1], y[2], spec.passband_corner*1j)))
+            stopband_atten = 20*np.log10(abs(sym_gain_lambda(y[0], y[1], y[2], spec.stopband_corner*1j)))
+
             actual_mag = list(map(lambda s: sym_gain_lambda(y[0], y[1], y[2], s), w*1j))
+            gdelay = (-np.diff(np.unwrap(np.angle(actual_mag))) / np.diff(w))
+            passband_idx = find_nearest_idx(w, spec.passband_corner)
+            max_gdelay = np.max(gdelay[0:passband_idx])
+            min_gdelay = np.min(gdelay[0:passband_idx])
+            gdelay_variation = np.abs(max_gdelay - min_gdelay)
+
             return np.linalg.norm(actual_mag - h, 2)
+            #return min(0, passband_atten + 3) + max(0, stopband_atten + spec.stopband_atten) + \
+                   #min(0, gdelay_variation - spec.group_delay_variation) + np.linalg.norm(np.log10(actual_mag - h), 2)
 
         res = minimize(cost, x0=ideal_lut[0], method='Nelder-Mead',
                        options={'maxfev': 10000, 'xatol': 1e-3, 'fatol': 1e-12, 'adaptive': False})
@@ -133,11 +144,61 @@ if __name__ == "__main__":
         print(res)
         print(ideal_lut[0])
 
+        """
         res = minimize(cost, x0=ideal_lut[10], method='Nelder-Mead',
                        options={'maxfev': 10000, 'xatol': 1e-3, 'fatol': 1e-12, 'adaptive': False})
 
         print(res)
         print(ideal_lut[10])
+        """
+
+        # Dynamic range
+
+        vi2 = 0
+        print("Noise simulation temp: {} K".format(ahkab.constants.Tref))
+        kT4 = 4*k*ahkab.constants.Tref
+        subs['R1_0'] = ideal_lut[0][0]
+        subs['C1_0'] = ideal_lut[0][1]
+        subs['C2_0'] = ideal_lut[0][1]
+        subs['G1_0'] = ideal_lut[0][2]
+        subs['RO_0'] = 20 / ideal_lut[0][2]
+
+        # Integrate input-referred noise power using symbolic analysis
+        for s in nsrcs:
+            if s.startswith('INR'):
+                in2 = kT4/subs[s[2:]]
+            elif s.startswith('INE') or s.startswith('ING'):
+                in2 = kT4*nonideal_dict['gamma']*nonideal_dict['gm']
+            tfn = run_sym(lpf, s)
+            sp.pprint(tfn['gain'])
+
+            # Just get the input-referred noise density at DC and multiply by the passband to speed up calculation
+            vni2 = sp.lambdify(f, sp.Abs(((tfn['gain']/tf['gain']).subs(subs_syms(tfn, subs)))) * in2)
+            vi2 += vni2(0) * spec.passband_corner.f()
+            print(vi2)
+
+        """
+        print("Total input referred noise power: {} V^2".format(vi2))
+
+        # Assume allowable swing (zero-peak) is VDD/2 - V*
+        dr = 10**(spec.dynamic_range/10)
+        vi_min = sp.sqrt(vi2*dr*2)
+        print('Min reqd voltage swing for DR: {} V'.format(vi_min))
+        if vi_min > 0.2:
+            print('Fails dynamic range: voltage swing of {} V not attainable!'.format(vi_min))
+            design_pass = False
+        else:
+            print('Passes dynamic range!')
+        """
+
+        def power(gm0, ro):
+            # Lookup/interpolate Id
+            Id = 3e-3
+            diff_factor = 2
+            vdd = 1.2
+            stages = 2
+            branches = 2
+            return diff_factor * Id * vdd * stages * branches
 
         if args.show_plots:
             plot_final_filter(rac, hs, spec)
