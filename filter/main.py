@@ -1,6 +1,6 @@
 from filter.tf_design import FilterType, design_lpf, plot_filters_gain, plot_filters_group_delay, group_delay_variation, \
     freq_range, find_nearest_idx
-from filter.lut_construction import construct_ideal_lut
+from filter.lut_construction import construct_ideal_lut, construct_ota_lut
 from filter.topology_analysis import *
 from scipy.signal import freqs
 import argparse
@@ -100,7 +100,6 @@ if __name__ == "__main__":
         filter_poles = ftype_specs[FilterType.BUTTERWORTH].to_zpk().P
         chosen_filter = ftype_specs[FilterType.BUTTERWORTH]
         ideal_lut = construct_ideal_lut(desired_filter=ftype_specs[FilterType.BUTTERWORTH])
-        #print(ideal_lut)
 
         # Step 2: nonideality analysis
         lpf, subs, nsrcs = build_lpf([FT.OTA3], [ota3spec], ro=True, cl=False)
@@ -109,48 +108,44 @@ if __name__ == "__main__":
         C1_0, C2_0, G1_0, R1_0, RO_0 = sp.symbols('C1_0 C2_0 G1_0 R1_0 RO_0')
         C, R, gm0, ro, wbw = sp.symbols('C R gm0 r_o wbw', real=True)
         s = sp.symbols('s')
-        #sym_poles = [p.subs({C1_0: C, C2_0: C, R1_0: R, G1_0: gm0 / (1 - (s/wbw)), RO_0: ro}) for p in tf['poles']]
         sym_gain = tf['gain'].subs({C1_0: C, C2_0: C, R1_0: R, G1_0: gm0 / (1 - (s/wbw)), RO_0: ro})
-        #sym_poles = sp.solve(sp.fraction(sym_gain)[1], s)
-        #sp.pprint(sym_poles)
-        sp.pprint(sym_gain)
 
-        sym_gain_subs = sym_gain.subs({ro: 20 / gm0, wbw: 1 / ((20 / gm0) * 400e-18)})
-        sp.pprint(sym_gain_subs)
-        #sym_poles_lambda = list(map(lambda p: sp.lambdify([R, C, gm0], p), sym_poles_subs))
-        sym_gain_lambda = sp.lambdify([R, C, gm0, s], sym_gain_subs)
+        nonideal_lut_header, nonideal_lut = construct_ota_lut()
+        ro_idx = nonideal_lut_header.index("ro")
+        wbw_idx = nonideal_lut_header.index("wbw")
+        gm_idx = nonideal_lut_header.index("gm")
 
-        w = freq_range(spec, 50)
-        w, h = freqs(chosen_filter.B, chosen_filter.A, worN=w)
+        for nonideal_lut_line in nonideal_lut:
+            print(nonideal_lut_line)
+            sym_gain_subs = sym_gain.subs({ro: nonideal_lut_line[ro_idx], wbw: nonideal_lut_line[wbw_idx], gm0: nonideal_lut_line[gm_idx]})
+            sp.pprint(sym_gain_subs)
+            sym_gain_lambda = sp.lambdify([R, C, s], sym_gain_subs)
 
-        def cost(y):
-            passband_atten = 20*np.log10(abs(sym_gain_lambda(y[0], y[1], y[2], spec.passband_corner*1j)))
-            stopband_atten = 20*np.log10(abs(sym_gain_lambda(y[0], y[1], y[2], spec.stopband_corner*1j)))
+            w = freq_range(spec, 50)
+            w, h = freqs(chosen_filter.B, chosen_filter.A, worN=w)
 
-            actual_mag = list(map(lambda s: sym_gain_lambda(y[0], y[1], y[2], s), w*1j))
-            gdelay = (-np.diff(np.unwrap(np.angle(actual_mag))) / np.diff(w))
-            passband_idx = find_nearest_idx(w, spec.passband_corner)
-            max_gdelay = np.max(gdelay[0:passband_idx])
-            min_gdelay = np.min(gdelay[0:passband_idx])
-            gdelay_variation = np.abs(max_gdelay - min_gdelay)
+            def cost(y):
+                passband_atten = 20*np.log10(abs(sym_gain_lambda(y[0], y[1], spec.passband_corner*1j)))
+                stopband_atten = 20*np.log10(abs(sym_gain_lambda(y[0], y[1], spec.stopband_corner*1j)))
 
-            return np.linalg.norm(actual_mag - h, 2)
-            #return min(0, passband_atten + 3) + max(0, stopband_atten + spec.stopband_atten) + \
-                   #min(0, gdelay_variation - spec.group_delay_variation) + np.linalg.norm(np.log10(actual_mag - h), 2)
+                actual_mag = list(map(lambda s: sym_gain_lambda(y[0], y[1], s), w*1j))
+                gdelay = (-np.diff(np.unwrap(np.angle(actual_mag))) / np.diff(w))
+                passband_idx = find_nearest_idx(w, spec.passband_corner)
+                max_gdelay = np.max(gdelay[0:passband_idx])
+                min_gdelay = np.min(gdelay[0:passband_idx])
+                gdelay_variation = np.abs(max_gdelay - min_gdelay)
 
-        res = minimize(cost, x0=ideal_lut[0], method='Nelder-Mead',
-                       options={'maxfev': 10000, 'xatol': 1e-3, 'fatol': 1e-12, 'adaptive': False})
+                return np.linalg.norm(actual_mag - h, 2)
+                # TODO: figure out a better cost function which doesn't impose the original TF's strictness around
+                # the exact passband and stopband corner + attenuation
+                #return min(0, passband_atten + 3) + max(0, stopband_atten + spec.stopband_atten) + \
+                       #min(0, gdelay_variation - spec.group_delay_variation) + np.linalg.norm(np.log10(actual_mag - h), 2)
 
-        print(res)
-        print(ideal_lut[0])
+            res = minimize(cost, x0=ideal_lut[70][0:2], method='Nelder-Mead',
+                           options={'maxfev': 10000, 'xatol': 1e-3, 'fatol': 1e-12, 'adaptive': False})
 
-        """
-        res = minimize(cost, x0=ideal_lut[10], method='Nelder-Mead',
-                       options={'maxfev': 10000, 'xatol': 1e-3, 'fatol': 1e-12, 'adaptive': False})
-
-        print(res)
-        print(ideal_lut[10])
-        """
+            print(res)
+            print(ideal_lut[70])
 
         # Dynamic range
 

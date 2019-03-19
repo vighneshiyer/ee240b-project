@@ -91,7 +91,8 @@ def construct_ideal_lut(desired_filter: BA) -> (List[Tuple[float, float, float]]
     return lut
     """
 
-def construct_ota_lut(w: int=1) -> [Tuple[float, float, float]]:
+
+def construct_ota_lut(w: int=1) -> Tuple[List[str], List[List[float]]]:
     # Header: vstar	idc gm ro av wbw Cgg Cdd Css vgs drain_eff
     with open('filter/nmoschar.csv') as csv_file:
         header = csv_file.readline().strip().split(',')
