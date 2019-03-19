@@ -19,7 +19,7 @@ def construct_ideal_lut(desired_filter: BA) -> (List[Tuple[float, float, float]]
     def solutions():
         w0 = np.sqrt(desired_filter.B[0])
         Q = w0 / desired_filter.A[1]
-        for C_val in np.geomspace(start=200e-15, stop=10e-12, num=100):
+        for C_val in np.geomspace(start=10e-15, stop=10e-12, num=100):
             yield(float((2 * Q) / (w0 * C_val)), float(C_val), float(2*Q*w0*C_val))
     return list(solutions())
     """
