@@ -3,6 +3,7 @@ import sympy as sp
 import numpy as np
 from typing import List, Tuple
 from joblib import Memory
+import csv
 
 cachedir = './cache'
 memory = Memory(cachedir, verbose=1)
@@ -89,3 +90,17 @@ def construct_ideal_lut(desired_filter: BA) -> (List[Tuple[float, float, float]]
     print(hs_ba)
     return lut
     """
+
+def construct_ota_lut(w: int=1) -> [Tuple[float, float, float]]:
+    # Header: vstar	idc gm ro av wbw Cgg Cdd Css vgs drain_eff
+    with open('filter/nmoschar.csv') as csv_file:
+        header = csv_file.readline().strip().split(',')
+        data = []
+        for line in csv_file:
+            data.append(np.array(list(map(np.float64, line.strip().split(',')))))
+
+    scale = np.array([1, w, w, 1/w, 1, 1, w, w, w, 1, 1])
+
+    scaled_data = list(map(lambda x: x * scale, data))
+
+    return header, scaled_data
