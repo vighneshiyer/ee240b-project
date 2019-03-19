@@ -90,8 +90,8 @@ def build_lpf(cascade: List[FT], fspecs: List, ro=False, cl=False):# -> (ahkab.C
     return filt, subs_dict, noise_srcs
 
 
-@memory.cache
-def attach_stage(c: ahkab.Circuit, topology: FT, fspec, stages: int, pos: int, noise_src=None, ro=False, cl=False):
+#@memory.cache
+def attach_stage(c: ahkab.Circuit, topology: FT, fspec, stages: int, pos: int, ro=False, cl=False):
     """
     :param c: circuit to append to
     :param topology: filter topology to add
@@ -198,11 +198,12 @@ def attach_stage(c: ahkab.Circuit, topology: FT, fspec, stages: int, pos: int, n
         subs_dict['C2_'+p] = fspec.c2
 
         # Add OTA
-        c.add_vccs('G1_'+p, 'n1_'+p, c.gnd, in_node, out_node, fspec.gm)
+        c.add_vccs('G1_'+p, c.gnd, 'n1_'+p, in_node, out_node, fspec.gm)
         subs_dict['G1_'+p] = fspec.gm
-        c.add_isource('ING1_'+p, 'n1_'+p, c.gnd, dc_value=0, ac_value=0)
+        c.add_isource('ING1_'+p, c.gnd, 'n1_'+p, dc_value=0, ac_value=0)
         noise_srcs.append('ING1_'+p)
         if ro:
+            print("IN RO SECTION")
             c.add_resistor('RO_'+p, 'n1_'+p, c.gnd, fspec.ro)  # modeling resistor, noiseless
             subs_dict['RO_'+p] = fspec.ro
 

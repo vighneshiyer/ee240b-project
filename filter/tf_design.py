@@ -72,11 +72,11 @@ def design_lpf(spec: LPFSpec, ftype: FilterType) -> BA:
 
 
 # Calculate a reasonable frequency range of analysis
-def freq_range(spec: LPFSpec) -> List[AngularFreq]:
+def freq_range(spec: LPFSpec, num=1000) -> List[AngularFreq]:
     return np.logspace(
         start=math.log10(spec.passband_corner) - 0.5,
         stop=math.log10(spec.stopband_corner) + 0.5,
-        num=1000)
+        num=num)
 
 
 def plot_filters_gain(filters: Dict[FilterType, BA], spec: LPFSpec, ax: matplotlib.figure.Axes):
