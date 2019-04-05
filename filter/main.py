@@ -1,15 +1,11 @@
-from filter.tf_design import FilterType, design_lpf, plot_filters_gain, plot_filters_group_delay, group_delay_variation, \
-    freq_range, find_nearest_idx
-from filter.lut_construction import construct_ideal_lut, construct_ota_lut
+from filter.tf_design import FilterType, design_lpf, plot_filters_gain, plot_filters_group_delay, group_delay_variation, find_nearest_idx
 from filter.topology_analysis import *
-from scipy.signal import freqs
 from scipy.integrate import quad
 import argparse
 import sympy as sp
 from matplotlib.figure import figaspect
 import matplotlib.pyplot as plt
-from functools import reduce
-from scipy.optimize import minimize
+import sys
 plt.style.use('ggplot')
 
 
@@ -98,10 +94,10 @@ if __name__ == "__main__":
     if args.ota_analysis:
         # Step 1: take the ideal transfer function, and for reasonable ranges of gm, R, solve for the necessary C
         # to build a LUT of potential design points
-        filter_poles = ftype_specs[FilterType.BUTTERWORTH].to_zpk().P
         chosen_filter = ftype_specs[FilterType.BUTTERWORTH]
-        ideal_lut = construct_ideal_lut(desired_filter=ftype_specs[FilterType.BUTTERWORTH])
-
+        ota_top = OTA3()
+        lut = ota_top.construct_lut(chosen_filter)
+        sys.exit(1)
         # Step 2: nonideality analysis
         lpf, subs, nsrcs = build_lpf([FT.OTA3], [ota3spec], ro=True, cl=False)
         tf = run_sym(lpf, 'V1', True)

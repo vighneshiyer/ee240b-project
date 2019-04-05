@@ -6,11 +6,14 @@ from sympy.abc import f
 from sympy import I
 from scipy.constants import k
 import scipy, scipy.interpolate, scipy.integrate
+from scipy.signal import freqs
+from scipy.optimize import minimize
 from dataclasses import dataclass
 from enum import Enum
-from typing import Optional, List
+from typing import Optional, List, Dict, Tuple
 from joblib import Memory
-from filter.specs import LPFSpec, OrdFreq
+from filter.specs import LPFSpec, OrdFreq, BA
+from functools import partial
 
 cachedir = './cache'
 memory = Memory(cachedir, verbose=1)
@@ -29,6 +32,90 @@ ac_params = {
     'stop': 1e9,
     'pts': 100
 }
+
+
+class Topology:
+    def name(self):
+        pass
+
+    def sym_tf(self) -> Dict[str, sp.Expr]:
+        pass
+
+    def variables(self) -> Dict[str, float]:
+        pass
+
+    def initial_guess(self, exclude: List[str]) -> List[float]:
+        pass
+
+    def eval_tf(self, w: List[float], variables: List[float]) -> List[complex]:
+        pass
+
+@dataclass(frozen=True)
+class OTA3Spec:
+    r1: float
+    c1: float
+    c2: float
+    gm: float
+    ro: float
+    bw: Optional[float] = None
+
+
+class OTA3(Topology):
+    def __init__(self):
+        self.Rbase = 900
+        self.Cbase = 9e-12
+        self.spec = OTA3Spec(
+            r1=self.Rbase,
+            c1=self.Cbase,
+            c2=self.Cbase,
+            gm=nonideal_dict['gm'],
+            ro=nonideal_dict['Av']/nonideal_dict['gm'],
+            bw=1e8
+        )
+        self.circuit, self.subs_dict, self.noise_srcs = build_lpf([FT.OTA3], [self.spec])
+        self.sym_tf = run_sym(self.circuit, 'V1')
+        self.sym_tf_symbols = list(filter(lambda s: str(s) != 's', self.sym_tf['gain'].free_symbols))
+        self.sym_gain_lambda = sp.lambdify(self.sym_tf_symbols + [sp.symbols('s')], self.sym_tf['gain'])
+
+    def name(self): return "OTA3"
+
+    def sym_tf(self) -> Dict[str, sp.Expr]:
+        return run_sym(self.circuit, 'V1')
+
+    def initial_guess(self, exclude: List[str]) -> List[float]:
+        def inner():
+            for s in self.sym_tf_symbols:
+                if str(s)[0].upper() in exclude:
+                    continue
+                if str(s)[0:1].upper() == 'RO':
+                    yield nonideal_dict['Av']/nonideal_dict['gm']
+                elif str(s)[0].upper() == 'R':
+                    yield self.Rbase
+                elif str(s)[0].upper() == 'C':
+                    yield self.Cbase
+                elif str(s)[0].upper() == 'G':
+                    yield nonideal_dict['gm']
+        return list(inner())
+
+    def eval_tf(self, w: List[float], variables: List[float]) -> List[complex]:
+        return list(map(lambda x: self.sym_gain_lambda(*variables, s=1j*x), w))
+
+    def construct_lut(self, desired_filter: BA) -> List[Tuple[float, float, float]]:
+        w, h = freqs(desired_filter.B, desired_filter.A)
+
+        def cost(y: List[float], C_val) -> float:
+            sym_gain = list(map(lambda x: self.sym_gain_lambda(C1_0=C_val, C2_0=C_val, G1_0=y[1], R1_0=y[0], s=1j*x), w))
+            return np.linalg.norm(sym_gain - h)
+
+        for C_val in np.geomspace(start=1e-15, stop=1e-12, num=10):
+            partial_cost = partial(cost, C_val=C_val)
+            res = minimize(partial_cost, x0=[10e3, 30e-6], method='Nelder-Mead',
+                           options={'maxfev': 1000, 'xatol': 1e-3, 'fatol': 1e-6, 'adaptive': True})
+            print("C: {}, R: {}, gm: {}".format(C_val, res.x[0], res.x[1]))
+
+        #real_h = list(map(lambda x: self.sym_gain_lambda(C1_0=C_val, C2_0=C_val, R1_0=res.x[0], G1_0=res.x[1], s=1j*x), w))
+        #plt.semilogx(w, 20*np.log10(np.abs(real_h)))
+        #plt.show()
 
 
 class FT(Enum):  # filter topology
@@ -60,17 +147,7 @@ class MFBSpec:
     bw: Optional[float] = None
 
 
-@dataclass(frozen=True)
-class OTA3Spec:
-    r1: float
-    c1: float
-    c2: float
-    gm: float
-    ro: float
-    bw: Optional[float] = None
-
-
-def build_lpf(cascade: List[FT], fspecs: List, ro=False, cl=False):# -> (ahkab.Circuit, Dict[,], List[]):
+def build_lpf(cascade: List[FT], fspecs: List, ro=False, cl=False) -> (ahkab.Circuit, Dict[str,float], List[str]):
     """
     :param cascade: list of filter topologies in the cascade
     :param fspecs: list of filter specs
@@ -90,7 +167,6 @@ def build_lpf(cascade: List[FT], fspecs: List, ro=False, cl=False):# -> (ahkab.C
     return filt, subs_dict, noise_srcs
 
 
-#@memory.cache
 def attach_stage(c: ahkab.Circuit, topology: FT, fspec, stages: int, pos: int, ro=False, cl=False):
     """
     :param c: circuit to append to
@@ -221,7 +297,7 @@ def run_ac(circuit):
 
 
 @memory.cache
-def run_sym(circuit, source, print_tf=False):
+def run_sym(circuit, source, print_tf=False) -> Dict[str, sp.Expr]:
     """
     :param circuit: ahkab circuit
     :param source: name of the source for analysis
