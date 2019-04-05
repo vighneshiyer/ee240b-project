@@ -117,11 +117,21 @@ class OTA3(Topology):
         #plt.semilogx(w, 20*np.log10(np.abs(real_h)))
         #plt.show()
 
+@dataclass(frozen=True)
+class OTA4Spec:
+    r1: float
+    r2: float
+    c1: float
+    c2: float
+    gm: float
+    ro: float
+    bw: Optional[float] = None
 
 class FT(Enum):  # filter topology
     SK = 'sallen-key'
     MFB = 'multiple-feedback'
     OTA3 = 'OTA with 3 passive components'
+    OTA4 = 'OTA with 4 passive components'
 
 
 @dataclass(frozen=True)
@@ -281,6 +291,34 @@ def attach_stage(c: ahkab.Circuit, topology: FT, fspec, stages: int, pos: int, r
         if ro:
             print("IN RO SECTION")
             c.add_resistor('RO_'+p, 'n1_'+p, c.gnd, fspec.ro)  # modeling resistor, noiseless
+            subs_dict['RO_'+p] = fspec.ro
+
+    elif topology == FT.OTA4:
+        if not isinstance(fspec, OTA4Spec):
+            raise ValueError("Wrong specs given for OTA w/ 4 passives filter!")
+
+        # Add components
+        c.add_resistor('R1_'+p, in_node, 'n1_'+p, fspec.r1)
+        subs_dict['R1_'+p] = fspec.r1
+        c.add_isource('INR1_'+p, in_node, 'n1_'+p, dc_value=0, ac_value=0)
+        noise_srcs.append('INR1_'+p)
+        c.add_resistor('R2_'+p, out_node, 'n1_'+p, fspec.r2)
+        subs_dict['R2_'+p] = fspec.r2
+        c.add_isource('INR2_'+p, out_node, 'n1_'+p, dc_value=0, ac_value=0)
+        noise_srcs.append('INR2_'+p)
+        c.add_capacitor('C1_'+p, 'n1_'+p, c.gnd, fspec.c1)
+        subs_dict['C1_'+p] = fspec.c1
+        c.add_capacitor('C2_'+p, out_node, c.gnd, fspec.c1)
+        subs_dict['C2_'+p] = fspec.c2
+
+        # Add OTA
+        c.add_vccs('G1_'+p, c.gnd, out_node, c.gnd, 'n1_'+p, fspec.gm)
+        subs_dict['G1_'+p] = fspec.gm
+        c.add_isource('ING1_'+p, c.gnd, out_node, dc_value=0, ac_value=0)
+        noise_srcs.append('ING1_'+p)
+        if ro:
+            print("IN RO SECTION")
+            c.add_resistor('RO_'+p, out_node, c.gnd, fspec.ro)  # modeling resistor, noiseless
             subs_dict['RO_'+p] = fspec.ro
 
     return c, subs_dict, noise_srcs
