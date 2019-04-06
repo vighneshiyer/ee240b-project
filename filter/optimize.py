@@ -1,6 +1,6 @@
 from typing import Dict, List, Callable, TypeVar
 from filter.specs import BA
-from filter.topology_analysis import SallenKeySpec
+from filter.topology_construction import SallenKeySpec
 import sympy as sp
 from functools import reduce
 import inspect

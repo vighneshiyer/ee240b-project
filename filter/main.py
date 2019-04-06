@@ -1,5 +1,7 @@
-from filter.tf_design import FilterType, design_lpf, plot_filters_gain, plot_filters_group_delay, group_delay_variation, find_nearest_idx
-from filter.topology_analysis import *
+from filter.topologies import *
+from filter.topology_construction import *
+from filter.tf_design import *
+
 from scipy.integrate import quad
 import argparse
 import sympy as sp
@@ -48,55 +50,38 @@ if __name__ == "__main__":
         if args.save_plots:
             fig2.savefig('figs/tf_group_delay.pdf', bbox_inches='tight')
 
-    nonideal_dict = {
-        'Av': 100,
-        'RO': 200,
-        'Cload': 40e-15,
-        'gamma': 2, # short-channel?
-        'gm': 0.01 #
-    }
-
-    ac_params = {
-        'start': 1e3,
-        'stop': 1e9,
-        'pts': 100
-    }
-    Rbase = 900
-    m = 1.5
-    Cbase = 9e-12
-    n = 1.5
-    sk0spec = SallenKeySpec(
-        r1=Rbase*m,
-        r2=Rbase/m,
-        c1=Cbase*n,
-        c2=Cbase/n,
-        e1=nonideal_dict['Av'],
-        ro=nonideal_dict['RO']
-    )
-    mfbspec = MFBSpec(
-        r1=Rbase/m,
-        r2=Rbase/m,
-        r3=Rbase*m,
-        c1=Cbase*n,
-        c2=Cbase/n,
-        e1=nonideal_dict['Av'],
-        ro=nonideal_dict['RO']
-    )
-    ota3spec = OTA3Spec(
-        r1=Rbase,
-        c1=Cbase,
-        c2=Cbase,
-        gm=nonideal_dict['gm'],
-        ro=nonideal_dict['Av']/nonideal_dict['gm'],
-        bw=1e8
-    )
-
     if args.ota_analysis:
         # Step 1: take the ideal transfer function, and for reasonable ranges of gm, R, solve for the necessary C
         # to build a LUT of potential design points
         chosen_filter = ftype_specs[FilterType.BUTTERWORTH]
-        ota_top = OTA3()
-        lut = ota_top.construct_lut(chosen_filter)
+        """
+        topology = FT.OTA3
+
+        if topology == FT.OTA4:
+            ota_top = OTA4()
+            lut = ota_top.construct_lut(chosen_filter)
+            w, h = freqs(chosen_filter.B, chosen_filter.A)
+            plt.figure()
+            plt.semilogx(w / (2*np.pi), 20*np.log10(np.abs(h)), color='red')
+            for entry in lut:
+                real_h = list(map(lambda x: ota_top.sym_gain_lambda(
+                    C1_0=entry[0], C2_0=entry[0], R1_0=entry[1], R2_0=entry[2], G1_0=entry[3], s=1j*x), w))
+            plt.semilogx(w / (2*np.pi), 20*np.log10(np.abs(real_h)))
+            plt.show()
+        elif topology == FT.OTA3:
+            ota_top = OTA3()
+            lut = ota_top.construct_lut(chosen_filter)
+            w, h = freqs(chosen_filter.B, chosen_filter.A)
+            plt.figure()
+            plt.semilogx(w / (2*np.pi), 20*np.log10(np.abs(h)), color='red', linewidth=5)
+            for entry in lut:
+                real_h = list(map(lambda x: ota_top.sym_gain_lambda(
+                    C1_0=entry[0], C2_0=entry[1], R1_0=entry[2], G1_0=entry[3], s=1j*x), w))
+                plt.semilogx(w / (2*np.pi), 20*np.log10(np.abs(real_h)), linewidth=2)
+            plt.show()
+        else:
+            assert False, "Topology {} not supported".format(topology)
+        """
         sys.exit(1)
         # Step 2: nonideality analysis
         lpf, subs, nsrcs = build_lpf([FT.OTA3], [ota3spec], ro=True, cl=False)

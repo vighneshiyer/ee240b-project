@@ -2,7 +2,7 @@ from typing import List, Tuple
 import numpy as np
 import sympy as sp
 from filter.specs import BA
-from filter.topology_analysis import OTA3Spec, build_lpf, FT, run_sym
+from filter.topology_construction import OTA3Spec, build_lpf, FT, run_sym
 
 
 # Building a LUT of OTA3 design points (R, C, gm) combos that best fit the transfer function
@@ -23,7 +23,7 @@ def construct_ideal_lut_textbook(desired_filter: BA) -> List[Tuple[float, float,
     return list(solutions())
 
 
-# Similar function, except tries to construct the (R,L,gm) LUT using symbolic methods
+# Similar function, except tries to construct the (R,C,gm) LUT using symbolic methods
 # Bad idea because we just tried to equate the symbolic poles to the numerical desired poles
 # This gave values of gm with small imag parts due to numerical precision loss
 # Also just equating poles doesn't equate the transfer functions together, this is a bad idea

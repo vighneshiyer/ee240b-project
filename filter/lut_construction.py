@@ -6,7 +6,7 @@ from scipy.optimize import minimize
 import matplotlib.pyplot as plt
 
 from filter.specs import BA
-from filter.topology_analysis import Topology
+from filter.topology_construction import Topology
 
 cachedir = './cache'
 memory = Memory(cachedir, verbose=1)
