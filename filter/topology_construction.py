@@ -7,10 +7,9 @@ from sympy import I
 from scipy.constants import k
 import scipy, scipy.interpolate, scipy.integrate
 import scipy.optimize
-from typing import List, Dict
+from typing import List, Dict, Tuple
 from joblib import Memory
 from filter.specs import LPFSpec, OrdFreq
-from enum import Enum
 from filter.topologies import Topology
 
 cachedir = './cache'
@@ -19,15 +18,7 @@ memory = Memory(cachedir, verbose=1)
 sp.init_printing()
 
 
-# TODO: HACK, need the following functions to depend on Topology only
-class FT(Enum):  # filter topology
-    SK = 'sallen-key'
-    MFB = 'multiple-feedback'
-    OTA3 = 'OTA with 3 passive components'
-    OTA4 = 'OTA with 4 passive components'
-
-
-def build_lpf(cascade: List[Topology], ro=False, cl=False) -> (ahkab.Circuit, Dict[str,float], List[str]):
+def build_lpf(cascade: List[Topology], cl=False) -> Tuple[ahkab.Circuit, Dict[str,float], List[str]]:
     """
     :param cascade: list of filter topologies in the cascade
     :param fspecs: list of filter specs
@@ -39,7 +30,7 @@ def build_lpf(cascade: List[Topology], ro=False, cl=False) -> (ahkab.Circuit, Di
     noise_srcs = []
     filt = ahkab.Circuit('LPF')
     for i, t in enumerate(cascade):
-        filt, s, n = attach_stage(filt, t, len(cascade), i, ro, cl)
+        filt, s, n = attach_stage(filt, t, len(cascade), i, cl)
         subs_dict.update(s)
         noise_srcs = noise_srcs + n
     print(filt)
@@ -48,7 +39,7 @@ def build_lpf(cascade: List[Topology], ro=False, cl=False) -> (ahkab.Circuit, Di
     return filt, subs_dict, noise_srcs
 
 
-def attach_stage(c: ahkab.Circuit, topology: Topology, stages: int, pos: int, ro=False, cl=False):
+def attach_stage(c: ahkab.Circuit, topology: Topology, stages: int, pos: int, cl=False):
     """
     :param c: circuit to append to
     :param topology: filter topology to add
@@ -56,7 +47,6 @@ def attach_stage(c: ahkab.Circuit, topology: Topology, stages: int, pos: int, ro
     :param stages: total # of stages (to get in/out node correct)
     :param pos: position in cascade
     :param noise_src: specify circuit with only a particular noise source
-    :param ro: consider ro?
     :param cl: include CL (load cap) on the output of the final stage
     :return: filter, dict of subs for symbolic expressions, list noise sources
     """
@@ -71,12 +61,12 @@ def attach_stage(c: ahkab.Circuit, topology: Topology, stages: int, pos: int, ro
     if pos == stages-1:
         out_node = 'out'
         if cl:
-            c.add_capacitor('CL', out_node, c.gnd, topology.nonideal_dict['Cload'])  # load
-            subs_dict['CL'] = topology.nonideal_dict['Cload']
+            c.add_capacitor('CL', out_node, c.gnd, topology.values.Cload_base)
+            subs_dict['CL'] = topology.values.Cload_base
     else:
         out_node = 'int_'+str(pos)
 
-    topology.construct_stage(c, in_node, out_node, p, ro)
+    topology.construct_stage(circuit=c, in_node=in_node, out_node=out_node, suffix=p)
     """
     if topology == FT.SK:
         if not isinstance(fspec, SallenKeySpec):
