@@ -1,0 +1,32 @@
+Starting Single Run, Sweeps and Corners...
+
+Current time: Sun Apr  7 12:26:32 2019 
+Best design point: 1
+Design specs: 
+	OTA:OTA_cmreject_tb:1	corner	tt - 
+	out_dc		792.6m
+	OTA:OTA_cmreject_tb:1	corner	ff - 
+	out_dc		828.3m
+	OTA:OTA_cmreject_tb:1	corner	ss - 
+	out_dc		756m
+	OTA:OTA_cmreject_tb:1	corner	sf - 
+	out_dc		815.7m
+	OTA:OTA_cmreject_tb:1	corner	fs - 
+	out_dc		769.9m
+Design parameters: 
+	ibias		6.25u
+	supply		1.2
+	nf_input		6
+	nf_cas		6
+	nf_load		12
+	mos_l		180n
+	mos_w		500n
+	bcasp		450m
+	bcasn		1.1
+	test_cmrr		1
+
+Interactive.5
+Number of points completed: 1
+Number of simulation errors: 0
+Interactive.5 completed. 
+Current time: Sun Apr  7 12:27:08 2019 
