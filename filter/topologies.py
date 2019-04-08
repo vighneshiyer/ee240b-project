@@ -1,12 +1,5 @@
-from typing import Dict, List, Optional, Tuple
-import sympy as sp
-from scipy.signal import freqs
-import numpy as np
-from functools import partial
-import scipy.optimize
+from typing import Optional
 import ahkab
-
-from filter.specs import BA
 
 
 # Base class for component and non-ideality values for a given topology stage
@@ -51,13 +44,16 @@ class MFBValues(TopologyValues):
 
 
 class OTA3Values(TopologyValues):
-    def __init__(self):
+    def __init__(self, ro=False):
         super().__init__()
         self.r1 = self.Rbase
         self.c1 = self.Cbase
         self.c2 = self.Cbase
         self.gm = self.gm_base
-        self.ro: Optional[float] = None
+        if ro:
+            self.ro: Optional[float] = self.ro_base
+        else:
+            self.ro: Optional[float] = None
         self.bw: Optional[float] = None
 
 
@@ -98,7 +94,30 @@ class OTA3(Topology):
         if self.values.ro is not None:
             circuit.add_resistor('RO_'+suffix, 'n1_'+suffix, circuit.gnd, self.values.ro)
 
+    """
+    @memory.cache
+    def construct_lut(self, desired_filter: BA, sym_gain: sp.Expr) -> List[List[float]]:
+        gm, s, wbw = sp.symbols("G1_0 s wbw")
+        sym_gain = sym_gain.subs(gm, gm / (1 - (s/wbw)))
+        sym_tf_symbols = list(filter(lambda s: str(s) != 's', sym_gain.free_symbols))
+        sym_gain_lambda = sp.lambdify(sym_tf_symbols + [sp.symbols('s')], sym_gain)
 
+        w, h = freqs(desired_filter.B, desired_filter.A)
+
+        def cost(y: List[float], C_val) -> float:
+            sym_gain = list(map(lambda x: sym_gain_lambda(
+                C1_0=C_val, C2_0=C_val, G1_0=y[1], RO_0=900e3, R1_0=y[0], s=1j*x, wbw=200e6*2*np.pi), w))
+            return np.linalg.norm(sym_gain - h)
+
+        def gen_lut():
+            for C_val in np.geomspace(start=1e-15, stop=1e-12, num=10):
+                partial_cost = partial(cost, C_val=C_val)
+                res = scipy.optimize.minimize(partial_cost, x0=[10e3, 30e-6], method='Nelder-Mead',
+                                              options={'maxfev': 1000, 'xatol': 1e-3, 'fatol': 1e-6, 'adaptive': True})
+                print("C: {}, R: {}, gm: {}".format(C_val, res.x[0], res.x[1]))
+                yield (C_val, C_val, res.x[0], res.x[1])
+        return list(gen_lut())
+    """
 class OTA4(Topology):
     def __init__(self, values: OTA4Values):
         super().__init__(values)

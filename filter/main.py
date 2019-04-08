@@ -4,7 +4,9 @@ import sympy as sp
 from matplotlib.figure import figaspect
 import matplotlib.pyplot as plt
 import sys
+from itertools import zip_longest
 
+from filter.specs import ZPK
 from filter.topology_analysis import TopologyAnalyzer
 from filter.topologies import *
 from filter.topology_construction import *
@@ -17,15 +19,14 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Design a low-pass filter')
     parser.add_argument('--save-plots', dest='save_plots', action='store_true', help='save generated plots in figs/')
     parser.add_argument('--show-plots', dest='show_plots', action='store_true', help='show generated plots')
-    parser.add_argument('--ota-analysis', dest='ota_analysis', action='store_true', help='perform symbolic analysis of an OTA filter')
     args = parser.parse_args()
 
     spec = LPFSpec(
-        passband_corner=OrdFreq(20e6).w(),
+        passband_corner=OrdFreq(35e6).w(),
         stopband_corner=OrdFreq(200e6).w(),
-        stopband_atten=25,
+        stopband_atten=55,
         passband_ripple=1,
-        group_delay_variation=3e-9,
+        group_delay_variation=2e-9,
         dynamic_range=50
     )
     ftype_specs = {}  # Dict[FilterType, BA]
@@ -37,8 +38,19 @@ if __name__ == "__main__":
         print("\tPoles: {}".format(ba.to_zpk().P))
         print("\tZeros: {}".format(ba.to_zpk().Z))
         print("\tK: {}".format(ba.to_zpk().K))
-        print("\tBA: {}".format(ba))
+        #print("\tBA: {}".format(ba))
         ftype_specs[ftype] = ba
+
+    """
+    Trial of splitting the bessel filter in 2 2-pole sections
+    bessel_zpk = ftype_specs[FilterType.BESSEL].to_zpk()
+    bessel_1 = ZPK(Z=[], P=bessel_zpk.P[0:2], K=math.sqrt(bessel_zpk.K))
+    bessel_2 = ZPK(Z=[], P=bessel_zpk.P[2:4], K=math.sqrt(bessel_zpk.K))
+    ftype_specs = {
+        FilterType.BESSEL: bessel_1.to_ba(),
+        FilterType.BUTTERWORTH: bessel_2.to_ba()
+    }
+    """
 
     if args.save_plots or args.show_plots:
         print("Plotting filter gain")
@@ -52,133 +64,151 @@ if __name__ == "__main__":
         if args.save_plots:
             fig2.savefig('figs/tf_group_delay.pdf', bbox_inches='tight')
 
-    if args.ota_analysis:
-        # Step 1: take the ideal transfer function, and for reasonable ranges of gm, R, solve for the necessary C
-        # to build a LUT of potential design points
-        desired_filter = ftype_specs[FilterType.BUTTERWORTH]
-        cascade = [OTA3(OTA3Values())]
-        top_analysis = TopologyAnalyzer(cascade)
-        lut = top_analysis.construct_lut(desired_filter)
+    # Pick a filter type and split it into 2-pole stages, each stage to be implemented by one circuit topology
+    desired_filter = ftype_specs[FilterType.BESSEL]
 
-        w, h = freqs(desired_filter.B, desired_filter.A)
-        plt.figure()
-        plt.semilogx(w / (2*np.pi), 20*np.log10(np.abs(h)), color='red', linewidth=5)
-        for entry in lut:
-            real_h = list(map(lambda x: top_analysis.sym_gain_lambda(
-                C1_0=entry[0], C2_0=entry[1], R1_0=entry[2], G1_0=entry[3], s=1j*x), w))
-            plt.semilogx(w / (2*np.pi), 20*np.log10(np.abs(real_h)), linewidth=2)
-        plt.semilogx(w / (2*np.pi), 20*np.log10(np.abs(real_h)))
-        plt.show()
-        sys.exit(1)
-        # Step 2: nonideality analysis
-        lpf, subs, nsrcs = build_lpf([FT.OTA3], [ota3spec], ro=True, cl=False)
-        tf = run_sym(lpf, 'V1', True)
+    def split_filter(ba: BA) -> List[BA]:
+        #tf2sos(ba.B, ba.A)
+        zpk = ba.to_zpk()
+        assert len(zpk.Z) == 0, "I haven't handled zeros"
+        stage_poles = list(zip_longest(*(iter(zpk.P),) * 2))
+        stage_zpks = [ZPK([], p, np.power(zpk.K, 1/len(stage_poles))) for p in stage_poles]
+        return [z.to_ba() for z in stage_zpks]
 
-        C1_0, C2_0, G1_0, R1_0, RO_0 = sp.symbols('C1_0 C2_0 G1_0 R1_0 RO_0')
-        C, R, gm0, ro, wbw = sp.symbols('C R gm0 r_o wbw', real=True)
-        s = sp.symbols('s')
-        sym_gain = tf['gain'].subs({C1_0: C, C2_0: C, R1_0: R, G1_0: gm0 / (1 - (s/wbw)), RO_0: ro})
+    desired_filter_split = split_filter(desired_filter)
+    print("Chosen filter split: {}".format(list(map(lambda x: x.to_zpk(), desired_filter_split))))
+    plt.show()
+    sys.exit(1)
+    """
+    # Construct a topology to best match each stage
+    for filter_stage in desired_filter_split:
+        cascade = [OTA3(OTA3Values(ro=True))]
+        circuit, subs_dict, noise_srcs = build_lpf(cascade)
+        sym_tf = run_sym(circuit, 'V1')
+        sym_gain = sym_tf['gain']
 
-        nonideal_lut_header, nonideal_lut = construct_ota_lut()
-        ro_idx = nonideal_lut_header.index("ro")
-        wbw_idx = nonideal_lut_header.index("wbw")
-        gm_idx = nonideal_lut_header.index("gm")
-        Id_idx = nonideal_lut_header.index("idc")
+        sym_gain_lambda, lut = construct_lut(desired_filter, sym_gain)
 
-        full_lut = []
-        full_lut_header = nonideal_lut_header + ["R"] + ["C"]
-        R_idx = full_lut_header.index("R")
-        C_idx = full_lut_header.index("C")
-        for nonideal_lut_line in nonideal_lut:
-            sym_gain_subs = sym_gain.subs({ro: nonideal_lut_line[ro_idx], wbw: nonideal_lut_line[wbw_idx], gm0: nonideal_lut_line[gm_idx]})
-            sym_gain_lambda = sp.lambdify([R, C, s], sym_gain_subs)
+    w, h = freqs(desired_filter.B, desired_filter.A)
+    plt.figure()
+    plt.semilogx(w / (2*np.pi), 20*np.log10(np.abs(h)), color='red', linewidth=5)
+    for entry in lut:
+        real_h = list(map(lambda x: sym_gain_lambda(
+            C1_0=entry[0], C2_0=entry[1], R1_0=entry[2], G1_0=entry[3], RO_0=900e3, wbw=200e6*2*np.pi, s=1j*x), w))
+        plt.semilogx(w / (2*np.pi), 20*np.log10(np.abs(real_h)), linewidth=2, label=str(entry))
+    plt.semilogx(w / (2*np.pi), 20*np.log10(np.abs(real_h)))
+    plt.legend()
+    plt.show()
+    """
+    # Step 2: nonideality analysis
+    lpf, subs, nsrcs = build_lpf([FT.OTA3], [ota3spec], ro=True, cl=False)
+    tf = run_sym(lpf, 'V1', True)
 
-            w = freq_range(spec, 50)
-            w, h = freqs(chosen_filter.B, chosen_filter.A, worN=w)
+    C1_0, C2_0, G1_0, R1_0, RO_0 = sp.symbols('C1_0 C2_0 G1_0 R1_0 RO_0')
+    C, R, gm0, ro, wbw = sp.symbols('C R gm0 r_o wbw', real=True)
+    s = sp.symbols('s')
+    sym_gain = tf['gain'].subs({C1_0: C, C2_0: C, R1_0: R, G1_0: gm0 / (1 - (s/wbw)), RO_0: ro})
 
-            def cost(y):
-                passband_atten = 20*np.log10(abs(sym_gain_lambda(y[0], y[1], spec.passband_corner*1j)))
-                stopband_atten = 20*np.log10(abs(sym_gain_lambda(y[0], y[1], spec.stopband_corner*1j)))
+    nonideal_lut_header, nonideal_lut = construct_ota_lut()
+    ro_idx = nonideal_lut_header.index("ro")
+    wbw_idx = nonideal_lut_header.index("wbw")
+    gm_idx = nonideal_lut_header.index("gm")
+    Id_idx = nonideal_lut_header.index("idc")
 
-                actual_mag = list(map(lambda s: sym_gain_lambda(y[0], y[1], s), w*1j))
-                gdelay = (-np.diff(np.unwrap(np.angle(actual_mag))) / np.diff(w))
-                passband_idx = find_nearest_idx(w, spec.passband_corner)
-                max_gdelay = np.max(gdelay[0:passband_idx])
-                min_gdelay = np.min(gdelay[0:passband_idx])
-                gdelay_variation = np.abs(max_gdelay - min_gdelay)
+    full_lut = []
+    full_lut_header = nonideal_lut_header + ["R"] + ["C"]
+    R_idx = full_lut_header.index("R")
+    C_idx = full_lut_header.index("C")
+    for nonideal_lut_line in nonideal_lut:
+        sym_gain_subs = sym_gain.subs({ro: nonideal_lut_line[ro_idx], wbw: nonideal_lut_line[wbw_idx], gm0: nonideal_lut_line[gm_idx]})
+        sym_gain_lambda = sp.lambdify([R, C, s], sym_gain_subs)
 
-                return np.linalg.norm(actual_mag - h, 2)
-                # TODO: figure out a better cost function which doesn't impose the original TF's strictness around
-                # the exact passband and stopband corner + attenuation
-                #return min(0, passband_atten + 3) + max(0, stopband_atten + spec.stopband_atten) + \
-                       #min(0, gdelay_variation - spec.group_delay_variation) + np.linalg.norm(np.log10(actual_mag - h), 2)
+        w = freq_range(spec, 50)
+        w, h = freqs(chosen_filter.B, chosen_filter.A, worN=w)
 
-            res = minimize(cost, x0=ideal_lut[70][0:2], method='Nelder-Mead',
-                           options={'maxfev': 10000, 'xatol': 1e-3, 'fatol': 1e-12, 'adaptive': False})
+        def cost(y):
+            passband_atten = 20*np.log10(abs(sym_gain_lambda(y[0], y[1], spec.passband_corner*1j)))
+            stopband_atten = 20*np.log10(abs(sym_gain_lambda(y[0], y[1], spec.stopband_corner*1j)))
 
-            full_lut.append(np.append(nonideal_lut_line, res.x))
+            actual_mag = list(map(lambda s: sym_gain_lambda(y[0], y[1], s), w*1j))
+            gdelay = (-np.diff(np.unwrap(np.angle(actual_mag))) / np.diff(w))
+            passband_idx = find_nearest_idx(w, spec.passband_corner)
+            max_gdelay = np.max(gdelay[0:passband_idx])
+            min_gdelay = np.min(gdelay[0:passband_idx])
+            gdelay_variation = np.abs(max_gdelay - min_gdelay)
 
-        def analyze_noise_power():
-            for lut_line in full_lut:
-                print("LUT Line: {}".format(lut_line))
-                vi2 = 0
-                kT4 = 4*k*ahkab.constants.Tref
-                subs['R1_0'] = lut_line[R_idx]
-                subs['C1_0'] = lut_line[C_idx]
-                subs['C2_0'] = lut_line[C_idx]
-                subs['G1_0'] = lut_line[gm_idx]
-                subs['RO_0'] = lut_line[ro_idx]
+            return np.linalg.norm(actual_mag - h, 2)
+            # TODO: figure out a better cost function which doesn't impose the original TF's strictness around
+            # the exact passband and stopband corner + attenuation
+            #return min(0, passband_atten + 3) + max(0, stopband_atten + spec.stopband_atten) + \
+                   #min(0, gdelay_variation - spec.group_delay_variation) + np.linalg.norm(np.log10(actual_mag - h), 2)
 
-                # Integrate input-referred noise power using symbolic analysis
-                for s in nsrcs:
-                    if s.startswith('INR'):
-                        in2 = kT4/subs[s[2:]]
-                    elif s.startswith('INE') or s.startswith('ING'):
-                        in2 = kT4*nonideal_dict['gamma']*lut_line[gm_idx]
-                    tfn = run_sym(lpf, s)
+        res = minimize(cost, x0=ideal_lut[70][0:2], method='Nelder-Mead',
+                       options={'maxfev': 10000, 'xatol': 1e-3, 'fatol': 1e-12, 'adaptive': False})
 
-                    # Just get the input-referred noise density at DC and multiply by the passband to speed up calculation
-                    vni2 = sp.lambdify(f, sp.Abs(((tfn['gain']/tf['gain']).subs(subs_syms(tfn, subs))))**2 * in2)
-                    vi2 += quad(vni2, 1, spec.passband_corner.f())[0]
+        full_lut.append(np.append(nonideal_lut_line, res.x))
 
-                    # Input referred noise of 2nd stage (assuming same R and C)
-                    vni2_2 = sp.lambdify(f, sp.Abs(((tfn['gain']/tf['gain']**2).subs(subs_syms(tfn, subs))))**2 * in2)
-                    vi2 += quad(vni2, 1, spec.passband_corner.f())[0]
+    def analyze_noise_power():
+        for lut_line in full_lut:
+            print("LUT Line: {}".format(lut_line))
+            vi2 = 0
+            kT4 = 4*k*ahkab.constants.Tref
+            subs['R1_0'] = lut_line[R_idx]
+            subs['C1_0'] = lut_line[C_idx]
+            subs['C2_0'] = lut_line[C_idx]
+            subs['G1_0'] = lut_line[gm_idx]
+            subs['RO_0'] = lut_line[ro_idx]
 
-                print("\tTotal input referred noise power: {} V^2".format(vi2))
+            # Integrate input-referred noise power using symbolic analysis
+            for s in nsrcs:
+                if s.startswith('INR'):
+                    in2 = kT4/subs[s[2:]]
+                elif s.startswith('INE') or s.startswith('ING'):
+                    in2 = kT4*nonideal_dict['gamma']*lut_line[gm_idx]
+                tfn = run_sym(lpf, s)
 
-                # Assume allowable swing (zero-peak) is VDD/2 - V*
-                dr = 10**(spec.dynamic_range/10)
-                vi_min = sp.sqrt(vi2*dr*2)
-                print('\tMin reqd voltage swing for DR: {} V'.format(vi_min))
-                if vi_min > 0.2:
-                    print('\tFails dynamic range: voltage swing of {} V not attainable!'.format(vi_min))
-                else:
-                    print('\tPasses dynamic range!')
+                # Just get the input-referred noise density at DC and multiply by the passband to speed up calculation
+                vni2 = sp.lambdify(f, sp.Abs(((tfn['gain']/tf['gain']).subs(subs_syms(tfn, subs))))**2 * in2)
+                vi2 += quad(vni2, 1, spec.passband_corner.f())[0]
 
-                def power(Id):
-                    diff_factor = 2
-                    vdd = 1.2
-                    stages = 2
-                    branches = 2
-                    return diff_factor * Id * vdd * stages * branches
+                # Input referred noise of 2nd stage (assuming same R and C)
+                vni2_2 = sp.lambdify(f, sp.Abs(((tfn['gain']/tf['gain']**2).subs(subs_syms(tfn, subs))))**2 * in2)
+                vi2 += quad(vni2, 1, spec.passband_corner.f())[0]
 
-                p = power(lut_line[Id_idx])
-                print("\tPower: {} W".format(p))
-                yield(vi2, p)
+            print("\tTotal input referred noise power: {} V^2".format(vi2))
 
-        noise_power_data = list(analyze_noise_power())
+            # Assume allowable swing (zero-peak) is VDD/2 - V*
+            dr = 10**(spec.dynamic_range/10)
+            vi_min = sp.sqrt(vi2*dr*2)
+            print('\tMin reqd voltage swing for DR: {} V'.format(vi_min))
+            if vi_min > 0.2:
+                print('\tFails dynamic range: voltage swing of {} V not attainable!'.format(vi_min))
+            else:
+                print('\tPasses dynamic range!')
 
-        fig, ax1 = plt.subplots(figsize=figaspect(1/3))
+            def power(Id):
+                diff_factor = 2
+                vdd = 1.2
+                stages = 2
+                branches = 2
+                return diff_factor * Id * vdd * stages * branches
 
-        ax2 = ax1.twinx()
-        ax1.plot([x[Id_idx] for x in full_lut], [x[0] for x in noise_power_data])
-        ax2.plot([x[Id_idx] for x in full_lut], [x[1] for x in noise_power_data])
+            p = power(lut_line[Id_idx])
+            print("\tPower: {} W".format(p))
+            yield(vi2, p)
 
-        ax1.set_xlabel('$I_{ds}$')
-        ax1.set_ylabel('Noise Power [$V^2$]')
-        ax2.set_ylabel('Estimated Static Power [W]')
+    noise_power_data = list(analyze_noise_power())
 
-        plt.savefig('figs/noise_power.pdf')
-        if args.show_plots:
-            plot_final_filter(rac, hs, spec)
+    fig, ax1 = plt.subplots(figsize=figaspect(1/3))
+
+    ax2 = ax1.twinx()
+    ax1.plot([x[Id_idx] for x in full_lut], [x[0] for x in noise_power_data])
+    ax2.plot([x[Id_idx] for x in full_lut], [x[1] for x in noise_power_data])
+
+    ax1.set_xlabel('$I_{ds}$')
+    ax1.set_ylabel('Noise Power [$V^2$]')
+    ax2.set_ylabel('Estimated Static Power [W]')
+
+    plt.savefig('figs/noise_power.pdf')
+    if args.show_plots:
+        plot_final_filter(rac, hs, spec)

@@ -114,7 +114,7 @@ def plot_filters_group_delay(filters: Dict[FilterType, BA], spec: LPFSpec, ax: m
     for ftype, ba in filters.items():
         w, gdelay = group_delay(ba, spec)
         ax.semilogx(w[1:] / (2*math.pi), gdelay*1e9, linewidth=2, label=ftype.value)
-    ax.axvline(x=20e6, linestyle='--', linewidth=0.7, color='g', label='Passband Corner')
+    ax.axvline(x=spec.passband_corner, linestyle='--', linewidth=0.7, color='g', label='Passband Corner')
     ax.set_xlabel('Frequency [Hz]')
     ax.set_ylabel('Group Delay [ns]')
     ax.set_title('Group Delay')

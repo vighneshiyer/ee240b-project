@@ -1,4 +1,4 @@
-from scipy.signal import tf2zpk
+from scipy.signal import tf2zpk, zpk2tf
 from typing import List
 import math
 from dataclasses import dataclass
@@ -35,6 +35,10 @@ class ZPK:
     Z: List[complex]  # Zeros of TF
     P: List[complex]  # Poles of TF
     K: float          # DC Gain
+
+    def to_ba(self):
+        b, a = zpk2tf(self.Z, self.P, self.K)
+        return BA(b, a)
 
 
 @dataclass(frozen=True)
