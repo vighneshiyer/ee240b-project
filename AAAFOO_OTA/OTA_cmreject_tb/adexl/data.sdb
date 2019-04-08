@@ -1,0 +1,2740 @@
+<?xml version="1.0"?>
+<setupdb version="6">data
+	<active>Active Setup
+		<tests>
+			<test enabled="1">OTA:OTA_cmreject_tb:1
+				<tool>ADE</tool>
+				<tooloptions>
+					<option>cell
+						<value>OTA_cmreject_tb</value>
+					</option>
+					<option>lib
+						<value>AAAFOO_OTA</value>
+					</option>
+					<option>sim
+						<value>spectre</value>
+					</option>
+					<option>view
+						<value>schematic</value>
+					</option>
+					<option>path
+						<value>$AXL_SETUPDB_DIR/test_states</value>
+					</option>
+					<option>state
+						<value>OTA:OTA_cmreject_tb:1_active</value>
+					</option>
+				</tooloptions>
+				<origoptions>
+					<option>cell
+						<value>OTA_cmreject_tb</value>
+					</option>
+					<option>lib
+						<value>OTA</value>
+					</option>
+					<option>sim
+						<value>spectre</value>
+					</option>
+					<option>view
+						<value>schematic</value>
+					</option>
+				</origoptions>
+				<outputs>
+					<output>out_ac_amp
+						<evalType>point</evalType>
+					</output>
+					<output>out_ac_phase
+						<evalType>point</evalType>
+					</output>
+					<output>out_dc
+						<evalType>point</evalType>
+					</output>
+					<output>out_ac_cmrr
+						<evalType>point</evalType>
+					</output>
+				</outputs>
+			</test>
+		</tests>
+		<vars>
+			<var>ibias
+				<value>6.25u</value>
+				<dependentTests>
+					<dependentTest enabled="1">OTA:OTA_chkpt2_tb:1</dependentTest>
+					<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+				</dependentTests>
+			</var>
+			<var>supply
+				<value>1.2</value>
+				<dependentTests>
+					<dependentTest enabled="1">OTA:OTA_chkpt2_tb:1</dependentTest>
+					<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+				</dependentTests>
+			</var>
+			<var>nf_input
+				<value>6</value>
+				<dependentTests>
+					<dependentTest enabled="1">OTA:OTA_chkpt2_tb:1</dependentTest>
+					<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+				</dependentTests>
+			</var>
+			<var>nf_cas
+				<value>6</value>
+				<dependentTests>
+					<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+				</dependentTests>
+			</var>
+			<var>nf_load
+				<value>12</value>
+				<dependentTests>
+					<dependentTest enabled="1">OTA:OTA_chkpt2_tb:1</dependentTest>
+					<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+				</dependentTests>
+			</var>
+			<var>mos_l
+				<value>180n</value>
+				<dependentTests>
+					<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+				</dependentTests>
+			</var>
+			<var>mos_w
+				<value>500n</value>
+				<dependentTests>
+					<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+				</dependentTests>
+			</var>
+			<var>bcasp
+				<value>0.45</value>
+				<dependentTests>
+					<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+				</dependentTests>
+			</var>
+			<var>bcasn
+				<value>1.1</value>
+				<dependentTests>
+					<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+				</dependentTests>
+			</var>
+			<var>test_cmrr
+				<value>1</value>
+				<dependentTests>
+					<dependentTest omitted="0">OTA:OTA_cmreject_tb:1</dependentTest>
+				</dependentTests>
+			</var>
+		</vars>
+		<corners>
+			<corner enabled="0">_default</corner>
+			<corner enabled="1">tt
+				<vars>
+					<var>temperature
+						<value>25</value>
+					</var>
+				</vars>
+				<models>
+					<model enabled="1">gpdk045.scs
+						<modeltest>All</modeltest>
+						<modelblock>Global</modelblock>
+						<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+						<modelsection>"tt"</modelsection>
+					</model>
+				</models>
+			</corner>
+			<corner enabled="1">ff
+				<vars>
+					<var>temperature
+						<value>70</value>
+					</var>
+				</vars>
+				<models>
+					<model enabled="1">gpdk045.scs
+						<modeltest>All</modeltest>
+						<modelblock>Global</modelblock>
+						<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+						<modelsection>"ff"</modelsection>
+					</model>
+				</models>
+			</corner>
+			<corner enabled="1">ss
+				<vars>
+					<var>temperature
+						<value>0</value>
+					</var>
+				</vars>
+				<models>
+					<model enabled="1">gpdk045.scs
+						<modeltest>All</modeltest>
+						<modelblock>Global</modelblock>
+						<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+						<modelsection>"ss"</modelsection>
+					</model>
+				</models>
+			</corner>
+			<corner enabled="1">sf
+				<vars>
+					<var>temperature
+						<value>25</value>
+					</var>
+				</vars>
+				<models>
+					<model enabled="1">gpdk045.scs
+						<modeltest>All</modeltest>
+						<modelblock>Global</modelblock>
+						<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+						<modelsection>"sf"</modelsection>
+					</model>
+				</models>
+			</corner>
+			<corner enabled="1">fs
+				<vars>
+					<var>temperature
+						<value>25</value>
+					</var>
+				</vars>
+				<models>
+					<model enabled="1">gpdk045.scs
+						<modeltest>All</modeltest>
+						<modelblock>Global</modelblock>
+						<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+						<modelsection>"fs"</modelsection>
+					</model>
+				</models>
+			</corner>
+		</corners>
+		<currentmode>Single Run, Sweeps and Corners</currentmode>
+		<disabledtests></disabledtests>
+		<extensions>
+			<extension>Parasitics
+				<callback>_parSetupDBExtensionCB</callback>
+				<iconvalue></iconvalue>
+				<icontype></icontype>
+			</extension>
+		</extensions>
+		<overwritehistory>0</overwritehistory>
+		<overwritehistoryname>Interactive.0</overwritehistoryname>
+		<plottingoptions>
+			<plottingoption>plottype
+				<value>None</value>
+			</plottingoption>
+			<plottingoption>usewaveformtemplate
+				<value>no</value>
+			</plottingoption>
+			<plottingoption>waveformtemplate
+				<value></value>
+			</plottingoption>
+			<plottingoption>allplottingtemplates
+				<value></value>
+			</plottingoption>
+			<plottingoption>defaultplottingtemplate
+				<value></value>
+			</plottingoption>
+		</plottingoptions>
+		<runoptions>
+			<mode>Monte Carlo Sampling
+				<runoption>mcmethod
+					<value>all</value>
+				</runoption>
+				<runoption>mcnumpoints
+					<value>200</value>
+				</runoption>
+				<runoption>mcnumbins
+					<value></value>
+				</runoption>
+				<runoption>mcStopEarly
+					<value>0</value>
+				</runoption>
+				<runoption>mcStopMethod
+					<value>Significance Test</value>
+				</runoption>
+				<runoption>samplingmode
+					<value>lds</value>
+				</runoption>
+				<runoption>saveprocess
+					<value>1</value>
+				</runoption>
+				<runoption>savemismatch
+					<value>0</value>
+				</runoption>
+				<runoption>mcreferencepoint
+					<value>0</value>
+				</runoption>
+				<runoption>donominal
+					<value>0</value>
+				</runoption>
+				<runoption>saveallplots
+					<value>0</value>
+				</runoption>
+				<runoption>montecarloseed
+					<value></value>
+				</runoption>
+				<runoption>mcstartingrunnumber
+					<value></value>
+				</runoption>
+				<runoption>dumpParamMode
+					<value>yes</value>
+				</runoption>
+			</mode>
+		</runoptions>
+	</active>
+	<history>History
+		<historyentry assemblerOrExplorer="adexl" roOrView="view">BagSim.0
+			<checkpoint>
+				<tests>
+					<test enabled="1">OTA:OTA_cmreject_tb:1
+						<tool>ADE</tool>
+						<tooloptions>
+							<option>cell
+								<value>OTA_single_tb</value>
+							</option>
+							<option>lib
+								<value>AAAFOO_OTA_single</value>
+							</option>
+							<option>sim
+								<value>spectre</value>
+							</option>
+							<option>view
+								<value>config</value>
+							</option>
+							<option>path
+								<value>$AXL_SETUPDB_DIR/test_states</value>
+							</option>
+							<option>state
+								<value>OTA:OTA_cmreject_tb:1_none_BagSim.0</value>
+							</option>
+						</tooloptions>
+						<origoptions>
+							<option>cell
+								<value>OTA_cmreject_tb</value>
+							</option>
+							<option>lib
+								<value>OTA</value>
+							</option>
+							<option>sim
+								<value>spectre</value>
+							</option>
+							<option>view
+								<value>schematic</value>
+							</option>
+						</origoptions>
+						<outputs>
+							<output>out_ac_amp
+								<evalType>point</evalType>
+							</output>
+							<output>out_ac_phase
+								<evalType>point</evalType>
+							</output>
+							<output>out_dc
+								<evalType>point</evalType>
+							</output>
+						</outputs>
+					</test>
+				</tests>
+				<vars>
+					<var>ibias
+						<value>2.000000e-05</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_chkpt2_tb:1</dependentTest>
+							<dependentTest enabled="1" omitted="0">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>in_bias
+						<value>7.000000e-01</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_chkpt2_tb:1</dependentTest>
+							<dependentTest enabled="1" omitted="0">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>supply
+						<value>1.200000e+00</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_chkpt2_tb:1</dependentTest>
+							<dependentTest enabled="1" omitted="0">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>nf_input
+						<value>4.000000e+00</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_chkpt2_tb:1</dependentTest>
+							<dependentTest enabled="1" omitted="0">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>nf_load
+						<value>4.000000e+00</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_chkpt2_tb:1</dependentTest>
+							<dependentTest enabled="1" omitted="0">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+				</vars>
+				<corners>
+					<corner enabled="0">_default</corner>
+					<corner enabled="1">tt
+						<vars>
+							<var>temperature
+								<value>25</value>
+							</var>
+						</vars>
+						<models>
+							<model enabled="1">gpdk045.scs
+								<modeltest>All</modeltest>
+								<modelblock>Global</modelblock>
+								<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+								<modelsection>"tt"</modelsection>
+							</model>
+						</models>
+					</corner>
+					<corner enabled="0">ff
+						<vars>
+							<var>temperature
+								<value>70</value>
+							</var>
+						</vars>
+						<models>
+							<model enabled="1">gpdk045.scs
+								<modeltest>All</modeltest>
+								<modelblock>Global</modelblock>
+								<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+								<modelsection>"ff"</modelsection>
+							</model>
+						</models>
+					</corner>
+					<corner enabled="0">ss
+						<vars>
+							<var>temperature
+								<value>0</value>
+							</var>
+						</vars>
+						<models>
+							<model enabled="1">gpdk045.scs
+								<modeltest>All</modeltest>
+								<modelblock>Global</modelblock>
+								<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+								<modelsection>"ss"</modelsection>
+							</model>
+						</models>
+					</corner>
+					<corner enabled="0">sf
+						<vars>
+							<var>temperature
+								<value>25</value>
+							</var>
+						</vars>
+						<models>
+							<model enabled="1">gpdk045.scs
+								<modeltest>All</modeltest>
+								<modelblock>Global</modelblock>
+								<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+								<modelsection>"sf"</modelsection>
+							</model>
+						</models>
+					</corner>
+					<corner enabled="0">fs
+						<vars>
+							<var>temperature
+								<value>25</value>
+							</var>
+						</vars>
+						<models>
+							<model enabled="1">gpdk045.scs
+								<modeltest>All</modeltest>
+								<modelblock>Global</modelblock>
+								<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+								<modelsection>"fs"</modelsection>
+							</model>
+						</models>
+					</corner>
+				</corners>
+				<currentmode>Single Run, Sweeps and Corners</currentmode>
+				<disabledtests></disabledtests>
+				<extensions>
+					<extension>Parasitics
+						<callback>_parSetupDBExtensionCB</callback>
+						<iconvalue></iconvalue>
+						<icontype></icontype>
+					</extension>
+				</extensions>
+				<overwritehistory>0</overwritehistory>
+				<allcornersenabled>1</allcornersenabled>
+				<allsweepsenabled>1</allsweepsenabled>
+				<overwritehistoryname>BagSim.0</overwritehistoryname>
+				<plottingoptions>
+					<plottingoption>plottype
+						<value>None</value>
+					</plottingoption>
+					<plottingoption>usewaveformtemplate
+						<value>no</value>
+					</plottingoption>
+					<plottingoption>waveformtemplate
+						<value></value>
+					</plottingoption>
+					<plottingoption>allplottingtemplates
+						<value></value>
+					</plottingoption>
+					<plottingoption>defaultplottingtemplate
+						<value></value>
+					</plottingoption>
+				</plottingoptions>
+				<sortVariableValues>0</sortVariableValues>
+			</checkpoint>
+			<timestamp>Apr 5 14:25:59 2019</timestamp>
+			<resultsname></resultsname>
+			<simresults>$AXL_SETUPDB_DIR/results/data/BagSim.0.rdb</simresults>
+			<rawdatadelstrategy>SaveAll
+				<simdatasavemode>All</simdatasavemode>
+			</rawdatadelstrategy>
+			<netlistdelstrategy>SaveAll</netlistdelstrategy>
+			<uselocalpsfdir>false</uselocalpsfdir>
+			<localpsfdir>/tmp/hpse-14.EECS.Berkeley.EDU_harrisonliew_142559596</localpsfdir>
+			<psfdir></psfdir>
+			<simdir></simdir>
+			<gendatasheetplotsonsimulation>1</gendatasheetplotsonsimulation>
+			<runlog></runlog>
+			<runlogfile>$AXL_SETUPDB_DIR/results/data/BagSim.0.log</runlogfile>
+			<schematicpoint></schematicpoint>
+			<test>all</test>
+		</historyentry>
+		<historyentry assemblerOrExplorer="adexl" roOrView="view">Interactive.0
+			<checkpoint>
+				<tests>
+					<test enabled="1">OTA:OTA_cmreject_tb:1
+						<tool>ADE</tool>
+						<tooloptions>
+							<option>cell
+								<value>OTA_single_tb</value>
+							</option>
+							<option>lib
+								<value>AAAFOO_OTA_single</value>
+							</option>
+							<option>sim
+								<value>spectre</value>
+							</option>
+							<option>view
+								<value>config</value>
+							</option>
+							<option>path
+								<value>$AXL_SETUPDB_DIR/test_states</value>
+							</option>
+							<option>state
+								<value>OTA:OTA_cmreject_tb:1_none_Interactive.0</value>
+							</option>
+						</tooloptions>
+						<origoptions>
+							<option>cell
+								<value>OTA_cmreject_tb</value>
+							</option>
+							<option>lib
+								<value>OTA</value>
+							</option>
+							<option>sim
+								<value>spectre</value>
+							</option>
+							<option>view
+								<value>schematic</value>
+							</option>
+						</origoptions>
+						<outputs>
+							<output>out_ac_amp
+								<evalType>point</evalType>
+							</output>
+							<output>out_ac_phase
+								<evalType>point</evalType>
+							</output>
+							<output>out_dc
+								<evalType>point</evalType>
+							</output>
+						</outputs>
+					</test>
+				</tests>
+				<vars>
+					<var>ibias
+						<value>2.000000e-05</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_chkpt2_tb:1</dependentTest>
+							<dependentTest enabled="1" omitted="0">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>in_bias
+						<value>7.000000e-01</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_chkpt2_tb:1</dependentTest>
+							<dependentTest enabled="1" omitted="0">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>supply
+						<value>1.200000e+00</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_chkpt2_tb:1</dependentTest>
+							<dependentTest enabled="1" omitted="0">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>nf_input
+						<value>4.000000e+00</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_chkpt2_tb:1</dependentTest>
+							<dependentTest enabled="1" omitted="0">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>nf_load
+						<value>4.000000e+00</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_chkpt2_tb:1</dependentTest>
+							<dependentTest enabled="1" omitted="0">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+				</vars>
+				<corners>
+					<corner enabled="0">_default</corner>
+					<corner enabled="1">tt
+						<vars>
+							<var>temperature
+								<value>25</value>
+							</var>
+						</vars>
+						<models>
+							<model enabled="1">gpdk045.scs
+								<modeltest>All</modeltest>
+								<modelblock>Global</modelblock>
+								<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+								<modelsection>"tt"</modelsection>
+							</model>
+						</models>
+					</corner>
+					<corner enabled="0">ff
+						<vars>
+							<var>temperature
+								<value>70</value>
+							</var>
+						</vars>
+						<models>
+							<model enabled="1">gpdk045.scs
+								<modeltest>All</modeltest>
+								<modelblock>Global</modelblock>
+								<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+								<modelsection>"ff"</modelsection>
+							</model>
+						</models>
+					</corner>
+					<corner enabled="0">ss
+						<vars>
+							<var>temperature
+								<value>0</value>
+							</var>
+						</vars>
+						<models>
+							<model enabled="1">gpdk045.scs
+								<modeltest>All</modeltest>
+								<modelblock>Global</modelblock>
+								<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+								<modelsection>"ss"</modelsection>
+							</model>
+						</models>
+					</corner>
+					<corner enabled="0">sf
+						<vars>
+							<var>temperature
+								<value>25</value>
+							</var>
+						</vars>
+						<models>
+							<model enabled="1">gpdk045.scs
+								<modeltest>All</modeltest>
+								<modelblock>Global</modelblock>
+								<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+								<modelsection>"sf"</modelsection>
+							</model>
+						</models>
+					</corner>
+					<corner enabled="0">fs
+						<vars>
+							<var>temperature
+								<value>25</value>
+							</var>
+						</vars>
+						<models>
+							<model enabled="1">gpdk045.scs
+								<modeltest>All</modeltest>
+								<modelblock>Global</modelblock>
+								<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+								<modelsection>"fs"</modelsection>
+							</model>
+						</models>
+					</corner>
+				</corners>
+				<currentmode>Single Run, Sweeps and Corners</currentmode>
+				<disabledtests></disabledtests>
+				<extensions>
+					<extension>Parasitics
+						<callback>_parSetupDBExtensionCB</callback>
+						<iconvalue></iconvalue>
+						<icontype></icontype>
+					</extension>
+				</extensions>
+				<overwritehistory>0</overwritehistory>
+				<overwritehistoryname>Interactive.0</overwritehistoryname>
+				<plottingoptions>
+					<plottingoption>plottype
+						<value>None</value>
+					</plottingoption>
+					<plottingoption>usewaveformtemplate
+						<value>no</value>
+					</plottingoption>
+					<plottingoption>waveformtemplate
+						<value></value>
+					</plottingoption>
+					<plottingoption>allplottingtemplates
+						<value></value>
+					</plottingoption>
+					<plottingoption>defaultplottingtemplate
+						<value></value>
+					</plottingoption>
+				</plottingoptions>
+				<sortVariableValues>0</sortVariableValues>
+			</checkpoint>
+			<timestamp>Apr 5 14:27:50 2019</timestamp>
+			<resultsname></resultsname>
+			<simresults>$AXL_SETUPDB_DIR/results/data/Interactive.0.rdb</simresults>
+			<rawdatadelstrategy>SaveAll
+				<simdatasavemode>All</simdatasavemode>
+			</rawdatadelstrategy>
+			<netlistdelstrategy>SaveAll</netlistdelstrategy>
+			<uselocalpsfdir>false</uselocalpsfdir>
+			<localpsfdir>/tmp/hpse-14.EECS.Berkeley.EDU_harrisonliew_142750684</localpsfdir>
+			<psfdir></psfdir>
+			<simdir></simdir>
+			<gendatasheetplotsonsimulation>1</gendatasheetplotsonsimulation>
+			<runlog></runlog>
+			<runlogfile>$AXL_SETUPDB_DIR/results/data/Interactive.0.log</runlogfile>
+			<schematicpoint></schematicpoint>
+			<test>all</test>
+		</historyentry>
+		<historyentry assemblerOrExplorer="adexl" roOrView="view">Interactive.1
+			<checkpoint>
+				<tests>
+					<test enabled="1">OTA:OTA_cmreject_tb:1
+						<tool>ADE</tool>
+						<tooloptions>
+							<option>cell
+								<value>OTA_cmreject_tb</value>
+							</option>
+							<option>lib
+								<value>AAAFOO_OTA</value>
+							</option>
+							<option>sim
+								<value>spectre</value>
+							</option>
+							<option>view
+								<value>schematic</value>
+							</option>
+							<option>path
+								<value>$AXL_SETUPDB_DIR/test_states</value>
+							</option>
+							<option>state
+								<value>OTA:OTA_cmreject_tb:1_none_Interactive.1</value>
+							</option>
+						</tooloptions>
+						<origoptions>
+							<option>cell
+								<value>OTA_cmreject_tb</value>
+							</option>
+							<option>lib
+								<value>OTA</value>
+							</option>
+							<option>sim
+								<value>spectre</value>
+							</option>
+							<option>view
+								<value>schematic</value>
+							</option>
+						</origoptions>
+						<outputs>
+							<output>out_ac_amp
+								<evalType>point</evalType>
+							</output>
+							<output>out_ac_phase
+								<evalType>point</evalType>
+							</output>
+							<output>out_dc
+								<evalType>point</evalType>
+							</output>
+						</outputs>
+					</test>
+				</tests>
+				<vars>
+					<var>ibias
+						<value>2.000000e-05</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_chkpt2_tb:1</dependentTest>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>supply
+						<value>1.200000e+00</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_chkpt2_tb:1</dependentTest>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>nf_input
+						<value>4.000000e+00</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_chkpt2_tb:1</dependentTest>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>nf_load
+						<value>4.000000e+00</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_chkpt2_tb:1</dependentTest>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>mos_l
+						<value>180n</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>mos_w
+						<value>1u</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>nf_cas
+						<value>20</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>bcasp
+						<value>0.5</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>bcasn
+						<value>0.9</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>test_cmrr
+						<value>0</value>
+						<dependentTests>
+							<dependentTest omitted="0">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+				</vars>
+				<corners>
+					<corner enabled="0">_default</corner>
+					<corner enabled="1">tt
+						<vars>
+							<var>temperature
+								<value>25</value>
+							</var>
+						</vars>
+						<models>
+							<model enabled="1">gpdk045.scs
+								<modeltest>All</modeltest>
+								<modelblock>Global</modelblock>
+								<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+								<modelsection>"tt"</modelsection>
+							</model>
+						</models>
+					</corner>
+					<corner enabled="1">ff
+						<vars>
+							<var>temperature
+								<value>70</value>
+							</var>
+						</vars>
+						<models>
+							<model enabled="1">gpdk045.scs
+								<modeltest>All</modeltest>
+								<modelblock>Global</modelblock>
+								<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+								<modelsection>"ff"</modelsection>
+							</model>
+						</models>
+					</corner>
+					<corner enabled="1">ss
+						<vars>
+							<var>temperature
+								<value>0</value>
+							</var>
+						</vars>
+						<models>
+							<model enabled="1">gpdk045.scs
+								<modeltest>All</modeltest>
+								<modelblock>Global</modelblock>
+								<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+								<modelsection>"ss"</modelsection>
+							</model>
+						</models>
+					</corner>
+					<corner enabled="1">sf
+						<vars>
+							<var>temperature
+								<value>25</value>
+							</var>
+						</vars>
+						<models>
+							<model enabled="1">gpdk045.scs
+								<modeltest>All</modeltest>
+								<modelblock>Global</modelblock>
+								<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+								<modelsection>"sf"</modelsection>
+							</model>
+						</models>
+					</corner>
+					<corner enabled="1">fs
+						<vars>
+							<var>temperature
+								<value>25</value>
+							</var>
+						</vars>
+						<models>
+							<model enabled="1">gpdk045.scs
+								<modeltest>All</modeltest>
+								<modelblock>Global</modelblock>
+								<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+								<modelsection>"fs"</modelsection>
+							</model>
+						</models>
+					</corner>
+				</corners>
+				<currentmode>Single Run, Sweeps and Corners</currentmode>
+				<disabledtests></disabledtests>
+				<extensions>
+					<extension>Parasitics
+						<callback>_parSetupDBExtensionCB</callback>
+						<iconvalue></iconvalue>
+						<icontype></icontype>
+					</extension>
+				</extensions>
+				<overwritehistory>0</overwritehistory>
+				<overwritehistoryname>Interactive.0</overwritehistoryname>
+				<plottingoptions>
+					<plottingoption>plottype
+						<value>None</value>
+					</plottingoption>
+					<plottingoption>usewaveformtemplate
+						<value>no</value>
+					</plottingoption>
+					<plottingoption>waveformtemplate
+						<value></value>
+					</plottingoption>
+					<plottingoption>allplottingtemplates
+						<value></value>
+					</plottingoption>
+					<plottingoption>defaultplottingtemplate
+						<value></value>
+					</plottingoption>
+				</plottingoptions>
+				<runoptions>
+					<mode>Monte Carlo Sampling
+						<runoption>mcmethod
+							<value>all</value>
+						</runoption>
+						<runoption>mcnumpoints
+							<value>200</value>
+						</runoption>
+						<runoption>mcnumbins
+							<value></value>
+						</runoption>
+						<runoption>mcStopEarly
+							<value>0</value>
+						</runoption>
+						<runoption>mcStopMethod
+							<value>Significance Test</value>
+						</runoption>
+						<runoption>samplingmode
+							<value>lds</value>
+						</runoption>
+						<runoption>saveprocess
+							<value>1</value>
+						</runoption>
+						<runoption>savemismatch
+							<value>0</value>
+						</runoption>
+						<runoption>mcreferencepoint
+							<value>0</value>
+						</runoption>
+						<runoption>donominal
+							<value>0</value>
+						</runoption>
+						<runoption>saveallplots
+							<value>0</value>
+						</runoption>
+						<runoption>montecarloseed
+							<value></value>
+						</runoption>
+						<runoption>mcstartingrunnumber
+							<value></value>
+						</runoption>
+						<runoption>dumpParamMode
+							<value>yes</value>
+						</runoption>
+					</mode>
+				</runoptions>
+				<sortVariableValues>0</sortVariableValues>
+			</checkpoint>
+			<timestamp>Apr 7 12:09:59 2019</timestamp>
+			<resultsname>/home/aa/users/harrisonliew/ee240b/bag_workspace_gpdk045/gen_libs/AAAFOO_OTA/OTA_cmreject_tb/adexl/results/data/Interactive.1.rdb</resultsname>
+			<simresults>$AXL_SETUPDB_DIR/results/data/Interactive.1.rdb</simresults>
+			<rawdatadelstrategy>SaveAll
+				<simdatasavemode>All</simdatasavemode>
+			</rawdatadelstrategy>
+			<netlistdelstrategy>SaveAll</netlistdelstrategy>
+			<uselocalpsfdir>false</uselocalpsfdir>
+			<localpsfdir>/tmp/hpse-14.EECS.Berkeley.EDU_harrisonliew_120959123</localpsfdir>
+			<psfdir>/home/aa/users/harrisonliew/simulation/AAAFOO_OTA/OTA_cmreject_tb/adexl/results/data/Interactive.1</psfdir>
+			<simdir>$AXL_PROJECT_DIR/AAAFOO_OTA/OTA_cmreject_tb/adexl/results/data/Interactive.1</simdir>
+			<gendatasheetplotsonsimulation>1</gendatasheetplotsonsimulation>
+			<runlog>/home/aa/users/harrisonliew/ee240b/bag_workspace_gpdk045/gen_libs/AAAFOO_OTA/OTA_cmreject_tb/adexl/results/data/Interactive.1.log</runlog>
+			<runlogfile>$AXL_SETUPDB_DIR/results/data/Interactive.1.log</runlogfile>
+			<schematicpoint></schematicpoint>
+			<test>all</test>
+		</historyentry>
+		<historyentry assemblerOrExplorer="adexl" roOrView="view">Interactive.2
+			<checkpoint>
+				<tests>
+					<test enabled="1">OTA:OTA_cmreject_tb:1
+						<tool>ADE</tool>
+						<tooloptions>
+							<option>cell
+								<value>OTA_cmreject_tb</value>
+							</option>
+							<option>lib
+								<value>AAAFOO_OTA</value>
+							</option>
+							<option>sim
+								<value>spectre</value>
+							</option>
+							<option>view
+								<value>schematic</value>
+							</option>
+							<option>path
+								<value>$AXL_SETUPDB_DIR/test_states</value>
+							</option>
+							<option>state
+								<value>OTA:OTA_cmreject_tb:1_none_Interactive.2</value>
+							</option>
+						</tooloptions>
+						<origoptions>
+							<option>cell
+								<value>OTA_cmreject_tb</value>
+							</option>
+							<option>lib
+								<value>OTA</value>
+							</option>
+							<option>sim
+								<value>spectre</value>
+							</option>
+							<option>view
+								<value>schematic</value>
+							</option>
+						</origoptions>
+						<outputs>
+							<output>out_ac_amp
+								<evalType>point</evalType>
+							</output>
+							<output>out_ac_phase
+								<evalType>point</evalType>
+							</output>
+							<output>out_dc
+								<evalType>point</evalType>
+							</output>
+						</outputs>
+					</test>
+				</tests>
+				<vars>
+					<var>ibias
+						<value>6.25u</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_chkpt2_tb:1</dependentTest>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>supply
+						<value>1.2</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_chkpt2_tb:1</dependentTest>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>nf_input
+						<value>6</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_chkpt2_tb:1</dependentTest>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>nf_cas
+						<value>6</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>nf_load
+						<value>12</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_chkpt2_tb:1</dependentTest>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>mos_l
+						<value>180n</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>mos_w
+						<value>500n</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>bcasp
+						<value>0.45</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>bcasn
+						<value>1.1</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>test_cmrr
+						<value>0</value>
+						<dependentTests>
+							<dependentTest omitted="0">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+				</vars>
+				<corners>
+					<corner enabled="0">_default</corner>
+					<corner enabled="1">tt
+						<vars>
+							<var>temperature
+								<value>25</value>
+							</var>
+						</vars>
+						<models>
+							<model enabled="1">gpdk045.scs
+								<modeltest>All</modeltest>
+								<modelblock>Global</modelblock>
+								<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+								<modelsection>"tt"</modelsection>
+							</model>
+						</models>
+					</corner>
+					<corner enabled="1">ff
+						<vars>
+							<var>temperature
+								<value>70</value>
+							</var>
+						</vars>
+						<models>
+							<model enabled="1">gpdk045.scs
+								<modeltest>All</modeltest>
+								<modelblock>Global</modelblock>
+								<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+								<modelsection>"ff"</modelsection>
+							</model>
+						</models>
+					</corner>
+					<corner enabled="1">ss
+						<vars>
+							<var>temperature
+								<value>0</value>
+							</var>
+						</vars>
+						<models>
+							<model enabled="1">gpdk045.scs
+								<modeltest>All</modeltest>
+								<modelblock>Global</modelblock>
+								<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+								<modelsection>"ss"</modelsection>
+							</model>
+						</models>
+					</corner>
+					<corner enabled="1">sf
+						<vars>
+							<var>temperature
+								<value>25</value>
+							</var>
+						</vars>
+						<models>
+							<model enabled="1">gpdk045.scs
+								<modeltest>All</modeltest>
+								<modelblock>Global</modelblock>
+								<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+								<modelsection>"sf"</modelsection>
+							</model>
+						</models>
+					</corner>
+					<corner enabled="1">fs
+						<vars>
+							<var>temperature
+								<value>25</value>
+							</var>
+						</vars>
+						<models>
+							<model enabled="1">gpdk045.scs
+								<modeltest>All</modeltest>
+								<modelblock>Global</modelblock>
+								<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+								<modelsection>"fs"</modelsection>
+							</model>
+						</models>
+					</corner>
+				</corners>
+				<currentmode>Single Run, Sweeps and Corners</currentmode>
+				<disabledtests></disabledtests>
+				<extensions>
+					<extension>Parasitics
+						<callback>_parSetupDBExtensionCB</callback>
+						<iconvalue></iconvalue>
+						<icontype></icontype>
+					</extension>
+				</extensions>
+				<overwritehistory>0</overwritehistory>
+				<overwritehistoryname>Interactive.0</overwritehistoryname>
+				<plottingoptions>
+					<plottingoption>plottype
+						<value>None</value>
+					</plottingoption>
+					<plottingoption>usewaveformtemplate
+						<value>no</value>
+					</plottingoption>
+					<plottingoption>waveformtemplate
+						<value></value>
+					</plottingoption>
+					<plottingoption>allplottingtemplates
+						<value></value>
+					</plottingoption>
+					<plottingoption>defaultplottingtemplate
+						<value></value>
+					</plottingoption>
+				</plottingoptions>
+				<runoptions>
+					<mode>Monte Carlo Sampling
+						<runoption>mcmethod
+							<value>all</value>
+						</runoption>
+						<runoption>mcnumpoints
+							<value>200</value>
+						</runoption>
+						<runoption>mcnumbins
+							<value></value>
+						</runoption>
+						<runoption>mcStopEarly
+							<value>0</value>
+						</runoption>
+						<runoption>mcStopMethod
+							<value>Significance Test</value>
+						</runoption>
+						<runoption>samplingmode
+							<value>lds</value>
+						</runoption>
+						<runoption>saveprocess
+							<value>1</value>
+						</runoption>
+						<runoption>savemismatch
+							<value>0</value>
+						</runoption>
+						<runoption>mcreferencepoint
+							<value>0</value>
+						</runoption>
+						<runoption>donominal
+							<value>0</value>
+						</runoption>
+						<runoption>saveallplots
+							<value>0</value>
+						</runoption>
+						<runoption>montecarloseed
+							<value></value>
+						</runoption>
+						<runoption>mcstartingrunnumber
+							<value></value>
+						</runoption>
+						<runoption>dumpParamMode
+							<value>yes</value>
+						</runoption>
+					</mode>
+				</runoptions>
+				<sortVariableValues>0</sortVariableValues>
+			</checkpoint>
+			<timestamp>Apr 7 12:14:01 2019</timestamp>
+			<resultsname>/home/aa/users/harrisonliew/ee240b/bag_workspace_gpdk045/gen_libs/AAAFOO_OTA/OTA_cmreject_tb/adexl/results/data/Interactive.2.rdb</resultsname>
+			<simresults>$AXL_SETUPDB_DIR/results/data/Interactive.2.rdb</simresults>
+			<rawdatadelstrategy>SaveAll
+				<simdatasavemode>All</simdatasavemode>
+			</rawdatadelstrategy>
+			<netlistdelstrategy>SaveAll</netlistdelstrategy>
+			<uselocalpsfdir>false</uselocalpsfdir>
+			<localpsfdir>/tmp/hpse-14.EECS.Berkeley.EDU_harrisonliew_121401954</localpsfdir>
+			<psfdir>/home/aa/users/harrisonliew/simulation/AAAFOO_OTA/OTA_cmreject_tb/adexl/results/data/Interactive.2</psfdir>
+			<simdir>$AXL_PROJECT_DIR/AAAFOO_OTA/OTA_cmreject_tb/adexl/results/data/Interactive.2</simdir>
+			<gendatasheetplotsonsimulation>1</gendatasheetplotsonsimulation>
+			<runlog>/home/aa/users/harrisonliew/ee240b/bag_workspace_gpdk045/gen_libs/AAAFOO_OTA/OTA_cmreject_tb/adexl/results/data/Interactive.2.log</runlog>
+			<runlogfile>$AXL_SETUPDB_DIR/results/data/Interactive.2.log</runlogfile>
+			<schematicpoint></schematicpoint>
+			<test>all</test>
+		</historyentry>
+		<historyentry assemblerOrExplorer="adexl" roOrView="view">Interactive.3
+			<checkpoint>
+				<tests>
+					<test enabled="1">OTA:OTA_cmreject_tb:1
+						<tool>ADE</tool>
+						<tooloptions>
+							<option>cell
+								<value>OTA_cmreject_tb</value>
+							</option>
+							<option>lib
+								<value>AAAFOO_OTA</value>
+							</option>
+							<option>sim
+								<value>spectre</value>
+							</option>
+							<option>view
+								<value>schematic</value>
+							</option>
+							<option>path
+								<value>$AXL_SETUPDB_DIR/test_states</value>
+							</option>
+							<option>state
+								<value>OTA:OTA_cmreject_tb:1_none_Interactive.3</value>
+							</option>
+						</tooloptions>
+						<origoptions>
+							<option>cell
+								<value>OTA_cmreject_tb</value>
+							</option>
+							<option>lib
+								<value>OTA</value>
+							</option>
+							<option>sim
+								<value>spectre</value>
+							</option>
+							<option>view
+								<value>schematic</value>
+							</option>
+						</origoptions>
+						<outputs>
+							<output>out_ac_amp
+								<evalType>point</evalType>
+							</output>
+							<output>out_ac_phase
+								<evalType>point</evalType>
+							</output>
+							<output>out_dc
+								<evalType>point</evalType>
+							</output>
+						</outputs>
+					</test>
+				</tests>
+				<vars>
+					<var>ibias
+						<value>6.25u</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_chkpt2_tb:1</dependentTest>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>supply
+						<value>1.2</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_chkpt2_tb:1</dependentTest>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>nf_input
+						<value>6</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_chkpt2_tb:1</dependentTest>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>nf_cas
+						<value>6</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>nf_load
+						<value>12</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_chkpt2_tb:1</dependentTest>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>mos_l
+						<value>180n</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>mos_w
+						<value>500n</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>bcasp
+						<value>0.45</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>bcasn
+						<value>1.1</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>test_cmrr
+						<value>0</value>
+						<dependentTests>
+							<dependentTest omitted="0">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+				</vars>
+				<corners>
+					<corner enabled="0">_default</corner>
+					<corner enabled="1">tt
+						<vars>
+							<var>temperature
+								<value>25</value>
+							</var>
+						</vars>
+						<models>
+							<model enabled="1">gpdk045.scs
+								<modeltest>All</modeltest>
+								<modelblock>Global</modelblock>
+								<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+								<modelsection>"tt"</modelsection>
+							</model>
+						</models>
+					</corner>
+					<corner enabled="1">ff
+						<vars>
+							<var>temperature
+								<value>70</value>
+							</var>
+						</vars>
+						<models>
+							<model enabled="1">gpdk045.scs
+								<modeltest>All</modeltest>
+								<modelblock>Global</modelblock>
+								<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+								<modelsection>"ff"</modelsection>
+							</model>
+						</models>
+					</corner>
+					<corner enabled="1">ss
+						<vars>
+							<var>temperature
+								<value>0</value>
+							</var>
+						</vars>
+						<models>
+							<model enabled="1">gpdk045.scs
+								<modeltest>All</modeltest>
+								<modelblock>Global</modelblock>
+								<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+								<modelsection>"ss"</modelsection>
+							</model>
+						</models>
+					</corner>
+					<corner enabled="1">sf
+						<vars>
+							<var>temperature
+								<value>25</value>
+							</var>
+						</vars>
+						<models>
+							<model enabled="1">gpdk045.scs
+								<modeltest>All</modeltest>
+								<modelblock>Global</modelblock>
+								<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+								<modelsection>"sf"</modelsection>
+							</model>
+						</models>
+					</corner>
+					<corner enabled="1">fs
+						<vars>
+							<var>temperature
+								<value>25</value>
+							</var>
+						</vars>
+						<models>
+							<model enabled="1">gpdk045.scs
+								<modeltest>All</modeltest>
+								<modelblock>Global</modelblock>
+								<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+								<modelsection>"fs"</modelsection>
+							</model>
+						</models>
+					</corner>
+				</corners>
+				<currentmode>Single Run, Sweeps and Corners</currentmode>
+				<disabledtests></disabledtests>
+				<extensions>
+					<extension>Parasitics
+						<callback>_parSetupDBExtensionCB</callback>
+						<iconvalue></iconvalue>
+						<icontype></icontype>
+					</extension>
+				</extensions>
+				<overwritehistory>0</overwritehistory>
+				<overwritehistoryname>Interactive.0</overwritehistoryname>
+				<plottingoptions>
+					<plottingoption>plottype
+						<value>None</value>
+					</plottingoption>
+					<plottingoption>usewaveformtemplate
+						<value>no</value>
+					</plottingoption>
+					<plottingoption>waveformtemplate
+						<value></value>
+					</plottingoption>
+					<plottingoption>allplottingtemplates
+						<value></value>
+					</plottingoption>
+					<plottingoption>defaultplottingtemplate
+						<value></value>
+					</plottingoption>
+				</plottingoptions>
+				<runoptions>
+					<mode>Monte Carlo Sampling
+						<runoption>mcmethod
+							<value>all</value>
+						</runoption>
+						<runoption>mcnumpoints
+							<value>200</value>
+						</runoption>
+						<runoption>mcnumbins
+							<value></value>
+						</runoption>
+						<runoption>mcStopEarly
+							<value>0</value>
+						</runoption>
+						<runoption>mcStopMethod
+							<value>Significance Test</value>
+						</runoption>
+						<runoption>samplingmode
+							<value>lds</value>
+						</runoption>
+						<runoption>saveprocess
+							<value>1</value>
+						</runoption>
+						<runoption>savemismatch
+							<value>0</value>
+						</runoption>
+						<runoption>mcreferencepoint
+							<value>0</value>
+						</runoption>
+						<runoption>donominal
+							<value>0</value>
+						</runoption>
+						<runoption>saveallplots
+							<value>0</value>
+						</runoption>
+						<runoption>montecarloseed
+							<value></value>
+						</runoption>
+						<runoption>mcstartingrunnumber
+							<value></value>
+						</runoption>
+						<runoption>dumpParamMode
+							<value>yes</value>
+						</runoption>
+					</mode>
+				</runoptions>
+				<sortVariableValues>0</sortVariableValues>
+			</checkpoint>
+			<timestamp>Apr 7 12:18:06 2019</timestamp>
+			<resultsname>/home/aa/users/harrisonliew/ee240b/bag_workspace_gpdk045/gen_libs/AAAFOO_OTA/OTA_cmreject_tb/adexl/results/data/Interactive.3.rdb</resultsname>
+			<simresults>$AXL_SETUPDB_DIR/results/data/Interactive.3.rdb</simresults>
+			<rawdatadelstrategy>SaveAll
+				<simdatasavemode>All</simdatasavemode>
+			</rawdatadelstrategy>
+			<netlistdelstrategy>SaveAll</netlistdelstrategy>
+			<uselocalpsfdir>false</uselocalpsfdir>
+			<localpsfdir>/tmp/hpse-14.EECS.Berkeley.EDU_harrisonliew_121806934</localpsfdir>
+			<psfdir>/home/aa/users/harrisonliew/simulation/AAAFOO_OTA/OTA_cmreject_tb/adexl/results/data/Interactive.3</psfdir>
+			<simdir>$AXL_PROJECT_DIR/AAAFOO_OTA/OTA_cmreject_tb/adexl/results/data/Interactive.3</simdir>
+			<gendatasheetplotsonsimulation>1</gendatasheetplotsonsimulation>
+			<runlog>/home/aa/users/harrisonliew/ee240b/bag_workspace_gpdk045/gen_libs/AAAFOO_OTA/OTA_cmreject_tb/adexl/results/data/Interactive.3.log</runlog>
+			<runlogfile>$AXL_SETUPDB_DIR/results/data/Interactive.3.log</runlogfile>
+			<schematicpoint></schematicpoint>
+			<test>all</test>
+		</historyentry>
+		<historyentry assemblerOrExplorer="adexl" roOrView="view">Interactive.4
+			<checkpoint>
+				<tests>
+					<test enabled="1">OTA:OTA_cmreject_tb:1
+						<tool>ADE</tool>
+						<tooloptions>
+							<option>cell
+								<value>OTA_cmreject_tb</value>
+							</option>
+							<option>lib
+								<value>AAAFOO_OTA</value>
+							</option>
+							<option>sim
+								<value>spectre</value>
+							</option>
+							<option>view
+								<value>schematic</value>
+							</option>
+							<option>path
+								<value>$AXL_SETUPDB_DIR/test_states</value>
+							</option>
+							<option>state
+								<value>OTA:OTA_cmreject_tb:1_none_Interactive.4</value>
+							</option>
+						</tooloptions>
+						<origoptions>
+							<option>cell
+								<value>OTA_cmreject_tb</value>
+							</option>
+							<option>lib
+								<value>OTA</value>
+							</option>
+							<option>sim
+								<value>spectre</value>
+							</option>
+							<option>view
+								<value>schematic</value>
+							</option>
+						</origoptions>
+						<outputs>
+							<output>out_ac_amp
+								<evalType>point</evalType>
+							</output>
+							<output>out_ac_phase
+								<evalType>point</evalType>
+							</output>
+							<output>out_dc
+								<evalType>point</evalType>
+							</output>
+						</outputs>
+					</test>
+				</tests>
+				<vars>
+					<var>ibias
+						<value>6.25u</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_chkpt2_tb:1</dependentTest>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>supply
+						<value>1.2</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_chkpt2_tb:1</dependentTest>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>nf_input
+						<value>6</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_chkpt2_tb:1</dependentTest>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>nf_cas
+						<value>6</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>nf_load
+						<value>12</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_chkpt2_tb:1</dependentTest>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>mos_l
+						<value>180n</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>mos_w
+						<value>500n</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>bcasp
+						<value>0.45</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>bcasn
+						<value>1.1</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>test_cmrr
+						<value>1</value>
+						<dependentTests>
+							<dependentTest omitted="0">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+				</vars>
+				<corners>
+					<corner enabled="0">_default</corner>
+					<corner enabled="1">tt
+						<vars>
+							<var>temperature
+								<value>25</value>
+							</var>
+						</vars>
+						<models>
+							<model enabled="1">gpdk045.scs
+								<modeltest>All</modeltest>
+								<modelblock>Global</modelblock>
+								<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+								<modelsection>"tt"</modelsection>
+							</model>
+						</models>
+					</corner>
+					<corner enabled="1">ff
+						<vars>
+							<var>temperature
+								<value>70</value>
+							</var>
+						</vars>
+						<models>
+							<model enabled="1">gpdk045.scs
+								<modeltest>All</modeltest>
+								<modelblock>Global</modelblock>
+								<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+								<modelsection>"ff"</modelsection>
+							</model>
+						</models>
+					</corner>
+					<corner enabled="1">ss
+						<vars>
+							<var>temperature
+								<value>0</value>
+							</var>
+						</vars>
+						<models>
+							<model enabled="1">gpdk045.scs
+								<modeltest>All</modeltest>
+								<modelblock>Global</modelblock>
+								<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+								<modelsection>"ss"</modelsection>
+							</model>
+						</models>
+					</corner>
+					<corner enabled="1">sf
+						<vars>
+							<var>temperature
+								<value>25</value>
+							</var>
+						</vars>
+						<models>
+							<model enabled="1">gpdk045.scs
+								<modeltest>All</modeltest>
+								<modelblock>Global</modelblock>
+								<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+								<modelsection>"sf"</modelsection>
+							</model>
+						</models>
+					</corner>
+					<corner enabled="1">fs
+						<vars>
+							<var>temperature
+								<value>25</value>
+							</var>
+						</vars>
+						<models>
+							<model enabled="1">gpdk045.scs
+								<modeltest>All</modeltest>
+								<modelblock>Global</modelblock>
+								<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+								<modelsection>"fs"</modelsection>
+							</model>
+						</models>
+					</corner>
+				</corners>
+				<currentmode>Single Run, Sweeps and Corners</currentmode>
+				<disabledtests></disabledtests>
+				<extensions>
+					<extension>Parasitics
+						<callback>_parSetupDBExtensionCB</callback>
+						<iconvalue></iconvalue>
+						<icontype></icontype>
+					</extension>
+				</extensions>
+				<overwritehistory>0</overwritehistory>
+				<overwritehistoryname>Interactive.0</overwritehistoryname>
+				<plottingoptions>
+					<plottingoption>plottype
+						<value>None</value>
+					</plottingoption>
+					<plottingoption>usewaveformtemplate
+						<value>no</value>
+					</plottingoption>
+					<plottingoption>waveformtemplate
+						<value></value>
+					</plottingoption>
+					<plottingoption>allplottingtemplates
+						<value></value>
+					</plottingoption>
+					<plottingoption>defaultplottingtemplate
+						<value></value>
+					</plottingoption>
+				</plottingoptions>
+				<runoptions>
+					<mode>Monte Carlo Sampling
+						<runoption>mcmethod
+							<value>all</value>
+						</runoption>
+						<runoption>mcnumpoints
+							<value>200</value>
+						</runoption>
+						<runoption>mcnumbins
+							<value></value>
+						</runoption>
+						<runoption>mcStopEarly
+							<value>0</value>
+						</runoption>
+						<runoption>mcStopMethod
+							<value>Significance Test</value>
+						</runoption>
+						<runoption>samplingmode
+							<value>lds</value>
+						</runoption>
+						<runoption>saveprocess
+							<value>1</value>
+						</runoption>
+						<runoption>savemismatch
+							<value>0</value>
+						</runoption>
+						<runoption>mcreferencepoint
+							<value>0</value>
+						</runoption>
+						<runoption>donominal
+							<value>0</value>
+						</runoption>
+						<runoption>saveallplots
+							<value>0</value>
+						</runoption>
+						<runoption>montecarloseed
+							<value></value>
+						</runoption>
+						<runoption>mcstartingrunnumber
+							<value></value>
+						</runoption>
+						<runoption>dumpParamMode
+							<value>yes</value>
+						</runoption>
+					</mode>
+				</runoptions>
+				<sortVariableValues>0</sortVariableValues>
+			</checkpoint>
+			<timestamp>Apr 7 12:19:29 2019</timestamp>
+			<resultsname>/home/aa/users/harrisonliew/ee240b/bag_workspace_gpdk045/gen_libs/AAAFOO_OTA/OTA_cmreject_tb/adexl/results/data/Interactive.4.rdb</resultsname>
+			<simresults>$AXL_SETUPDB_DIR/results/data/Interactive.4.rdb</simresults>
+			<rawdatadelstrategy>SaveAll
+				<simdatasavemode>All</simdatasavemode>
+			</rawdatadelstrategy>
+			<netlistdelstrategy>SaveAll</netlistdelstrategy>
+			<uselocalpsfdir>false</uselocalpsfdir>
+			<localpsfdir>/tmp/hpse-14.EECS.Berkeley.EDU_harrisonliew_121929496</localpsfdir>
+			<psfdir>/home/aa/users/harrisonliew/simulation/AAAFOO_OTA/OTA_cmreject_tb/adexl/results/data/Interactive.4</psfdir>
+			<simdir>$AXL_PROJECT_DIR/AAAFOO_OTA/OTA_cmreject_tb/adexl/results/data/Interactive.4</simdir>
+			<gendatasheetplotsonsimulation>1</gendatasheetplotsonsimulation>
+			<runlog>/home/aa/users/harrisonliew/ee240b/bag_workspace_gpdk045/gen_libs/AAAFOO_OTA/OTA_cmreject_tb/adexl/results/data/Interactive.4.log</runlog>
+			<runlogfile>$AXL_SETUPDB_DIR/results/data/Interactive.4.log</runlogfile>
+			<schematicpoint></schematicpoint>
+			<test>all</test>
+		</historyentry>
+		<historyentry assemblerOrExplorer="adexl" roOrView="view">Interactive.5
+			<checkpoint>
+				<tests>
+					<test enabled="1">OTA:OTA_cmreject_tb:1
+						<tool>ADE</tool>
+						<tooloptions>
+							<option>cell
+								<value>OTA_cmreject_tb</value>
+							</option>
+							<option>lib
+								<value>AAAFOO_OTA</value>
+							</option>
+							<option>sim
+								<value>spectre</value>
+							</option>
+							<option>view
+								<value>schematic</value>
+							</option>
+							<option>path
+								<value>$AXL_SETUPDB_DIR/test_states</value>
+							</option>
+							<option>state
+								<value>OTA:OTA_cmreject_tb:1_none_Interactive.5</value>
+							</option>
+						</tooloptions>
+						<origoptions>
+							<option>cell
+								<value>OTA_cmreject_tb</value>
+							</option>
+							<option>lib
+								<value>OTA</value>
+							</option>
+							<option>sim
+								<value>spectre</value>
+							</option>
+							<option>view
+								<value>schematic</value>
+							</option>
+						</origoptions>
+						<outputs>
+							<output>out_ac_amp
+								<evalType>point</evalType>
+							</output>
+							<output>out_ac_phase
+								<evalType>point</evalType>
+							</output>
+							<output>out_dc
+								<evalType>point</evalType>
+							</output>
+							<output>out_ac_cmrr
+								<evalType>point</evalType>
+							</output>
+						</outputs>
+					</test>
+				</tests>
+				<vars>
+					<var>ibias
+						<value>6.25u</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_chkpt2_tb:1</dependentTest>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>supply
+						<value>1.2</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_chkpt2_tb:1</dependentTest>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>nf_input
+						<value>6</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_chkpt2_tb:1</dependentTest>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>nf_cas
+						<value>6</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>nf_load
+						<value>12</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_chkpt2_tb:1</dependentTest>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>mos_l
+						<value>180n</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>mos_w
+						<value>500n</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>bcasp
+						<value>0.45</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>bcasn
+						<value>1.1</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>test_cmrr
+						<value>1</value>
+						<dependentTests>
+							<dependentTest omitted="0">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+				</vars>
+				<corners>
+					<corner enabled="0">_default</corner>
+					<corner enabled="1">tt
+						<vars>
+							<var>temperature
+								<value>25</value>
+							</var>
+						</vars>
+						<models>
+							<model enabled="1">gpdk045.scs
+								<modeltest>All</modeltest>
+								<modelblock>Global</modelblock>
+								<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+								<modelsection>"tt"</modelsection>
+							</model>
+						</models>
+					</corner>
+					<corner enabled="1">ff
+						<vars>
+							<var>temperature
+								<value>70</value>
+							</var>
+						</vars>
+						<models>
+							<model enabled="1">gpdk045.scs
+								<modeltest>All</modeltest>
+								<modelblock>Global</modelblock>
+								<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+								<modelsection>"ff"</modelsection>
+							</model>
+						</models>
+					</corner>
+					<corner enabled="1">ss
+						<vars>
+							<var>temperature
+								<value>0</value>
+							</var>
+						</vars>
+						<models>
+							<model enabled="1">gpdk045.scs
+								<modeltest>All</modeltest>
+								<modelblock>Global</modelblock>
+								<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+								<modelsection>"ss"</modelsection>
+							</model>
+						</models>
+					</corner>
+					<corner enabled="1">sf
+						<vars>
+							<var>temperature
+								<value>25</value>
+							</var>
+						</vars>
+						<models>
+							<model enabled="1">gpdk045.scs
+								<modeltest>All</modeltest>
+								<modelblock>Global</modelblock>
+								<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+								<modelsection>"sf"</modelsection>
+							</model>
+						</models>
+					</corner>
+					<corner enabled="1">fs
+						<vars>
+							<var>temperature
+								<value>25</value>
+							</var>
+						</vars>
+						<models>
+							<model enabled="1">gpdk045.scs
+								<modeltest>All</modeltest>
+								<modelblock>Global</modelblock>
+								<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+								<modelsection>"fs"</modelsection>
+							</model>
+						</models>
+					</corner>
+				</corners>
+				<currentmode>Single Run, Sweeps and Corners</currentmode>
+				<disabledtests></disabledtests>
+				<extensions>
+					<extension>Parasitics
+						<callback>_parSetupDBExtensionCB</callback>
+						<iconvalue></iconvalue>
+						<icontype></icontype>
+					</extension>
+				</extensions>
+				<overwritehistory>0</overwritehistory>
+				<overwritehistoryname>Interactive.0</overwritehistoryname>
+				<plottingoptions>
+					<plottingoption>plottype
+						<value>None</value>
+					</plottingoption>
+					<plottingoption>usewaveformtemplate
+						<value>no</value>
+					</plottingoption>
+					<plottingoption>waveformtemplate
+						<value></value>
+					</plottingoption>
+					<plottingoption>allplottingtemplates
+						<value></value>
+					</plottingoption>
+					<plottingoption>defaultplottingtemplate
+						<value></value>
+					</plottingoption>
+				</plottingoptions>
+				<runoptions>
+					<mode>Monte Carlo Sampling
+						<runoption>mcmethod
+							<value>all</value>
+						</runoption>
+						<runoption>mcnumpoints
+							<value>200</value>
+						</runoption>
+						<runoption>mcnumbins
+							<value></value>
+						</runoption>
+						<runoption>mcStopEarly
+							<value>0</value>
+						</runoption>
+						<runoption>mcStopMethod
+							<value>Significance Test</value>
+						</runoption>
+						<runoption>samplingmode
+							<value>lds</value>
+						</runoption>
+						<runoption>saveprocess
+							<value>1</value>
+						</runoption>
+						<runoption>savemismatch
+							<value>0</value>
+						</runoption>
+						<runoption>mcreferencepoint
+							<value>0</value>
+						</runoption>
+						<runoption>donominal
+							<value>0</value>
+						</runoption>
+						<runoption>saveallplots
+							<value>0</value>
+						</runoption>
+						<runoption>montecarloseed
+							<value></value>
+						</runoption>
+						<runoption>mcstartingrunnumber
+							<value></value>
+						</runoption>
+						<runoption>dumpParamMode
+							<value>yes</value>
+						</runoption>
+					</mode>
+				</runoptions>
+				<sortVariableValues>0</sortVariableValues>
+			</checkpoint>
+			<timestamp>Apr 7 12:26:29 2019</timestamp>
+			<resultsname>/home/aa/users/harrisonliew/ee240b/bag_workspace_gpdk045/gen_libs/AAAFOO_OTA/OTA_cmreject_tb/adexl/results/data/Interactive.5.rdb</resultsname>
+			<simresults>$AXL_SETUPDB_DIR/results/data/Interactive.5.rdb</simresults>
+			<rawdatadelstrategy>SaveAll
+				<simdatasavemode>All</simdatasavemode>
+			</rawdatadelstrategy>
+			<netlistdelstrategy>SaveAll</netlistdelstrategy>
+			<uselocalpsfdir>false</uselocalpsfdir>
+			<localpsfdir>/tmp/hpse-14.EECS.Berkeley.EDU_harrisonliew_122629786</localpsfdir>
+			<psfdir>/home/aa/users/harrisonliew/simulation/AAAFOO_OTA/OTA_cmreject_tb/adexl/results/data/Interactive.5</psfdir>
+			<simdir>$AXL_PROJECT_DIR/AAAFOO_OTA/OTA_cmreject_tb/adexl/results/data/Interactive.5</simdir>
+			<gendatasheetplotsonsimulation>1</gendatasheetplotsonsimulation>
+			<runlog>/home/aa/users/harrisonliew/ee240b/bag_workspace_gpdk045/gen_libs/AAAFOO_OTA/OTA_cmreject_tb/adexl/results/data/Interactive.5.log</runlog>
+			<runlogfile>$AXL_SETUPDB_DIR/results/data/Interactive.5.log</runlogfile>
+			<schematicpoint></schematicpoint>
+			<test>all</test>
+		</historyentry>
+		<historyentry assemblerOrExplorer="adexl" roOrView="view">Interactive.6
+			<checkpoint>
+				<tests>
+					<test enabled="1">OTA:OTA_cmreject_tb:1
+						<tool>ADE</tool>
+						<tooloptions>
+							<option>cell
+								<value>OTA_cmreject_tb</value>
+							</option>
+							<option>lib
+								<value>AAAFOO_OTA</value>
+							</option>
+							<option>sim
+								<value>spectre</value>
+							</option>
+							<option>view
+								<value>schematic</value>
+							</option>
+							<option>path
+								<value>$AXL_SETUPDB_DIR/test_states</value>
+							</option>
+							<option>state
+								<value>OTA:OTA_cmreject_tb:1_none_Interactive.6</value>
+							</option>
+						</tooloptions>
+						<origoptions>
+							<option>cell
+								<value>OTA_cmreject_tb</value>
+							</option>
+							<option>lib
+								<value>OTA</value>
+							</option>
+							<option>sim
+								<value>spectre</value>
+							</option>
+							<option>view
+								<value>schematic</value>
+							</option>
+						</origoptions>
+						<outputs>
+							<output>out_ac_amp
+								<evalType>point</evalType>
+							</output>
+							<output>out_ac_phase
+								<evalType>point</evalType>
+							</output>
+							<output>out_dc
+								<evalType>point</evalType>
+							</output>
+							<output>out_ac_cmrr
+								<evalType>point</evalType>
+							</output>
+						</outputs>
+					</test>
+				</tests>
+				<vars>
+					<var>ibias
+						<value>6.25u</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_chkpt2_tb:1</dependentTest>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>supply
+						<value>1.2</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_chkpt2_tb:1</dependentTest>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>nf_input
+						<value>6</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_chkpt2_tb:1</dependentTest>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>nf_cas
+						<value>6</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>nf_load
+						<value>12</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_chkpt2_tb:1</dependentTest>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>mos_l
+						<value>180n</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>mos_w
+						<value>500n</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>bcasp
+						<value>0.45</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>bcasn
+						<value>1.1</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>test_cmrr
+						<value>1</value>
+						<dependentTests>
+							<dependentTest omitted="0">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+				</vars>
+				<corners>
+					<corner enabled="0">_default</corner>
+					<corner enabled="1">tt
+						<vars>
+							<var>temperature
+								<value>25</value>
+							</var>
+						</vars>
+						<models>
+							<model enabled="1">gpdk045.scs
+								<modeltest>All</modeltest>
+								<modelblock>Global</modelblock>
+								<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+								<modelsection>"tt"</modelsection>
+							</model>
+						</models>
+					</corner>
+					<corner enabled="1">ff
+						<vars>
+							<var>temperature
+								<value>70</value>
+							</var>
+						</vars>
+						<models>
+							<model enabled="1">gpdk045.scs
+								<modeltest>All</modeltest>
+								<modelblock>Global</modelblock>
+								<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+								<modelsection>"ff"</modelsection>
+							</model>
+						</models>
+					</corner>
+					<corner enabled="1">ss
+						<vars>
+							<var>temperature
+								<value>0</value>
+							</var>
+						</vars>
+						<models>
+							<model enabled="1">gpdk045.scs
+								<modeltest>All</modeltest>
+								<modelblock>Global</modelblock>
+								<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+								<modelsection>"ss"</modelsection>
+							</model>
+						</models>
+					</corner>
+					<corner enabled="1">sf
+						<vars>
+							<var>temperature
+								<value>25</value>
+							</var>
+						</vars>
+						<models>
+							<model enabled="1">gpdk045.scs
+								<modeltest>All</modeltest>
+								<modelblock>Global</modelblock>
+								<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+								<modelsection>"sf"</modelsection>
+							</model>
+						</models>
+					</corner>
+					<corner enabled="1">fs
+						<vars>
+							<var>temperature
+								<value>25</value>
+							</var>
+						</vars>
+						<models>
+							<model enabled="1">gpdk045.scs
+								<modeltest>All</modeltest>
+								<modelblock>Global</modelblock>
+								<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+								<modelsection>"fs"</modelsection>
+							</model>
+						</models>
+					</corner>
+				</corners>
+				<currentmode>Single Run, Sweeps and Corners</currentmode>
+				<disabledtests></disabledtests>
+				<extensions>
+					<extension>Parasitics
+						<callback>_parSetupDBExtensionCB</callback>
+						<iconvalue></iconvalue>
+						<icontype></icontype>
+					</extension>
+				</extensions>
+				<overwritehistory>0</overwritehistory>
+				<overwritehistoryname>Interactive.0</overwritehistoryname>
+				<plottingoptions>
+					<plottingoption>plottype
+						<value>None</value>
+					</plottingoption>
+					<plottingoption>usewaveformtemplate
+						<value>no</value>
+					</plottingoption>
+					<plottingoption>waveformtemplate
+						<value></value>
+					</plottingoption>
+					<plottingoption>allplottingtemplates
+						<value></value>
+					</plottingoption>
+					<plottingoption>defaultplottingtemplate
+						<value></value>
+					</plottingoption>
+				</plottingoptions>
+				<runoptions>
+					<mode>Monte Carlo Sampling
+						<runoption>mcmethod
+							<value>all</value>
+						</runoption>
+						<runoption>mcnumpoints
+							<value>200</value>
+						</runoption>
+						<runoption>mcnumbins
+							<value></value>
+						</runoption>
+						<runoption>mcStopEarly
+							<value>0</value>
+						</runoption>
+						<runoption>mcStopMethod
+							<value>Significance Test</value>
+						</runoption>
+						<runoption>samplingmode
+							<value>lds</value>
+						</runoption>
+						<runoption>saveprocess
+							<value>1</value>
+						</runoption>
+						<runoption>savemismatch
+							<value>0</value>
+						</runoption>
+						<runoption>mcreferencepoint
+							<value>0</value>
+						</runoption>
+						<runoption>donominal
+							<value>0</value>
+						</runoption>
+						<runoption>saveallplots
+							<value>0</value>
+						</runoption>
+						<runoption>montecarloseed
+							<value></value>
+						</runoption>
+						<runoption>mcstartingrunnumber
+							<value></value>
+						</runoption>
+						<runoption>dumpParamMode
+							<value>yes</value>
+						</runoption>
+					</mode>
+				</runoptions>
+				<sortVariableValues>0</sortVariableValues>
+			</checkpoint>
+			<timestamp>Apr 7 12:28:38 2019</timestamp>
+			<resultsname>/home/aa/users/harrisonliew/ee240b/bag_workspace_gpdk045/gen_libs/AAAFOO_OTA/OTA_cmreject_tb/adexl/results/data/Interactive.6.rdb</resultsname>
+			<simresults>$AXL_SETUPDB_DIR/results/data/Interactive.6.rdb</simresults>
+			<rawdatadelstrategy>SaveAll
+				<simdatasavemode>All</simdatasavemode>
+			</rawdatadelstrategy>
+			<netlistdelstrategy>SaveAll</netlistdelstrategy>
+			<uselocalpsfdir>false</uselocalpsfdir>
+			<localpsfdir>/tmp/hpse-14.EECS.Berkeley.EDU_harrisonliew_122838890</localpsfdir>
+			<psfdir>/home/aa/users/harrisonliew/simulation/AAAFOO_OTA/OTA_cmreject_tb/adexl/results/data/Interactive.6</psfdir>
+			<simdir>$AXL_PROJECT_DIR/AAAFOO_OTA/OTA_cmreject_tb/adexl/results/data/Interactive.6</simdir>
+			<gendatasheetplotsonsimulation>1</gendatasheetplotsonsimulation>
+			<runlog>/home/aa/users/harrisonliew/ee240b/bag_workspace_gpdk045/gen_libs/AAAFOO_OTA/OTA_cmreject_tb/adexl/results/data/Interactive.6.log</runlog>
+			<runlogfile>$AXL_SETUPDB_DIR/results/data/Interactive.6.log</runlogfile>
+			<schematicpoint></schematicpoint>
+			<test>all</test>
+		</historyentry>
+		<historyentry assemblerOrExplorer="adexl" roOrView="view">Interactive.7
+			<checkpoint>
+				<tests>
+					<test enabled="1">OTA:OTA_cmreject_tb:1
+						<tool>ADE</tool>
+						<tooloptions>
+							<option>cell
+								<value>OTA_cmreject_tb</value>
+							</option>
+							<option>lib
+								<value>AAAFOO_OTA</value>
+							</option>
+							<option>sim
+								<value>spectre</value>
+							</option>
+							<option>view
+								<value>schematic</value>
+							</option>
+							<option>path
+								<value>$AXL_SETUPDB_DIR/test_states</value>
+							</option>
+							<option>state
+								<value>OTA:OTA_cmreject_tb:1_none_Interactive.7</value>
+							</option>
+						</tooloptions>
+						<origoptions>
+							<option>cell
+								<value>OTA_cmreject_tb</value>
+							</option>
+							<option>lib
+								<value>OTA</value>
+							</option>
+							<option>sim
+								<value>spectre</value>
+							</option>
+							<option>view
+								<value>schematic</value>
+							</option>
+						</origoptions>
+						<outputs>
+							<output>out_ac_amp
+								<evalType>point</evalType>
+							</output>
+							<output>out_ac_phase
+								<evalType>point</evalType>
+							</output>
+							<output>out_dc
+								<evalType>point</evalType>
+							</output>
+							<output>out_ac_cmrr
+								<evalType>point</evalType>
+							</output>
+						</outputs>
+					</test>
+				</tests>
+				<vars>
+					<var>ibias
+						<value>6.25u</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_chkpt2_tb:1</dependentTest>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>supply
+						<value>1.2</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_chkpt2_tb:1</dependentTest>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>nf_input
+						<value>6</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_chkpt2_tb:1</dependentTest>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>nf_cas
+						<value>6</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>nf_load
+						<value>12</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_chkpt2_tb:1</dependentTest>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>mos_l
+						<value>180n</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>mos_w
+						<value>500n</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>bcasp
+						<value>0.45</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>bcasn
+						<value>1.1</value>
+						<dependentTests>
+							<dependentTest enabled="1">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+					<var>test_cmrr
+						<value>1</value>
+						<dependentTests>
+							<dependentTest omitted="0">OTA:OTA_cmreject_tb:1</dependentTest>
+						</dependentTests>
+					</var>
+				</vars>
+				<corners>
+					<corner enabled="0">_default</corner>
+					<corner enabled="1">tt
+						<vars>
+							<var>temperature
+								<value>25</value>
+							</var>
+						</vars>
+						<models>
+							<model enabled="1">gpdk045.scs
+								<modeltest>All</modeltest>
+								<modelblock>Global</modelblock>
+								<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+								<modelsection>"tt"</modelsection>
+							</model>
+						</models>
+					</corner>
+					<corner enabled="1">ff
+						<vars>
+							<var>temperature
+								<value>70</value>
+							</var>
+						</vars>
+						<models>
+							<model enabled="1">gpdk045.scs
+								<modeltest>All</modeltest>
+								<modelblock>Global</modelblock>
+								<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+								<modelsection>"ff"</modelsection>
+							</model>
+						</models>
+					</corner>
+					<corner enabled="1">ss
+						<vars>
+							<var>temperature
+								<value>0</value>
+							</var>
+						</vars>
+						<models>
+							<model enabled="1">gpdk045.scs
+								<modeltest>All</modeltest>
+								<modelblock>Global</modelblock>
+								<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+								<modelsection>"ss"</modelsection>
+							</model>
+						</models>
+					</corner>
+					<corner enabled="1">sf
+						<vars>
+							<var>temperature
+								<value>25</value>
+							</var>
+						</vars>
+						<models>
+							<model enabled="1">gpdk045.scs
+								<modeltest>All</modeltest>
+								<modelblock>Global</modelblock>
+								<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+								<modelsection>"sf"</modelsection>
+							</model>
+						</models>
+					</corner>
+					<corner enabled="1">fs
+						<vars>
+							<var>temperature
+								<value>25</value>
+							</var>
+						</vars>
+						<models>
+							<model enabled="1">gpdk045.scs
+								<modeltest>All</modeltest>
+								<modelblock>Global</modelblock>
+								<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+								<modelsection>"fs"</modelsection>
+							</model>
+						</models>
+					</corner>
+				</corners>
+				<currentmode>Single Run, Sweeps and Corners</currentmode>
+				<disabledtests></disabledtests>
+				<extensions>
+					<extension>Parasitics
+						<callback>_parSetupDBExtensionCB</callback>
+						<iconvalue></iconvalue>
+						<icontype></icontype>
+					</extension>
+				</extensions>
+				<overwritehistory>0</overwritehistory>
+				<overwritehistoryname>Interactive.0</overwritehistoryname>
+				<plottingoptions>
+					<plottingoption>plottype
+						<value>None</value>
+					</plottingoption>
+					<plottingoption>usewaveformtemplate
+						<value>no</value>
+					</plottingoption>
+					<plottingoption>waveformtemplate
+						<value></value>
+					</plottingoption>
+					<plottingoption>allplottingtemplates
+						<value></value>
+					</plottingoption>
+					<plottingoption>defaultplottingtemplate
+						<value></value>
+					</plottingoption>
+				</plottingoptions>
+				<runoptions>
+					<mode>Monte Carlo Sampling
+						<runoption>mcmethod
+							<value>all</value>
+						</runoption>
+						<runoption>mcnumpoints
+							<value>200</value>
+						</runoption>
+						<runoption>mcnumbins
+							<value></value>
+						</runoption>
+						<runoption>mcStopEarly
+							<value>0</value>
+						</runoption>
+						<runoption>mcStopMethod
+							<value>Significance Test</value>
+						</runoption>
+						<runoption>samplingmode
+							<value>lds</value>
+						</runoption>
+						<runoption>saveprocess
+							<value>1</value>
+						</runoption>
+						<runoption>savemismatch
+							<value>0</value>
+						</runoption>
+						<runoption>mcreferencepoint
+							<value>0</value>
+						</runoption>
+						<runoption>donominal
+							<value>0</value>
+						</runoption>
+						<runoption>saveallplots
+							<value>0</value>
+						</runoption>
+						<runoption>montecarloseed
+							<value></value>
+						</runoption>
+						<runoption>mcstartingrunnumber
+							<value></value>
+						</runoption>
+						<runoption>dumpParamMode
+							<value>yes</value>
+						</runoption>
+					</mode>
+				</runoptions>
+				<sortVariableValues>0</sortVariableValues>
+			</checkpoint>
+			<timestamp>Apr 7 12:30:04 2019</timestamp>
+			<resultsname>/home/aa/users/harrisonliew/ee240b/bag_workspace_gpdk045/gen_libs/AAAFOO_OTA/OTA_cmreject_tb/adexl/results/data/Interactive.7.rdb</resultsname>
+			<simresults>$AXL_SETUPDB_DIR/results/data/Interactive.7.rdb</simresults>
+			<rawdatadelstrategy>SaveAll
+				<simdatasavemode>All</simdatasavemode>
+			</rawdatadelstrategy>
+			<netlistdelstrategy>SaveAll</netlistdelstrategy>
+			<uselocalpsfdir>false</uselocalpsfdir>
+			<localpsfdir>/tmp/hpse-14.EECS.Berkeley.EDU_harrisonliew_123004050</localpsfdir>
+			<psfdir>/home/aa/users/harrisonliew/simulation/AAAFOO_OTA/OTA_cmreject_tb/adexl/results/data/Interactive.7</psfdir>
+			<simdir>$AXL_PROJECT_DIR/AAAFOO_OTA/OTA_cmreject_tb/adexl/results/data/Interactive.7</simdir>
+			<gendatasheetplotsonsimulation>1</gendatasheetplotsonsimulation>
+			<runlog>/home/aa/users/harrisonliew/ee240b/bag_workspace_gpdk045/gen_libs/AAAFOO_OTA/OTA_cmreject_tb/adexl/results/data/Interactive.7.log</runlog>
+			<runlogfile>$AXL_SETUPDB_DIR/results/data/Interactive.7.log</runlogfile>
+			<schematicpoint></schematicpoint>
+			<test>all</test>
+		</historyentry>
+	</history>
+</setupdb>

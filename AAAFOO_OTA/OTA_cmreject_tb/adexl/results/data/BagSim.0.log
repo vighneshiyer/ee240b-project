@@ -1,0 +1,19 @@
+Starting Single Run, Sweeps and Corners...
+
+Current time: Fri Apr  5 14:26:01 2019 
+Best design point: 1
+Design specs: 
+	OTA:OTA_cmreject_tb:1	corner	tt - 
+	out_dc		1.2
+Design parameters: 
+	ibias		20u
+	in_bias		700m
+	supply		1.2
+	nf_input		4
+	nf_load		4
+
+BagSim.0
+Number of points completed: 1
+Number of simulation errors: 0
+BagSim.0 completed. 
+Current time: Fri Apr  5 14:26:15 2019 
