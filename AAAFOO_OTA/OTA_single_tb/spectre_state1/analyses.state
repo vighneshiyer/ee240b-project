@@ -165,7 +165,7 @@ analysis(hb fields dynParamB) nil
 analysis(hb fields dynParamListBox) (nil choices nil value nil)
 analysis(hb fields dynchoice) "Parameter file"
 analysis(hb fields dynparam) ""
-analysis(hb fields enable) (nil)
+analysis(hb fields enable) (t)
 analysis(hb fields errpreset) "moderate"
 analysis(hb fields freqName) "1M"
 analysis(hb fields freqVal) "1M"
