@@ -1,4 +1,4 @@
-'(nil version 1.0 bBox ((2 401) (552 989)))
+'(nil version 1.0 bBox ((2 4) (552 592)))
 (unless printInfoDpl
 printInfoDpl = (ncons nil)
 )
@@ -9,7 +9,7 @@ printInfoDpl->expTable->waves = (let
 (tmp1)
 tmp1 = (let
 (tmp1)
-tmp1 = "Network function gain(magnitude)= 3.842e+24"
+tmp1 = "Network function gain(magnitude)= 2.12193e+16"
 list(tmp1)
 )
 list(tmp1)
@@ -18,7 +18,7 @@ printInfoDpl->expTable->origWaves = (let
 (tmp1)
 tmp1 = (let
 (tmp1)
-tmp1 = "Network function gain(magnitude)= 3.842e+24"
+tmp1 = "Network function gain(magnitude)= 2.12193e+16"
 list(tmp1)
 )
 list(tmp1)
@@ -29,7 +29,7 @@ printInfoDpl->expTable->aliases = nil
 printInfoDpl->optionDpl = (ncons nil)
 )
 printInfoDpl->optionDpl->format = 'suffix
-printInfoDpl->optionDpl->numSigDigits = 4
+printInfoDpl->optionDpl->numSigDigits = 6
 printInfoDpl->optionDpl->linLog = "Linear"
 printInfoDpl->optionDpl->from = nil
 printInfoDpl->optionDpl->to = nil
@@ -37,10 +37,10 @@ printInfoDpl->optionDpl->step = nil
 (unless printInfoDpl->printOptions
 printInfoDpl->printOptions = (ncons nil)
 )
-printInfoDpl->printType = "non wave"
+printInfoDpl->printType = "noise"
 printInfoDpl->origStrList = (let
 (tmp1 tmp2)
-tmp2 = "Network function gain(magnitude)= 3.842e+24    "
+tmp2 = "Network function gain(magnitude)= 2.12193e+16    "
 list(tmp1 tmp2)
 )
 printInfoDpl->title = nil
@@ -56,1217 +56,568 @@ printInfoDpl->waveNameList = nil
 printInfoDpl->context = (ncons nil)
 )
 printInfoDpl->context->runObjFile = "runObjFile"
-printInfoDpl->context->netlistDir = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic/netlist"
-printInfoDpl->context->relativeDir = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre"
-printInfoDpl->context->dataDir = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
+printInfoDpl->context->netlistDir = "/home/aa/users/harrisonliew/simulation/OTA_single_folded_tb/spectre/schematic/netlist"
+printInfoDpl->context->relativeDir = "/home/aa/users/harrisonliew/simulation/OTA_single_folded_tb/spectre"
+printInfoDpl->context->dataDir = "/home/aa/users/harrisonliew/simulation/OTA_single_folded_tb/spectre/schematic"
 (unless printInfoDpl->context->cache
 printInfoDpl->context->cache = (ncons nil)
 )
-printInfoDpl->context->cache->VDC = (let
-(tmp1 tmp2 tmp3 tmp4 tmp5 tmp6 tmp7 tmp8 tmp9 tmp10 tmp11 tmp12 tmp13 tmp14 tmp15 tmp16 tmp17 tmp18 tmp19 tmp20 tmp21 tmp22 tmp23 tmp24 tmp25 tmp26 tmp27 tmp28 tmp29 tmp30 tmp31 tmp32 tmp33 tmp34 tmp35 tmp36 tmp37 tmp38 tmp39 tmp40 tmp41 tmp42 tmp43 tmp44 tmp45 tmp46 tmp47 tmp48 tmp49 tmp50 tmp51 tmp52 tmp53 tmp54 tmp55 tmp56 tmp57 tmp58 tmp59 tmp60 tmp61 tmp62 tmp63 tmp64 tmp65 tmp66 tmp67 tmp68 tmp69 tmp70 tmp71 tmp72 tmp73 tmp74 tmp75 tmp76 tmp77 tmp78 tmp79 tmp80 tmp81 tmp82 tmp83 tmp84 tmp85 tmp86 tmp87 tmp88 tmp89 tmp90 tmp91 tmp92 tmp93 tmp94 tmp95 tmp96 tmp97 tmp98 tmp99 tmp100 tmp101 tmp102 tmp103 tmp104 tmp105 tmp106 tmp107 tmp108 tmp109 tmp110 tmp111 tmp112 tmp113 tmp114 tmp115 tmp116 tmp117 tmp118 tmp119 tmp120)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/I5/vfoldp"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
+printInfoDpl->context->simData = nil
+printInfoDpl->context->simulator = nil
+printInfoDpl->realExpList = nil
+(unless printInfoDpl->noiseOptions
+printInfoDpl->noiseOptions = (ncons nil)
 )
-list(tmp1 tmp2)
+printInfoDpl->noiseOptions->type = 'integrated
+printInfoDpl->noiseOptions->dataDir = "/home/aa/users/harrisonliew/simulation/OTA_single_folded_tb/spectre/schematic"
+printInfoDpl->noiseOptions->dataName = 'noise\-noise
+printInfoDpl->noiseOptions->frequency = nil
+printInfoDpl->noiseOptions->weight = 1.0000000000000000e+00
+printInfoDpl->noiseOptions->output = nil
+printInfoDpl->noiseOptions->include = 'all
+printInfoDpl->noiseOptions->xclude = 'none
+printInfoDpl->noiseOptions->devTypes = (let
+(tmp1 tmp2 tmp3)
+tmp1 = "bsim4"
+tmp2 = "bsource_08102a"
+tmp3 = "resistor"
+list(tmp1 tmp2 tmp3)
 )
+printInfoDpl->noiseOptions->noiseUnit = "V^2"
+printInfoDpl->noiseOptions->truncateType = 'byNumber
+printInfoDpl->noiseOptions->truncateData = 20
+printInfoDpl->noiseOptions->sort = (let
+(tmp1)
+tmp1 = 'individual
+list(tmp1)
+)
+printInfoDpl->noiseOptions->digits = 6
+printInfoDpl->noiseOptions->percentDecimals = 2
+printInfoDpl->noiseOptions->from = 1.0000000000000000e+00
+printInfoDpl->noiseOptions->to = 2.0000000000000000e+07
+printInfoDpl->noiseOptions->vnppbyindex = (let
+(tmp1 tmp2 tmp3)
+tmp1 = 'lambda
 tmp2 = (let
 (tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/I5/vfoldp"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
+tmp1 = 'index
+tmp2 = 'inst
 list(tmp1 tmp2)
 )
+tmp3 = (let
+(tmp1 tmp2 tmp3 tmp4)
+tmp1 = 'let
+tmp2 = (let
+(tmp1)
+tmp1 = 'wave
+list(tmp1)
+)
+tmp3 = (let
+(tmp1 tmp2 tmp3)
+tmp1 = 'setq
+tmp2 = 'inst
+tmp3 = (let
+(tmp1 tmp2)
+tmp1 = 'evalstring
+tmp2 = "inst"
+list(tmp1 tmp2)
+)
+list(tmp1 tmp2 tmp3)
+)
+tmp4 = (let
+(tmp1 tmp2 tmp3)
+tmp1 = 'when
+tmp2 = (let
+(tmp1 tmp2 tmp3)
+tmp1 = 'setq
+tmp2 = 'wave
+tmp3 = (let
+(tmp1 tmp2 tmp3 tmp4)
+tmp1 = '_drlGetNoiseDataByIndex
+tmp2 = (let
+(tmp1 tmp2)
+tmp1 = 'famiOpen
+tmp2 = 'inst
+list(tmp1 tmp2)
+)
+tmp3 = 'index
+tmp4 = (let
+(tmp1 tmp2)
+tmp1 = 'quote
+list(tmp1 tmp2)
+)
+list(tmp1 tmp2 tmp3 tmp4)
+)
+list(tmp1 tmp2 tmp3)
+)
+tmp3 = (let
+(tmp1 tmp2 tmp3)
+tmp1 = 'awviNormalizeIndexedVnpp
+tmp2 = 'inst
+tmp3 = 'wave
+list(tmp1 tmp2 tmp3)
+)
+list(tmp1 tmp2 tmp3)
+)
+list(tmp1 tmp2 tmp3 tmp4)
+)
+list(tmp1 tmp2 tmp3)
+)
+printInfoDpl->noiseOptions->vn2 = (let
+(tmp1 tmp2 tmp3)
+tmp1 = 'lambda
+tmp2 = (let
+(tmp1)
+tmp1 = 'dataDir
+list(tmp1)
+)
+tmp3 = (let
+(tmp1 tmp2 tmp3 tmp4 tmp5 tmp6 tmp7)
+tmp1 = 'let
+tmp2 = (let
+(tmp1 tmp2 tmp3 tmp4 tmp5 tmp6)
+tmp1 = 'dataName
+tmp2 = 'dataFile
+tmp3 = 'inst
+tmp4 = 'fam
+tmp5 = 'wave
+tmp6 = 'units
+list(tmp1 tmp2 tmp3 tmp4 tmp5 tmp6)
+)
+tmp3 = (let
+(tmp1 tmp2 tmp3)
+tmp1 = 'setq
+tmp2 = 'dataName
+tmp3 = (let
+(tmp1 tmp2)
+tmp1 = 'quote
+tmp2 = 'noise\-noise
+list(tmp1 tmp2)
+)
+list(tmp1 tmp2 tmp3)
+)
+tmp4 = (let
+(tmp1 tmp2 tmp3)
+tmp1 = 'setq
+tmp2 = 'dataFile
+tmp3 = (let
+(tmp1 tmp2)
+tmp1 = 'famOpen
+tmp2 = 'dataDir
+list(tmp1 tmp2)
+)
+list(tmp1 tmp2 tmp3)
+)
+tmp5 = (let
+(tmp1 tmp2 tmp3)
+tmp1 = 'setq
+tmp2 = 'inst
+tmp3 = (let
+(tmp1 tmp2 tmp3)
+tmp1 = 'famGetAnalysis
+tmp2 = 'dataFile
+tmp3 = 'dataName
+list(tmp1 tmp2 tmp3)
+)
+list(tmp1 tmp2 tmp3)
+)
+tmp6 = (let
+(tmp1 tmp2 tmp3)
+tmp1 = 'setq
+tmp2 = 'fam
+tmp3 = (let
+(tmp1 tmp2 tmp3)
+tmp1 = 'famRead
+tmp2 = 'inst
+tmp3 = "out"
+list(tmp1 tmp2 tmp3)
+)
+list(tmp1 tmp2 tmp3)
+)
+tmp7 = (let
+(tmp1 tmp2 tmp3 tmp4 tmp5)
+tmp1 = 'when
+tmp2 = 'fam
+tmp3 = (let
+(tmp1 tmp2 tmp3)
+tmp1 = 'setq
+tmp2 = 'wave
+tmp3 = (let
+(tmp1 tmp2)
+tmp1 = 'evalstring
+tmp2 = "fam"
+list(tmp1 tmp2)
+)
+list(tmp1 tmp2 tmp3)
+)
+tmp4 = (let
+(tmp1 tmp2 tmp3 tmp4 tmp5 tmp6 tmp7)
+tmp1 = 'if
+tmp2 = (let
+(tmp1 tmp2)
+tmp1 = 'drIsWaveform
+tmp2 = 'wave
+list(tmp1 tmp2)
+)
+tmp3 = 'then
+tmp4 = (let
+(tmp1 tmp2 tmp3)
+tmp1 = 'setq
+tmp2 = 'units
+tmp3 = (let
+(tmp1 tmp2 tmp3)
+tmp1 = 'get
+tmp2 = (let
+(tmp1 tmp2)
+tmp1 = 'drGetWaveformYVec
+tmp2 = 'wave
 list(tmp1 tmp2)
 )
 tmp3 = (let
 (tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/biasn"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
+tmp1 = 'quote
+tmp2 = 'units
 list(tmp1 tmp2)
 )
-list(tmp1 tmp2)
+list(tmp1 tmp2 tmp3)
 )
-tmp4 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/biasn"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
+list(tmp1 tmp2 tmp3)
 )
-list(tmp1 tmp2)
-)
-tmp5 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/VSS"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
+tmp5 = 'else
 tmp6 = (let
+(tmp1 tmp2 tmp3)
+tmp1 = 'setq
+tmp2 = 'wave
+tmp3 = (let
 (tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/VSS"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
+tmp1 = 'evalstring
+tmp2 = "fam"
 list(tmp1 tmp2)
 )
-list(tmp1 tmp2)
+list(tmp1 tmp2 tmp3)
 )
 tmp7 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/VSS"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp8 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/VSS"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp9 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/I5/vfoldn"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp10 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/I5/vfoldn"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp11 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/biasn"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp12 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/biasn"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp13 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/VSS"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp14 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/VSS"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp15 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/VSS"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp16 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/VSS"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp17 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/VSS"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp18 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/VSS"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp19 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/VDD_rep"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp20 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/VDD_rep"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp21 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/VDD_rep"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp22 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/VDD_rep"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp23 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/I5/vpcas"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp24 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/I5/vpcas"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp25 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/bcasp"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp26 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/bcasp"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp27 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/VDD_rep"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp28 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/VDD_rep"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp29 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/op_rep"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp30 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/op_rep"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp31 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/I5/net022"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp32 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/I5/net022"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp33 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/bcasp"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp34 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/bcasp"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp35 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/VDD_rep"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp36 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/VDD_rep"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp37 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/I5/vbp"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp38 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/I5/vbp"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp39 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/I5/vbp"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp40 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/I5/vbp"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp41 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/bcasn"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp42 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/bcasn"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp43 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/VSS"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp44 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/VSS"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp45 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/I5/vfoldp"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp46 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/I5/vfoldp"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp47 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/op_rep"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp48 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/op_rep"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp49 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/bcasn"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp50 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/bcasn"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp51 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/VSS"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp52 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/VSS"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp53 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/I5/vfoldn"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp54 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/I5/vfoldn"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp55 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/VDD_rep"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp56 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/VDD_rep"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp57 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/I5/vbp"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp58 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/I5/vbp"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp59 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/VDD_rep"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp60 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/VDD_rep"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp61 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/I5/net022"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp62 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/I5/net022"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp63 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/VDD_rep"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp64 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/VDD_rep"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp65 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/I5/vbp"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp66 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/I5/vbp"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp67 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/VDD_rep"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp68 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/VDD_rep"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp69 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/I5/vpcas"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
+(tmp1 tmp2 tmp3)
+tmp1 = 'setq
+tmp2 = 'units
+tmp3 = (let
+(tmp1 tmp2 tmp3)
+tmp1 = 'get
+tmp2 = (let
+(tmp1 tmp2)
+tmp1 = 'drGetWaveformYVec
+tmp2 = 'fam
+list(tmp1 tmp2)
+)
+tmp3 = (let
+(tmp1 tmp2)
+tmp1 = 'quote
+tmp2 = 'units
+list(tmp1 tmp2)
+)
+list(tmp1 tmp2 tmp3)
+)
+list(tmp1 tmp2 tmp3)
+)
+list(tmp1 tmp2 tmp3 tmp4 tmp5 tmp6 tmp7)
+)
+tmp5 = (let
+(tmp1 tmp2 tmp3 tmp4 tmp5)
+tmp1 = 'and
+tmp2 = 'wave
+tmp3 = 'units
+tmp4 = (let
+(tmp1 tmp2 tmp3)
+tmp1 = 'rexMatchp
+tmp2 = "[AVrads^2]/[sqrt(Hz)]"
+tmp3 = 'units
+list(tmp1 tmp2 tmp3)
+)
+tmp5 = (let
+(tmp1 tmp2 tmp3)
+tmp1 = 'expt
+tmp2 = 'wave
+tmp3 = 2
+list(tmp1 tmp2 tmp3)
+)
+list(tmp1 tmp2 tmp3 tmp4 tmp5)
+)
+list(tmp1 tmp2 tmp3 tmp4 tmp5)
+)
+list(tmp1 tmp2 tmp3 tmp4 tmp5 tmp6 tmp7)
+)
+list(tmp1 tmp2 tmp3)
+)
+printInfoDpl->noiseOptions->vnin = (let
+(tmp1 tmp2 tmp3)
+tmp1 = 'lambda
+tmp2 = (let
+(tmp1)
+tmp1 = 'dataDir
+list(tmp1)
 )
-tmp70 = (let
+tmp3 = (let
+(tmp1 tmp2 tmp3 tmp4 tmp5 tmp6 tmp7)
+tmp1 = 'let
+tmp2 = (let
+(tmp1 tmp2 tmp3 tmp4 tmp5)
+tmp1 = 'dataName
+tmp2 = 'dataFile
+tmp3 = 'inst
+tmp4 = 'fam
+tmp5 = 'wave
+list(tmp1 tmp2 tmp3 tmp4 tmp5)
+)
+tmp3 = (let
+(tmp1 tmp2 tmp3)
+tmp1 = 'setq
+tmp2 = 'dataName
+tmp3 = (let
 (tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/I5/vpcas"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp71 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/I5/vfoldp"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp72 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/I5/vfoldp"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp73 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/biasn"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp74 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/biasn"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp75 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/VSS"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp76 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/VSS"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp77 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/VSS"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp78 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/VSS"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp79 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/I5/vfoldn"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp80 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/I5/vfoldn"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp81 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/biasn"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp82 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/biasn"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp83 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/VSS"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp84 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/VSS"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp85 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/VSS"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp86 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/VSS"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp87 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/VDD_rep"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp88 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/VDD_rep"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp89 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/VSS"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp90 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/VSS"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp91 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/I5/net059"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp92 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/I5/net059"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp93 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/I5/net059"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp94 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/I5/net059"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp95 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/I5/net040"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp96 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/I5/net040"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp97 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/net022"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp98 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/net022"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp99 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/vcmsense_rep"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp100 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/vcmsense_rep"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp101 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/net022"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp102 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/net022"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp103 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/I5/vfoldn"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
-list(tmp1 tmp2)
-)
-tmp104 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/I5/vfoldn"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
+tmp1 = 'quote
+tmp2 = 'noise\-noise
 list(tmp1 tmp2)
 )
-list(tmp1 tmp2)
+list(tmp1 tmp2 tmp3)
 )
-tmp105 = (let
+tmp4 = (let
+(tmp1 tmp2 tmp3)
+tmp1 = 'setq
+tmp2 = 'dataFile
+tmp3 = (let
 (tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/net022"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
+tmp1 = 'famOpen
+tmp2 = 'dataDir
 list(tmp1 tmp2)
 )
-list(tmp1 tmp2)
+list(tmp1 tmp2 tmp3)
 )
-tmp106 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/net022"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
+tmp5 = (let
+(tmp1 tmp2 tmp3)
+tmp1 = 'setq
+tmp2 = 'inst
+tmp3 = (let
+(tmp1 tmp2 tmp3)
+tmp1 = 'famGetAnalysis
+tmp2 = 'dataFile
+tmp3 = 'dataName
+list(tmp1 tmp2 tmp3)
+)
+list(tmp1 tmp2 tmp3)
+)
+tmp6 = (let
+(tmp1 tmp2 tmp3)
+tmp1 = 'setq
+tmp2 = 'fam
+tmp3 = (let
+(tmp1 tmp2 tmp3)
+tmp1 = 'famRead
+tmp2 = 'inst
+tmp3 = "in"
+list(tmp1 tmp2 tmp3)
 )
-list(tmp1 tmp2)
+list(tmp1 tmp2 tmp3)
 )
-tmp107 = (let
+tmp7 = (let
+(tmp1 tmp2 tmp3 tmp4 tmp5 tmp6)
+tmp1 = 'when
+tmp2 = 'fam
+tmp3 = (let
+(tmp1 tmp2 tmp3)
+tmp1 = 'setq
+tmp2 = 'wave
+tmp3 = (let
 (tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/ip_rep"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
+tmp1 = 'evalstring
+tmp2 = "fam"
 list(tmp1 tmp2)
 )
-tmp108 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/ip_rep"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
+list(tmp1 tmp2 tmp3)
 )
+tmp4 = (let
+(tmp1 tmp2 tmp3)
+tmp1 = 'unless
+tmp2 = (let
+(tmp1 tmp2)
+tmp1 = 'drIsWaveform
+tmp2 = 'wave
 list(tmp1 tmp2)
+)
+tmp3 = (let
+(tmp1 tmp2 tmp3)
+tmp1 = 'setq
+tmp2 = 'wave
+tmp3 = (let
+(tmp1 tmp2)
+tmp1 = 'evalstring
+tmp2 = "fam"
+list(tmp1 tmp2)
+)
+list(tmp1 tmp2 tmp3)
+)
+list(tmp1 tmp2 tmp3)
+)
+tmp5 = (let
+(tmp1 tmp2 tmp3)
+tmp1 = 'unless
+tmp2 = 'wave
+tmp3 = (let
+(tmp1 tmp2 tmp3)
+tmp1 = 'setq
+tmp2 = 'wave
+tmp3 = (let
+(tmp1 tmp2)
+tmp1 = 'evalstring
+tmp2 = "fam"
+list(tmp1 tmp2)
+)
+list(tmp1 tmp2 tmp3)
+)
+list(tmp1 tmp2 tmp3)
+)
+tmp6 = 'wave
+list(tmp1 tmp2 tmp3 tmp4 tmp5 tmp6)
 )
-tmp109 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/net022"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
+list(tmp1 tmp2 tmp3 tmp4 tmp5 tmp6 tmp7)
+)
+list(tmp1 tmp2 tmp3)
+)
+printInfoDpl->noiseOptions->ng = (let
+(tmp1 tmp2 tmp3)
+tmp1 = 'lambda
+tmp2 = (let
+(tmp1)
+tmp1 = 'dataDir
+list(tmp1)
 )
-list(tmp1 tmp2)
+tmp3 = (let
+(tmp1 tmp2 tmp3 tmp4 tmp5 tmp6 tmp7)
+tmp1 = 'let
+tmp2 = (let
+(tmp1 tmp2 tmp3 tmp4 tmp5)
+tmp1 = 'dataName
+tmp2 = 'dataFile
+tmp3 = 'inst
+tmp4 = 'fam
+tmp5 = 'wave
+list(tmp1 tmp2 tmp3 tmp4 tmp5)
 )
-tmp110 = (let
+tmp3 = (let
+(tmp1 tmp2 tmp3)
+tmp1 = 'setq
+tmp2 = 'dataName
+tmp3 = (let
 (tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/net022"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
+tmp1 = 'quote
+tmp2 = 'noise\-noise
 list(tmp1 tmp2)
 )
-list(tmp1 tmp2)
+list(tmp1 tmp2 tmp3)
 )
-tmp111 = (let
+tmp4 = (let
+(tmp1 tmp2 tmp3)
+tmp1 = 'setq
+tmp2 = 'dataFile
+tmp3 = (let
 (tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/I5/vfoldp"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
+tmp1 = 'famOpen
+tmp2 = 'dataDir
 list(tmp1 tmp2)
 )
-list(tmp1 tmp2)
+list(tmp1 tmp2 tmp3)
 )
-tmp112 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/I5/vfoldp"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
+tmp5 = (let
+(tmp1 tmp2 tmp3)
+tmp1 = 'setq
+tmp2 = 'inst
+tmp3 = (let
+(tmp1 tmp2 tmp3)
+tmp1 = 'famGetAnalysis
+tmp2 = 'dataFile
+tmp3 = 'dataName
+list(tmp1 tmp2 tmp3)
 )
-list(tmp1 tmp2)
+list(tmp1 tmp2 tmp3)
 )
-tmp113 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/VDD_rep"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
+tmp6 = (let
+(tmp1 tmp2 tmp3)
+tmp1 = 'setq
+tmp2 = 'fam
+tmp3 = (let
+(tmp1 tmp2 tmp3)
+tmp1 = 'famRead
+tmp2 = 'inst
+tmp3 = "gain"
+list(tmp1 tmp2 tmp3)
 )
-list(tmp1 tmp2)
+list(tmp1 tmp2 tmp3)
 )
-tmp114 = (let
+tmp7 = (let
+(tmp1 tmp2 tmp3 tmp4 tmp5 tmp6)
+tmp1 = 'when
+tmp2 = 'fam
+tmp3 = (let
+(tmp1 tmp2 tmp3)
+tmp1 = 'setq
+tmp2 = 'wave
+tmp3 = (let
 (tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/VDD_rep"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
+tmp1 = 'evalstring
+tmp2 = "fam"
 list(tmp1 tmp2)
 )
-list(tmp1 tmp2)
+list(tmp1 tmp2 tmp3)
 )
-tmp115 = (let
+tmp4 = (let
+(tmp1 tmp2 tmp3)
+tmp1 = 'unless
+tmp2 = (let
 (tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/biasp"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
+tmp1 = 'drIsWaveform
+tmp2 = 'wave
 list(tmp1 tmp2)
 )
-tmp116 = (let
-(tmp1 tmp2)
-tmp1 = (let
+tmp3 = (let
+(tmp1 tmp2 tmp3)
+tmp1 = 'setq
+tmp2 = 'wave
+tmp3 = (let
 (tmp1 tmp2)
-tmp1 = "/biasp"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
+tmp1 = 'evalstring
+tmp2 = "fam"
 list(tmp1 tmp2)
 )
-list(tmp1 tmp2)
-)
-tmp117 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/VDD_rep"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
+list(tmp1 tmp2 tmp3)
 )
-list(tmp1 tmp2)
+list(tmp1 tmp2 tmp3)
 )
-tmp118 = (let
+tmp5 = (let
+(tmp1 tmp2 tmp3)
+tmp1 = 'unless
+tmp2 = 'wave
+tmp3 = (let
+(tmp1 tmp2 tmp3)
+tmp1 = 'setq
+tmp2 = 'wave
+tmp3 = (let
 (tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/VDD_rep"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
-)
+tmp1 = 'evalstring
+tmp2 = "fam"
 list(tmp1 tmp2)
 )
-tmp119 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/net022"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
+list(tmp1 tmp2 tmp3)
 )
-list(tmp1 tmp2)
+list(tmp1 tmp2 tmp3)
 )
-tmp120 = (let
-(tmp1 tmp2)
-tmp1 = (let
-(tmp1 tmp2)
-tmp1 = "/net022"
-tmp2 = "/home/cc/cs199/fa13/class/cs199-ban/simulation/OTA_single_folded_tb/spectre/schematic"
-list(tmp1 tmp2)
+tmp6 = 'wave
+list(tmp1 tmp2 tmp3 tmp4 tmp5 tmp6)
 )
-list(tmp1 tmp2)
+list(tmp1 tmp2 tmp3 tmp4 tmp5 tmp6 tmp7)
 )
-list(tmp1 tmp2 tmp3 tmp4 tmp5 tmp6 tmp7 tmp8 tmp9 tmp10 tmp11 tmp12 tmp13 tmp14 tmp15 tmp16 tmp17 tmp18 tmp19 tmp20 tmp21 tmp22 tmp23 tmp24 tmp25 tmp26 tmp27 tmp28 tmp29 tmp30 tmp31 tmp32 tmp33 tmp34 tmp35 tmp36 tmp37 tmp38 tmp39 tmp40 tmp41 tmp42 tmp43 tmp44 tmp45 tmp46 tmp47 tmp48 tmp49 tmp50 tmp51 tmp52 tmp53 tmp54 tmp55 tmp56 tmp57 tmp58 tmp59 tmp60 tmp61 tmp62 tmp63 tmp64 tmp65 tmp66 tmp67 tmp68 tmp69 tmp70 tmp71 tmp72 tmp73 tmp74 tmp75 tmp76 tmp77 tmp78 tmp79 tmp80 tmp81 tmp82 tmp83 tmp84 tmp85 tmp86 tmp87 tmp88 tmp89 tmp90 tmp91 tmp92 tmp93 tmp94 tmp95 tmp96 tmp97 tmp98 tmp99 tmp100 tmp101 tmp102 tmp103 tmp104 tmp105 tmp106 tmp107 tmp108 tmp109 tmp110 tmp111 tmp112 tmp113 tmp114 tmp115 tmp116 tmp117 tmp118 tmp119 tmp120)
+list(tmp1 tmp2 tmp3)
 )
-printInfoDpl->context->simData = nil
-printInfoDpl->context->simulator = "spectre"
-printInfoDpl->realExpList = nil
-printInfoDpl->saveLoadFile = "/home/cc/cs199/fa13/class/cs199-ban/bag_workspace_gpdk045/AAAFOO_OTA/OTA_single_folded_tb/spectre_state1/printSetup.state"
+printInfoDpl->noiseOptions->mapFun = 'spectreiMapInstanceSimToSchName
+printInfoDpl->noiseOptions->filterFun = 'asiiNoiseFilterParametersWrapper
+printInfoDpl->noiseOptions->preprocessFun = 'asiiPreProcessNoiseWrapper
+printInfoDpl->noiseOptions->hierLevel = ""
+printInfoDpl->saveLoadFile = "/home/aa/users/harrisonliew/ee240b/bag_workspace_gpdk045/gen_libs/AAAFOO_OTA/OTA_single_folded_tb/spectre_state1/printSetup.state"
