@@ -165,7 +165,7 @@ analysis(hb fields dynParamB) nil
 analysis(hb fields dynParamListBox) (nil choices nil value nil)
 analysis(hb fields dynchoice) "Parameter file"
 analysis(hb fields dynparam) ""
-analysis(hb fields enable) (nil)
+analysis(hb fields enable) (t)
 analysis(hb fields errpreset) "moderate"
 analysis(hb fields freqName) "1M"
 analysis(hb fields freqVal) "1M"
@@ -368,7 +368,7 @@ analysis(noise fields dec) "20"
 analysis(noise fields designVar) ""
 analysis(noise fields dev) ""
 analysis(noise fields deviceParam) ""
-analysis(noise fields enable) (nil)
+analysis(noise fields enable) (t)
 analysis(noise fields freq) ""
 analysis(noise fields inIsrc) ""
 analysis(noise fields inPort) ""
@@ -380,10 +380,10 @@ analysis(noise fields lin) ""
 analysis(noise fields log) ""
 analysis(noise fields mod) ""
 analysis(noise fields modelParam) ""
-analysis(noise fields n) "/on"
+analysis(noise fields n) "/on3"
 analysis(noise fields oprobe) ""
 analysis(noise fields outType) "voltage"
-analysis(noise fields p) "/op"
+analysis(noise fields p) "/op3"
 analysis(noise fields param) ""
 analysis(noise fields rangeType) "Start-Stop"
 analysis(noise fields separatenoise) ""

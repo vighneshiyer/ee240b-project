@@ -7,7 +7,7 @@ tmp1 = make_sevVariableStruct()
 tmp1 = (ncons nil)
 )
 tmp1->name = "cmstep"
-tmp1->expression = "1"
+tmp1->expression = "0"
 tmp1->index = 1
 (unless tmp2
 tmp2 = make_sevVariableStruct()
@@ -43,7 +43,7 @@ tmp5 = make_sevVariableStruct()
 tmp5 = (ncons nil)
 )
 tmp5->name = "cmrr"
-tmp5->expression = "1"
+tmp5->expression = "0"
 tmp5->index = 5
 (unless tmp6
 tmp6 = make_sevVariableStruct()
