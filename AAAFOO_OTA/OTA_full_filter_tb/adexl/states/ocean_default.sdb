@@ -1,0 +1,180 @@
+<?xml version="1.0"?>
+<setupdb version="6">ocean_default
+	<active>Active Setup
+		<extensions>
+			<extension>Parasitics
+				<callback>_parSetupDBExtensionCB</callback>
+				<iconvalue></iconvalue>
+				<icontype></icontype>
+			</extension>
+		</extensions>
+		<currentmode>Single Run, Sweeps and Corners</currentmode>
+		<tests>
+			<test enabled="1">OTA:OTA_cmreject_tb:1
+				<tool>ADE</tool>
+				<tooloptions>
+					<option>cell
+						<value>OTA_single_tb</value>
+					</option>
+					<option>lib
+						<value>AAAFOO_OTA_single</value>
+					</option>
+					<option>sim
+						<value>spectre</value>
+					</option>
+					<option>view
+						<value>config</value>
+					</option>
+					<option>path
+						<value>$AXL_SETUPDB_DIR/states/ocean_default/test_states</value>
+					</option>
+					<option>state
+						<value>OTA:OTA_cmreject_tb:1_active</value>
+					</option>
+				</tooloptions>
+				<origoptions>
+					<option>cell
+						<value>OTA_cmreject_tb</value>
+					</option>
+					<option>lib
+						<value>OTA</value>
+					</option>
+					<option>sim
+						<value>spectre</value>
+					</option>
+					<option>view
+						<value>schematic</value>
+					</option>
+				</origoptions>
+				<outputs>
+					<output>out_ac_amp
+						<evalType>point</evalType>
+					</output>
+					<output>out_ac_phase
+						<evalType>point</evalType>
+					</output>
+					<output>out_dc
+						<evalType>point</evalType>
+					</output>
+				</outputs>
+			</test>
+		</tests>
+		<vars>
+			<var>ibias
+				<value>2.000000e-05</value>
+				<dependentTests>
+					<dependentTest enabled="1">OTA:OTA_chkpt2_tb:1</dependentTest>
+					<dependentTest enabled="1" omitted="0">OTA:OTA_cmreject_tb:1</dependentTest>
+				</dependentTests>
+			</var>
+			<var>in_bias
+				<value>7.000000e-01</value>
+				<dependentTests>
+					<dependentTest enabled="1">OTA:OTA_chkpt2_tb:1</dependentTest>
+					<dependentTest enabled="1" omitted="0">OTA:OTA_cmreject_tb:1</dependentTest>
+				</dependentTests>
+			</var>
+			<var>supply
+				<value>1.200000e+00</value>
+				<dependentTests>
+					<dependentTest enabled="1">OTA:OTA_chkpt2_tb:1</dependentTest>
+					<dependentTest enabled="1" omitted="0">OTA:OTA_cmreject_tb:1</dependentTest>
+				</dependentTests>
+			</var>
+			<var>nf_input
+				<value>4.000000e+00</value>
+				<dependentTests>
+					<dependentTest enabled="1">OTA:OTA_chkpt2_tb:1</dependentTest>
+					<dependentTest enabled="1" omitted="0">OTA:OTA_cmreject_tb:1</dependentTest>
+				</dependentTests>
+			</var>
+			<var>nf_load
+				<value>4.000000e+00</value>
+				<dependentTests>
+					<dependentTest enabled="1">OTA:OTA_chkpt2_tb:1</dependentTest>
+					<dependentTest enabled="1" omitted="0">OTA:OTA_cmreject_tb:1</dependentTest>
+				</dependentTests>
+			</var>
+		</vars>
+		<disabledtests></disabledtests>
+		<corners>
+			<corner enabled="0">_default</corner>
+			<corner enabled="1">tt
+				<vars>
+					<var>temperature
+						<value>25</value>
+					</var>
+				</vars>
+				<models>
+					<model enabled="1">gpdk045.scs
+						<modeltest>All</modeltest>
+						<modelblock>Global</modelblock>
+						<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+						<modelsection>"tt"</modelsection>
+					</model>
+				</models>
+			</corner>
+			<corner enabled="0">ff
+				<vars>
+					<var>temperature
+						<value>70</value>
+					</var>
+				</vars>
+				<models>
+					<model enabled="1">gpdk045.scs
+						<modeltest>All</modeltest>
+						<modelblock>Global</modelblock>
+						<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+						<modelsection>"ff"</modelsection>
+					</model>
+				</models>
+			</corner>
+			<corner enabled="0">ss
+				<vars>
+					<var>temperature
+						<value>0</value>
+					</var>
+				</vars>
+				<models>
+					<model enabled="1">gpdk045.scs
+						<modeltest>All</modeltest>
+						<modelblock>Global</modelblock>
+						<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+						<modelsection>"ss"</modelsection>
+					</model>
+				</models>
+			</corner>
+			<corner enabled="0">sf
+				<vars>
+					<var>temperature
+						<value>25</value>
+					</var>
+				</vars>
+				<models>
+					<model enabled="1">gpdk045.scs
+						<modeltest>All</modeltest>
+						<modelblock>Global</modelblock>
+						<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+						<modelsection>"sf"</modelsection>
+					</model>
+				</models>
+			</corner>
+			<corner enabled="0">fs
+				<vars>
+					<var>temperature
+						<value>25</value>
+					</var>
+				</vars>
+				<models>
+					<model enabled="1">gpdk045.scs
+						<modeltest>All</modeltest>
+						<modelblock>Global</modelblock>
+						<modelfile>/home/ff/ee240b/sp18/gpdk/gpdk045_v_5_0/models/spectre/gpdk045.scs</modelfile>
+						<modelsection>"fs"</modelsection>
+					</model>
+				</models>
+			</corner>
+		</corners>
+	</active>
+	<history>History</history>
+</setupdb>

@@ -6,11 +6,11 @@
 LockStakeVersion               1.1
 LoginName                      cs199-ban
 HostName                       hpse-9.EECS.Berkeley.EDU
-ProcessIdentifier              20414
-ProcessCreationTime_UTC        1555549585
-ProcessCreationTime_Readable   Wed Apr 17 18:06:25 2019 PDT
+ProcessIdentifier              32264
+ProcessCreationTime_UTC        1556062080
+ProcessCreationTime_Readable   Tue Apr 23 16:28:00 2019 PDT
 AppIdentifier                  OA File System Design Manager
 OSType                         unix
 ReasonForPlacingEditLock       OpenAccess edit lock
-FilePathUsedToEditLock         /home/cc/cs199/fa13/class/cs199-ban/bag_workspace_gpdk045/AAAFOO_OTA/OTA_single_tb/schematic/sch.oa.cdslck
-TimeEditLocked                 Wed Apr 17 19:28:50 2019 PDT
+FilePathUsedToEditLock         /home/cc/cs199/fa13/class/cs199-ban/bag_workspace_gpdk045/AAAFOO_OTA/OTA_single_tb/schematic/sch.oa.cdslck.dirlck
+TimeEditLocked                 Fri Apr 26 16:40:45 2019 PDT
