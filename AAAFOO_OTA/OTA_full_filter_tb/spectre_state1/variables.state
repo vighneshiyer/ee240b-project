@@ -205,7 +205,7 @@ tmp23 = make_sevVariableStruct()
 tmp23 = (ncons nil)
 )
 tmp23->name = "supply"
-tmp23->expression = "1.56"
+tmp23->expression = "1.2"
 tmp23->index = 23
 list(tmp1 tmp2 tmp3 tmp4 tmp5 tmp6 tmp7 tmp8 tmp9 tmp10 tmp11 tmp12 tmp13 tmp14 tmp15 tmp16 tmp17 tmp18 tmp19 tmp20 tmp21 tmp22 tmp23)
 )

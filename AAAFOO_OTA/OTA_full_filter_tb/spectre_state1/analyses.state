@@ -368,7 +368,7 @@ analysis(noise fields dec) "20"
 analysis(noise fields designVar) ""
 analysis(noise fields dev) ""
 analysis(noise fields deviceParam) ""
-analysis(noise fields enable) (t)
+analysis(noise fields enable) (nil)
 analysis(noise fields freq) ""
 analysis(noise fields inIsrc) ""
 analysis(noise fields inPort) ""
@@ -511,7 +511,7 @@ analysis(tran fields dynamicChoice) "Vector"
 analysis(tran fields dynamicParameter) "Parameter"
 analysis(tran fields dynchoice) "Parameter vector"
 analysis(tran fields dynparam) ""
-analysis(tran fields enable) (t)
+analysis(tran fields enable) (nil)
 analysis(tran fields errpreset) "conservative"
 analysis(tran fields noisefmax) ""
 analysis(tran fields noisefmin) ""
@@ -528,6 +528,7 @@ analysis(tran fields paramValue) ""
 analysis(tran fields param_file) ""
 analysis(tran fields param_vec) nil
 analysis(tran fields stop) "5u"
+analysis(tran fields tranNoise) ""
 analysis(tran fields tranNoiseMultiRuns) ""
 analysis(tran fields transtrobe) ""
 analysis(tran options FinalOpOtherParameters) ""
