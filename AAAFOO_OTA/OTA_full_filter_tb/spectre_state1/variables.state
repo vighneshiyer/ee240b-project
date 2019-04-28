@@ -34,7 +34,7 @@ tmp4 = make_sevVariableStruct()
 tmp4 = (ncons nil)
 )
 tmp4->name = "cc"
-tmp4->expression = "25f"
+tmp4->expression = "10f"
 tmp4->index = 4
 (unless tmp5
 tmp5 = make_sevVariableStruct()
@@ -106,7 +106,7 @@ tmp12 = make_sevVariableStruct()
 tmp12 = (ncons nil)
 )
 tmp12->name = "nf_ncs"
-tmp12->expression = "16"
+tmp12->expression = "8"
 tmp12->index = 12
 (unless tmp13
 tmp13 = make_sevVariableStruct()
@@ -115,7 +115,7 @@ tmp13 = make_sevVariableStruct()
 tmp13 = (ncons nil)
 )
 tmp13->name = "nf_load"
-tmp13->expression = "4"
+tmp13->expression = "6"
 tmp13->index = 13
 (unless tmp14
 tmp14 = make_sevVariableStruct()
@@ -124,7 +124,7 @@ tmp14 = make_sevVariableStruct()
 tmp14 = (ncons nil)
 )
 tmp14->name = "rfilt1"
-tmp14->expression = "15.2k"
+tmp14->expression = "17.4k"
 tmp14->index = 14
 (unless tmp15
 tmp15 = make_sevVariableStruct()
@@ -133,7 +133,7 @@ tmp15 = make_sevVariableStruct()
 tmp15 = (ncons nil)
 )
 tmp15->name = "rfilt2"
-tmp15->expression = "29.6k"
+tmp15->expression = "33.8k"
 tmp15->index = 15
 (unless tmp16
 tmp16 = make_sevVariableStruct()
@@ -142,7 +142,7 @@ tmp16 = make_sevVariableStruct()
 tmp16 = (ncons nil)
 )
 tmp16->name = "cfilt1"
-tmp16->expression = "190f"
+tmp16->expression = "161f"
 tmp16->index = 16
 (unless tmp17
 tmp17 = make_sevVariableStruct()
@@ -151,7 +151,7 @@ tmp17 = make_sevVariableStruct()
 tmp17 = (ncons nil)
 )
 tmp17->name = "rfilt3"
-tmp17->expression = "3.1k"
+tmp17->expression = "5k"
 tmp17->index = 17
 (unless tmp18
 tmp18 = make_sevVariableStruct()
@@ -160,7 +160,7 @@ tmp18 = make_sevVariableStruct()
 tmp18 = (ncons nil)
 )
 tmp18->name = "rfilt4"
-tmp18->expression = "11.3k"
+tmp18->expression = "15.2k"
 tmp18->index = 18
 (unless tmp19
 tmp19 = make_sevVariableStruct()
@@ -169,7 +169,7 @@ tmp19 = make_sevVariableStruct()
 tmp19 = (ncons nil)
 )
 tmp19->name = "cfilt2"
-tmp19->expression = "435f"
+tmp19->expression = "316f"
 tmp19->index = 19
 (unless tmp20
 tmp20 = make_sevVariableStruct()
@@ -178,7 +178,7 @@ tmp20 = make_sevVariableStruct()
 tmp20 = (ncons nil)
 )
 tmp20->name = "rfilt5"
-tmp20->expression = "4.4k"
+tmp20->expression = "10k"
 tmp20->index = 20
 (unless tmp21
 tmp21 = make_sevVariableStruct()
@@ -187,7 +187,7 @@ tmp21 = make_sevVariableStruct()
 tmp21 = (ncons nil)
 )
 tmp21->name = "rfilt6"
-tmp21->expression = "13.2k"
+tmp21->expression = "15.2k"
 tmp21->index = 21
 (unless tmp22
 tmp22 = make_sevVariableStruct()
@@ -196,7 +196,7 @@ tmp22 = make_sevVariableStruct()
 tmp22 = (ncons nil)
 )
 tmp22->name = "cfilt3"
-tmp22->expression = "362f"
+tmp22->expression = "176f"
 tmp22->index = 22
 (unless tmp23
 tmp23 = make_sevVariableStruct()
@@ -205,7 +205,7 @@ tmp23 = make_sevVariableStruct()
 tmp23 = (ncons nil)
 )
 tmp23->name = "supply"
-tmp23->expression = "1.2"
+tmp23->expression = "1.56"
 tmp23->index = 23
 list(tmp1 tmp2 tmp3 tmp4 tmp5 tmp6 tmp7 tmp8 tmp9 tmp10 tmp11 tmp12 tmp13 tmp14 tmp15 tmp16 tmp17 tmp18 tmp19 tmp20 tmp21 tmp22 tmp23)
 )
