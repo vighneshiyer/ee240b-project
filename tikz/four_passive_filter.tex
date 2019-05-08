@@ -1,0 +1,31 @@
+\documentclass{article}
+\usepackage{tikz}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{circuitikz}
+
+\begin{document}
+
+% coordinates start in the bottom left corner (0, 0) is bottom left
+% \draw (coordinate) -- (coordinate) -- (coordinate) | draws lines from each coordinate to the next
+% \draw (coordinate) -- (c) -- (c) -- cycle | loops back to the originally drawn coordinate
+% \draw (coordinate) rectangle (coordinate) | draws a rect
+% \draw (0,0) .. controls (0,5) and (5,0) .. (4,4) | draws a line from (0,0) to (4,4) with control points which 'influence' the line
+\begin{figure}[H]
+\begin{circuitikz}[line width=1.25pt]
+  \draw
+  (0, 0) node[fd op amp] (amp) {} node[left] {$g_m$}
+  (amp.+) to[short] ++(-2,0) to[resistor,l=$g_1$] ++(-2,0) to[short,-o] ++(-0.5,0) node[anchor=east] {$V_{in}^+$}
+  (amp.-) to[short] ++(-2,0) to[resistor,l=$g_1$] ++(-2,0) to[short,-o] ++(-0.5,0) node[anchor=east] {$V_{in}^-$}
+  (amp.+) ++(-0.5,0) to[capacitor,l=$\frac{C_2}{2}$] ++(0,1)
+  (amp.-) ++(-0.5,0) to[short] ++(0,1) to[short] ++(1,0) to[resistor,l=$g_3$] ++(2,0) to[short] ++(1,0) to[short] ++(0,-1) -- (amp.out +)
+  (amp.+) ++(-0.5,0) to[short] ++(0,-1) to[short] ++(1,0) to[resistor,l=$g_3$] ++(2,0) to[short] ++(1,0) to[short] ++(0,1) -- (amp.out -)
+  (amp.out +) ++(1.48,0) to[capacitor,l=$\frac{C_4}{2}$] ++(0,-1)
+  (amp.out +) to[short,-o] ++(3,0) node[anchor=west] {$V_{out}^-$}
+  (amp.out -) to[short,-o] ++(3,0) node[anchor=west] {$V_{out}^+$}
+;\end{circuitikz}
+\end{figure}
+
+\end{document}
+

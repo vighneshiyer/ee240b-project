@@ -1,0 +1,36 @@
+\centering
+\ctikzset{tripoles/pmos style/emptycircle}
+\ctikzset{tripoles/mos style/arrows}
+\begin{circuitikz}[line width=1pt]
+    %\draw[step=1cm,gray,very thin] (-6,-6) grid (12,12);
+    \draw
+    (0,0) node[vsourcesinshape, rotate=90](vinac) {}
+    (-1,-1) to[american voltage source] ++(-1,0) to[short] ++(-1,0) node[ground] {} ++(-1,0)
+    (-1,1) to[american voltage source] ++(-1,0) to[short] ++(-1,0) node[ground] {} ++(-1,0)
+    (0,0.5) to[short] ++(0,0.5) to[short] ++(-1,0)
+    (0,-0.5) to[short] ++(0,-0.5) to[short] ++(-1,0)
+    (1,-2) rectangle (4,2) node[pos=0.5] {CM Reject Stage}
+    (0,1) to[short,-*] ++(1,0) node[anchor=west] {$+$}
+    (0,-1) to[short,-*] ++(1,0) node[anchor=west] {$-$}
+    (5,-2) rectangle (8,2) node[pos=0.5] {OTA Filter Stage}
+    (4,1) node[anchor=east] {$-$} to[short,*-*] ++(1,0) node[anchor=west] {$+$}
+    (4,-1) node[anchor=east] {$+$} to[short,*-*] ++(1,0) node[anchor=west] {$-$}
+    (9,-2) rectangle (12,2) node[pos=0.5] {OTA Filter Stage}
+    (8,1) node[anchor=east] {$-$} to[short,*-*] ++(1,0) node[anchor=west] {$+$}
+    (8,-1) node[anchor=east] {$+$} to[short,*-*] ++(1,0) node[anchor=west] {$-$}
+    (12,1) node[anchor=east] {$-$} to[short,*-o] ++(1,0) node[anchor=west] {$+$}
+    (12,-1) node[anchor=east] {$+$} to[short,*-o] ++(1,0) node[anchor=west] {$-$}
+    (0,-3) node[rground,yscale=-1](vdd) {}
+    (0,-3) to[ioosource] ++(0,-1) {}
+    (0,-6) node[nmos,xscale=-1](mos) {} ++(0,-1)
+    (mos.G) to[short] ++(0,1) to[short,-*] ++(-1,0)
+    (vdd.1) ++(0,-1) -- (mos.D)
+    (mos.G) ++(-1,0) node[anchor=east] {$\frac{6W}{2L}$}
+    (mos.S) ++(0,0) node[ground] {}
+    (mos.G) to[short,-o] ++(1,0) node[anchor=west] {$V_{b,tail}$}
+    (4,-4) rectangle (6,-6) node[pos=0.5] {Replica}
+    (5,-4) to[short,-o] ++(0,1) node[anchor=south] {$V_{cm,ref}$}
+    (vinac) ++(-0.5,0) node[anchor=east] {$V_{i}$}
+    (vinac) ++(-1.5,1.5) node[anchor=south] {$V_{cm,in}$}
+    (vinac) ++(-1.5,-1.5) node[anchor=north] {$V_{cm,in}$}
+;\end{circuitikz}

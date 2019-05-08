@@ -1,0 +1,45 @@
+\documentclass{article}
+\usepackage{tikz}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{circuitikz}
+\ctikzset{tripoles/pmos style/emptycircle}
+\ctikzset{tripoles/mos style/arrows}
+
+\begin{document}
+
+% coordinates start in the bottom left corner (0, 0) is bottom left
+% \draw (coordinate) -- (coordinate) -- (coordinate) | draws lines from each coordinate to the next
+% \draw (coordinate) -- (c) -- (c) -- cycle | loops back to the originally drawn coordinate
+% \draw (coordinate) rectangle (coordinate) | draws a rect
+% \draw (0,0) .. controls (0,5) and (5,0) .. (4,4) | draws a line from (0,0) to (4,4) with control points which 'influence' the line
+\begin{figure}[H]
+\begin{circuitikz}[line width=1.25pt]
+  %\draw[step=1cm,gray,very thin] (-1,-1) grid (6,6);
+  \draw
+    (0,0) node[nmos,xscale=-1](nleft) {}
+    (0,3) node[pmos,xscale=-1](pleft) {}
+    (pleft.S) to[resistor,l=$11 k\Omega$] ++(0,2) to[short] ++(-0.5,0) to[short] ++(1,0) ++(-0.5,0) node[anchor=south] {$V_{DD}$}
+    (4,0) node[nmos](nright) {}
+    (4,3) node[pmos](pright) {}
+    (nleft.G) -- (nright.G)
+    (pleft.G) -- (pright.G)
+    (nleft.S) node[ground] {}
+    (nright.S) node[ground] {}
+    (nleft.G) ++(0.5,0) to[short] ++(0,1.5) to[short,-*] ++(-1.47,0)
+    (pright.G) ++(-0.5,0) to[short] ++(0,-1.5) to[short,-*] ++(1.47,0)
+    (nleft.D) -- (pleft.D)
+    (nright.D) -- (pright.D)
+    (pright.S) to[short] ++(-0.5,0) to[short] ++(1,0)
+    (pright.S) node[anchor=south] {$V_{DD}$}
+    (pright.G) ++(-0.5,0) to[short,-o] ++(0,0.5) node[anchor=south] {$V_{biasp}$}
+    (nleft.G) ++(0.5,0) to[short,-o] ++(0,-0.5) node[anchor=north] {$V_{biasn}$}
+    (nleft.G) ++(-1,0) node[anchor=east] {$\frac{8W}{6L}$}
+    (pleft.G) ++(-1,0) node[anchor=east] {$\frac{128W}{4L}$}
+    (nright.G) ++(1,0) node[anchor=west] {$\frac{8W}{6L}$}
+    (pright.G) ++(1,0) node[anchor=west] {$\frac{32W}{6L}$}
+;\end{circuitikz}
+\end{figure}
+\end{document}
+

@@ -5,6 +5,7 @@ from matplotlib.figure import figaspect
 import matplotlib.pyplot as plt
 import sys
 from itertools import zip_longest
+import scipy
 
 from filter.specs import ZPK
 from filter.topology_analysis import TopologyAnalyzer
@@ -22,24 +23,25 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     spec = LPFSpec(
-        passband_corner=OrdFreq(35e6).w(),
+        passband_corner=OrdFreq(25e6).w(),
         stopband_corner=OrdFreq(200e6).w(),
         stopband_atten=55,
         passband_ripple=1,
-        group_delay_variation=2e-9,
+        group_delay_variation=2.5e-9,
         dynamic_range=50
     )
     ftype_specs = {}  # Dict[FilterType, BA]
     for ftype in FilterType:
         ba = design_lpf(spec, ftype=ftype)
-        print("Filter type {} requires order {} with group delay {}ns".format(
-            ftype.value, ba.order(),
-            round(group_delay_variation(ba, spec)*1e9, 3)))
-        print("\tPoles: {}".format(ba.to_zpk().P))
-        print("\tZeros: {}".format(ba.to_zpk().Z))
-        print("\tK: {}".format(ba.to_zpk().K))
-        #print("\tBA: {}".format(ba))
-        ftype_specs[ftype] = ba
+        if ba is not None:
+            print("Filter type {} requires order {} with group delay {}ns".format(
+                ftype.value, ba.order(),
+                round(group_delay_variation(ba, spec)*1e9, 3)))
+            print("\tPoles: {}".format(ba.to_zpk().P))
+            print("\tZeros: {}".format(ba.to_zpk().Z))
+            print("\tK: {}".format(ba.to_zpk().K))
+            #print("\tBA: {}".format(ba))
+            ftype_specs[ftype] = ba
 
     """
     Trial of splitting the bessel filter in 2 2-pole sections
@@ -73,10 +75,42 @@ if __name__ == "__main__":
         assert len(zpk.Z) == 0, "I haven't handled zeros"
         stage_poles = list(zip_longest(*(iter(zpk.P),) * 2))
         stage_zpks = [ZPK([], p, np.power(zpk.K, 1/len(stage_poles))) for p in stage_poles]
-        return [z.to_ba() for z in stage_zpks]
+        return stage_zpks
+        #return [z.to_ba() for z in stage_zpks]
 
-    desired_filter_split = split_filter(desired_filter)
-    print("Chosen filter split: {}".format(list(map(lambda x: x.to_zpk(), desired_filter_split))))
+    #desired_filter_split = split_filter(desired_filter)
+    desired_filter_zpk = desired_filter.to_zpk()
+    desired_filter_split = [
+            ZPK(desired_filter_zpk.Z, desired_filter_zpk.P[0:2], np.power(desired_filter_zpk.K, 1/2)),
+            ZPK(desired_filter_zpk.Z, desired_filter_zpk.P[3:5], np.power(desired_filter_zpk.K, 1/2))
+    ]
+    print("Chosen filter split: {}".format(desired_filter_split))
+    def ota4_char(g1, g3, c2, c4, gm):
+        wo = np.sqrt(((g1 + gm) * g3) / (c2 * c4))
+        Q = np.sqrt((g1 + gm) * g3 * c2 * c4) / (g3 * c2 + (g1 + g3)*c4)
+        K = (g1*g3 - g1*gm) / (g1*g3 + g3*gm)
+        return (wo, Q, K)
+
+    for zpk in desired_filter_split:
+        Q = - abs(zpk.P[0]) / (2 * np.real(zpk.P[0]))
+        wo = abs(zpk.P[0])
+        gm = 327e-6
+        K = -1.5
+        def loss(y):
+            g1 = y[0]
+            g3 = - (g1*gm) / ((K-1)*g1 + K*gm)
+            wo_got, Q_got, K_got = ota4_char(g1, g3, y[1], y[1], gm)
+            return np.sum(((wo_got - wo)/wo)**2 + ((Q_got - Q)/Q)**2 + ((K_got - K)/K)**2)
+        res = scipy.optimize.minimize(loss, x0=[1/10e3, 200e-15], method='Nelder-Mead',
+                   options={'maxfev': 10000, 'xatol': 1e-6, 'fatol': 1e-6, 'adaptive': True})
+        print("Aiming for Q = {}, wo = {} Hz, K = {}".format(Q, wo / (2 * math.pi), K))
+        #print(res)
+        g1 = res.x[0]
+        g3 = - (g1*gm) / ((K-1)*g1 + K*gm)
+        final_values = ota4_char(g1, g3, res.x[1], res.x[1], gm)
+        print("Got Q = {}, wo = {} Hz, K = {}".format(final_values[1], final_values[0] / (2 * math.pi), final_values[2]))
+        print("Got R1 = {}, R3 = {}, C2 = {}, C4 = {}".format(1/g1, 1/g3, res.x[1], res.x[1]))
+
     plt.show()
     sys.exit(1)
     """

@@ -23,3 +23,9 @@
     1. Estimate power consumption by again performing symbolic analysis of the bias currents at DC and then doing P = IV.
 - Someone is working on a new [symbolic spice engine](https://github.com/patrickschulz/symac) written in C++, already supports linear circuit analysis
 - Just review this wiki on [Symbolic Circuit Analysis](https://en.wikipedia.org/wiki/Symbolic_circuit_analysis)
+
+## BAG
+- Make sure to use even number of fingers to ensure symmetric layout
+- Look at BAG's BinaryIterator and its implementation of binary search for various circuit parameters (usually sizing -> nf)
+- Eric's LTICircuit library allows for within-python AC simulation of linear netlists to bypass Virtuoso for initial design point setting
+    - `bag_framework/bag/data/lti.py`

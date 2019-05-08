@@ -1,0 +1,59 @@
+\documentclass{article}
+\usepackage{tikz}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{circuitikz}
+
+\begin{document}
+\section{Here}
+
+% coordinates start in the bottom left corner (0, 0) is bottom left
+% \draw (coordinate) -- (coordinate) -- (coordinate) | draws lines from each coordinate to the next
+% \draw (coordinate) -- (c) -- (c) -- cycle | loops back to the originally drawn coordinate
+% \draw (coordinate) rectangle (coordinate) | draws a rect
+% \draw (0,0) .. controls (0,5) and (5,0) .. (4,4) | draws a line from (0,0) to (4,4) with control points which 'influence' the line
+\begin{figure}[H]
+\begin{circuitikz}[line width=1.25pt]
+  \draw
+  (0, 0) node[gm amp] (otan) {}
+  (otan.+) to[short,-o] ++(-1,0) node[anchor=east] {$V_{in}^-$}
+    (otan.out) to[short] ++(0.5,0) to[short] ++(0,1.5) coordinate (otanfb)
+    to[short] ++(-1,0) to[R,l_=$R$] ++(-1.5,0)
+    to[short] ++(-1,0) coordinate (voutp)
+    (voutp) to[short] ++(0,-1) -- (otan.-)
+    (otan.-) to[short,-o] ++(-1,0) node[anchor=east] {$V_{out}^+$}
+    (otanfb) to[C,l_=$C$] ++(0,1.5) coordinate (cap1top)
+    (voutp) to[C,l^=$C$] ++(0,1.5) coordinate (cap2top)
+    (cap1top) to[short] ++(-1,0) to[R,l_=$R$] ++(-1.5,0) -- (cap2top)
+    (0, 5) node[gm amp,yscale=-1] (otap) {}
+    (otap.out) to[short] ++(0.5,0) -- (cap1top)
+    (cap2top) to[short] ++(0,1.5) -- (otap.-)
+    (otap.-) to[short,-o] ++(-1,0) node[anchor=east] {$V_{out}^-$}
+    (otap.+) to[short,-o] ++(-1,0) node[anchor=east] {$V_{in}^+$}
+;\end{circuitikz}
+\end{figure}
+
+\newpage
+\begin{figure}[H]
+  \input{ota_schematic.tex}
+\end{figure}
+
+\newpage
+\begin{figure}[H]
+  \input{cmrr_stage.tex}
+\end{figure}
+
+\newpage
+\begin{figure}[H]
+  \input{replica_schematic.tex}
+\end{figure}
+
+\newpage
+\begin{figure}
+  \centering
+  \input{system_testbench.tex}
+\end{figure}
+
+\end{document}
+

@@ -1,0 +1,80 @@
+\documentclass{article}
+\usepackage{tikz}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{circuitikz}
+\ctikzset{tripoles/pmos style/emptycircle}
+\ctikzset{tripoles/mos style/arrows}
+
+\begin{document}
+
+% coordinates start in the bottom left corner (0, 0) is bottom left
+% \draw (coordinate) -- (coordinate) -- (coordinate) | draws lines from each coordinate to the next
+% \draw (coordinate) -- (c) -- (c) -- cycle | loops back to the originally drawn coordinate
+% \draw (coordinate) rectangle (coordinate) | draws a rect
+% \draw (0,0) .. controls (0,5) and (5,0) .. (4,4) | draws a line from (0,0) to (4,4) with control points which 'influence' the line
+\begin{figure}[H]
+\begin{circuitikz}[line width=1pt]
+  %\draw[step=1cm,gray,very thin] (-6,-6) grid (6,6);
+  \draw
+    (-2,2) node[nmos,xscale=-1](ninp) {}
+    (2,2) node[nmos](ninn) {}
+    (-2,4) node[nmos,xscale=-1](ncasp) {}
+    (2,4) node[nmos](ncasn) {}
+    (-2,6) node[pmos,xscale=-1](pcasp) {}
+    (2,6) node[pmos](pcasn) {}
+    (-2,8) node[pmos,xscale=-1](pmirp) {}
+    (2,8) node[pmos](pmirn) {}
+    (-6,5) node[pmos,xscale=-1](inp) {}
+    (-8,5) node[pmos](inn) {}
+    (-7,7) node[pmos](pcs) {}
+    %(0,9.25) node[anchor=north] {$V_{DD}$}
+    (pmirp.S) to[short] ++(-0.5,0)
+    (pmirn.S) to[short] ++(0.5,0)
+    (pmirp.S) ++(2,0) node[anchor=south] {$V_{DD}$}
+    (pcs.D) to[short] ++(1,0) -- (inp.S)
+    (pcs.D) to[short] ++(-1,0) -- (inn.S)
+    (inp.D) to[short] ++(0,-1.25) to[short,-*] ++(8,0)
+    (inn.D) to[short] ++(0,-1.5) to[short,-*] ++(6,0)
+    (ncasp.G) -- (ncasn.G)
+    (pmirp.G) -- (pmirn.G)
+    (ncasp.D) -- (pcasp.D)
+    (pcasp.S) -- (pmirp.D)
+    (pcasn.S) -- (pmirn.D)
+    (pmirp.S) -- (pmirn.S)
+    (pcasn.D) -- (ncasn.D)
+    (ninn.D) -- (ncasn.S)
+    (pmirp.G) ++(1,0) to[short,-o] ++(0,-0.5) node[anchor=north] {$V_{cm}$}
+    (ninn.S) to[short] node[ground] {} ++(0,0)
+    (ninp.S) to[short] node[ground] {} ++(0,0)
+    (ninp.D) -- (ncasp.S)
+    (pcasn.G) -- (pcasp.G)
+    (pcasp.G) to[short,-o] ++(-2,0) node[anchor=east] {$V_{b,cas,p}$}
+    (ncasp.G) to[short,-o] ++(-2,0) node[anchor=east] {$V_{b,cas,n}$}
+    (inp.G) to[short,-o] ++(0.25,0) node[anchor=west] {$V_{in}^-$}
+    (inn.G) to[short,-o] ++(-0.25,0) node[anchor=east] {$V_{in}^+$}
+    (ninn.G) -- (ninp.G)
+    (ninp.G) ++(1,0) to[short,-o] ++(0,-0.5) node[anchor=north] {$V_{cmfb}$}
+    (pcs.G) to[short,-o] ++(-0.5,0) node[anchor=east] {$V_{biasp}$}
+    (pcs.S) to[short] ++(0.25,0) to[short] ++(-0.5,0)
+    (pcs.S) node[anchor=south] {$V_{DD}$}
+    (pmirp.G) ++(-1,0) node[anchor=east] {$\frac{6W}{2L}$}
+    (pmirn.G) ++(1,0) node[anchor=west] {$\frac{6W}{2L}$}
+    (pcasp.G) ++(0.1,0.5) node {$\frac{16W}{45 \text{nm}}$}
+    (pcasn.G) ++(-0.1,0.5) node {$\frac{16W}{45 \text{nm}}$}
+    (ncasn.G) ++(0.1,-0.6) node {$\frac{16W}{45 \text{nm}}$}
+    (ncasp.G) ++(-0.1,-0.6) node {$\frac{16W}{45 \text{nm}}$}
+    (ncasn.D) ++(0,0.25) to[short,-o] ++(0.5,0) node[anchor=west] {$V_{out}^+$}
+    (ncasp.D) ++(0,0.25) to[short,-o] ++(-0.5,0) node[anchor=east] {$V_{out}^-$}
+    (ncasn.D) ++(0,0.25) to[short] ++(-1.5,0) to[capacitor] ++(-1,0) to[short] ++(-1.5,0)
+    (ncasn.D) ++(-2,1.25) node[anchor=north] {$C_{cc}$}
+    (ninp.G) ++(-1,0) node[anchor=east] {$\frac{64W}{6L}$}
+    (ninn.G) ++(1,0) node[anchor=west] {$\frac{64W}{6L}$}
+    (inn.G) ++(0.5,-0.5) node[anchor=north] {$\frac{8W}{1.25L}$}
+    (inp.G) ++(-0.5,-0.5) node[anchor=north] {$\frac{8W}{1.25L}$}
+    (pcs.G) ++(1,0) node[anchor=west] {$\frac{256W}{4L}$}
+;\end{circuitikz}
+\end{figure}
+\end{document}
+

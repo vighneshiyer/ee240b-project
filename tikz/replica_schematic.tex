@@ -1,0 +1,44 @@
+\ctikzset{tripoles/pmos style/emptycircle}
+\ctikzset{tripoles/mos style/arrows}
+\begin{circuitikz}[line width=1pt]
+    \draw
+    (0,0) node[nmos](ntail) {}
+    (-2,2) node[nmos](ninp) {}
+    (2,2) node[nmos,xscale=-1](ninn) {}
+    (-2,4) node[nmos,xscale=-1](ncasp) {}
+    (2,4) node[nmos](ncasn) {}
+    (-2,6) node[pmos,xscale=-1](pcasp) {}
+    (2,6) node[pmos](pcasn) {}
+    (-2,8) node[pmos,xscale=-1](pmirp) {}
+    (2,8) node[pmos](pmirn) {}
+    (0,9.5) node[anchor=north] {$V_{DD}$}
+    (ntail.S) to[short] node[ground] {} ++(0,0)
+    (ntail.D) to[short] ++(-2,0) -- (ninp.S)
+    (ntail.D) to[short] ++(2,0) -- (ninn.S)
+    (ncasp.G) -- (ncasn.G)
+    (pmirp.G) -- (pmirn.G)
+    (ncasp.D) to[short,-*] ++(0,0.25) to[short] ++(2,0) to[short,-*] ++(0,3)
+    (ncasp.D) -- (pcasp.D)
+    (pcasp.S) -- (pmirp.D)
+    (pcasn.S) -- (pmirn.D)
+    (pmirp.S) -- (pmirn.S)
+    (pcasn.D) -- (ncasn.D)
+    (ninn.D) -- (ncasn.S)
+    (ninp.D) -- (ncasp.S)
+    (pcasn.G) -- (pcasp.G)
+    (pcasp.G) to[short,-o] ++(-2,0) node[anchor=east] {$V_{b,cas,p}$}
+    (ncasp.G) to[short,-o] ++(-2,0) node[anchor=east] {$V_{b,cas,n}$}
+    (ntail.G) to[short,-o] ++(-0.5,0) node[anchor=east] {$V_{b,tail}$}
+    (pmirp.G) ++(-1,0) node[anchor=east] {$\frac{12W}{4L}$}
+    (pmirn.G) ++(1,0) node[anchor=west] {$\frac{12W}{4L}$}
+    (pcasp.G) ++(0.1,0.5) node {$\frac{6W}{45 \text{nm}}$}
+    (pcasn.G) ++(-0.1,0.5) node {$\frac{6W}{45 \text{nm}}$}
+    (ncasn.G) ++(0.1,-0.6) node {$\frac{6W}{45 \text{nm}}$}
+    (ncasp.G) ++(-0.1,-0.6) node {$\frac{6W}{45 \text{nm}}$}
+    (ninp.G) ++(1.3,0) node {$\frac{6W}{L}$}
+    (ninn.G) ++(-1.3,0) node {$\frac{6W}{L}$}
+    (ntail.G) ++(1.3,0) node {$\frac{48W}{2L}$}
+    (ncasn.D) ++(0,0.25) to[short,-o] ++(1.5,0) node[anchor=west] {$V_{cm,ref}$}
+    (ninp.G) to[short] ++(0,1) to[short] ++(6,0)
+    (ninn.G) to[short,-*] ++(0,1) to[short] ++(0,2)
+;\end{circuitikz}

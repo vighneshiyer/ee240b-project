@@ -4,3 +4,6 @@
 __pycache__
 *.cdslck
 *.cdslck.*
+*.aux
+*.log
+cache

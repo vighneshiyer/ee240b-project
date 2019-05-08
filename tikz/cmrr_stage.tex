@@ -1,0 +1,60 @@
+\ctikzset{tripoles/pmos style/emptycircle}
+\ctikzset{tripoles/mos style/arrows}
+\begin{circuitikz}[line width=1pt]
+    \draw
+    (0,0) node[nmos](tail) {}
+    (-6,0) node[nmos,xscale=-1](tailb) {}
+    (0,2) node[nmos](tailcas) {}
+    (-6,2) node[nmos,xscale=-1](tailcasb) {}
+    (-2,4) node[nmos](inp) {}
+    (2,4) node[nmos,xscale=-1](inn) {}
+    (-2,6) node[pmos,xscale=-1](casp) {}
+    (2,6) node[pmos](casn) {}
+    (-2,8) node[pmos,xscale=-1](mirp) {}
+    (2,8) node[pmos](mirn) {}
+    (0,9.5) node[anchor=north] {$V_{DD}$}
+    (4,1) node[op amp](cmamp) {}
+    (mirn.S) -- (mirp.S)
+    (mirp.G) to[short] ++(0.5,0) to[short] ++(0,-3) to[short,-*] ++(-1.5,0)
+    (mirn.G) to[short] ++(-0.5,0) to[short] ++(0,-3) to[short,-*] ++(1.5,0)
+    (mirp.D) -- (casp.S)
+    (mirn.D) -- (casn.S)
+    (casp.G) -- (casn.G)
+    (casp.G) to[short] ++(1,0) to[short,-o] ++(0,-1) node[anchor=north] {$V_{b,cas,p}$}
+    (casp.D) -- (inp.D)
+    (casn.D) -- (inn.D)
+    (casp.D) to[short] ++(0,-0.5) to[short,-o] ++(-1,0) node[anchor=east] {$V_{out}^-$}
+    (casn.D) to[short] ++(0,-0.5) to[short,-o] ++(1,0) node[anchor=west] {$V_{out}^+$}
+    (inp.G) to[short,-o] ++(0,0) node[anchor=east] {$V_{in}^+$}
+    (inn.G) to[short,-o] ++(0,0) node[anchor=west] {$V_{in}^-$}
+    (inn.S) -- (inp.S)
+    (tailcas.D) to[short,-*] ++(0,0.45)
+    (tailcas.G) -- (tailcasb.G)
+    (tailcasb.D) to[short,*-] ++(2,0) to[short,-*] ++(0,-2.75) node[anchor=north] {$V_{bias}$} ++(0,0)
+    (tailb.G) to[short] ++(1,0)
+    (tail.D) -- (tailcas.S)
+    (tailb.D) -- (tailcasb.S)
+    (tail.S) node[ground] {} ++(0,0)
+    (tailb.S) node[ground] {} ++(0,0)
+    (tail.G) to[short,-o] ++(0,0) node[anchor=east] {$V_{cmfb}$}
+    (tailcas.G) ++(-1.5,0) to[short,-o] ++(0,-0.5) node[anchor=north] {$V_{b,cas,n}$}
+    (tailcasb.D) to[ioosource] ++(0,2) coordinate(ibias)
+    (ibias) ++(0.5,-1) node[anchor=west] {$I_{bias}$}
+    (ibias) node[rground,yscale=-1] {} ++(0,0) to[open] ++(0,0.5) node[anchor=south] {$V_{DD}$}
+    (cmamp.+) to[short,-o] ++(0,0) node[anchor=east] {$V_{cm,sense}$}
+    (cmamp.-) to[short,-o] ++(0,0) node[anchor=east] {$V_{cm,ref}$}
+    (cmamp.out) ++(1,0) node[adder](biasadder) {} ++(0,0)
+    (cmamp.out) -- (biasadder.1)
+    (biasadder.2) to[short,-o] ++(0,-1) node[anchor=north] {$V_{bias}$}
+    (biasadder.3) to[short,-o] ++(1,0)  node[anchor=west] {$V_{cmfb}$} ++(0,0)
+    (mirp.G) ++(-1,0) node[anchor=east] {$\frac{12W}{4L}$}
+    (mirn.G) ++(1,0) node[anchor=west] {$\frac{12W}{4L}$}
+    (casp.G) ++(-1,0) node[anchor=east] {$\frac{6W}{45 \text{nm}}$}
+    (casn.G) ++(1,0) node[anchor=west] {$\frac{6W}{45 \text{nm}}$}
+    (inp.G) ++(1,0) node[anchor=west] {$\frac{6W}{L}$}
+    (inn.G) ++(-1,0) node[anchor=east] {$\frac{6W}{L}$}
+    (tailcas.G) ++(1,0) node[anchor=west] {$\frac{48W}{45 \text{nm}}$}
+    (tail.G) ++(1,0) node[anchor=west] {$\frac{48W}{2L}$}
+    (tailcasb.G) ++(-1,0) node[anchor=east] {$\frac{6W}{45 \text{nm}}$}
+    (tailb.G) ++(-1,0) node[anchor=east] {$\frac{6W}{2L}$}
+;\end{circuitikz}

@@ -1,0 +1,60 @@
+\documentclass{article}
+\usepackage{tikz}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{circuitikz}
+\ctikzset{tripoles/pmos style/emptycircle}
+\ctikzset{tripoles/mos style/arrows}
+
+\begin{document}
+
+% coordinates start in the bottom left corner (0, 0) is bottom left
+% \draw (coordinate) -- (coordinate) -- (coordinate) | draws lines from each coordinate to the next
+% \draw (coordinate) -- (c) -- (c) -- cycle | loops back to the originally drawn coordinate
+% \draw (coordinate) rectangle (coordinate) | draws a rect
+% \draw (0,0) .. controls (0,5) and (5,0) .. (4,4) | draws a line from (0,0) to (4,4) with control points which 'influence' the line
+\begin{figure}[H]
+\begin{circuitikz}[line width=1.25pt]
+  %\draw[step=1cm,gray,very thin] (-4,-4) grid (4,4);
+  \draw
+      (2,0) node[pmos](cmn) {}
+      (4,0) node[pmos,xscale=-1](inn) {}
+      (-2,0) node[pmos,xscale=-1](cmp) {}
+      (-4,0) node[pmos](inp) {}
+      (3,2) node[pmos](csn) {}
+      (-3,2) node[pmos,xscale=-1](csp) {}
+      (0,-2) node[nmos](diodefb) {}
+      (-3,-2) node[nmos](diodedummy) {}
+      (csp.G) -- (csn.G)
+      (csp.G) ++(2,0) to[short,-o] ++(0,-0.25) node[anchor=north] {$V_{biasp}$}
+      (cmp.G) -- (cmn.G)
+      (cmp.G) ++(1,0) to[short,-o] ++(0,0.25) node[anchor=south] {$V_{cm}$}
+      (csp.S) ++(-0.5,0) -- (csn.S) to[short] ++(0.5,0)
+      (csp.S) ++(3,0) node[anchor=south] {$V_{DD}$}
+      (csp.D) to[short] ++(0,-0.25) to[short] ++(1,0) -- (cmp.S)
+      (csp.D) to[short] ++(0,-0.25) to[short] ++(-1,0) -- (inp.S)
+      (csn.D) to[short] ++(0,-0.25) to[short] ++(-1,0) -- (cmn.S)
+      (csn.D) to[short] ++(0,-0.25) to[short] ++(1,0) -- (inn.S)
+      (cmp.D) -- (cmn.D)
+      (cmp.D) ++(2,0) to[short,*-] (diodefb.D)
+      (inp.D) to[short] ++(0,-0.25) to[short] ++(8,0) to[short] ++(0,0.25)
+      (diodedummy.D) to[short,-*] ++(0,0.2)
+      (diodefb.G) to[short] ++(0,0.7) to[short,-*] ++(1,0) to[short,-o] ++(1,0) node[anchor=west] {$V_{cmfb}$}
+      (diodedummy.G) to[short] ++(0,0.7) to[short,-*] ++(1,0)
+      (diodefb.S) to[short] node[ground] {} ++(0,0)
+      (diodedummy.S) to[short] node[ground] {} ++(0,0)
+      (inp.G) to[short,-o] ++(-0.5,0) node[anchor=east] {$V_{out}^+$}
+      (inn.G) to[short,-o] ++(0.5,0) node[anchor=west] {$V_{out}^-$}
+      (csp.G) ++(-1,0) node[anchor=east] {$\frac{48W}{4L}$}
+      (csn.G) ++(1,0) node[anchor=west] {$\frac{48W}{4L}$}
+      (inp.G) ++(1,0) node[anchor=west] {$\frac{2W}{0.5L}$}
+      (inn.G) ++(-1,0) node[anchor=east] {$\frac{2W}{0.5L}$}
+      (cmp.G) ++(-1,0) node[anchor=east] {$\frac{W}{0.5L}$}
+      (cmn.G) ++(1,0) node[anchor=west] {$\frac{W}{0.5L}$}
+      (diodedummy.G) ++(1,0) node[anchor=west] {$\frac{16W}{6L}$}
+      (diodefb.G) ++(1,0) node[anchor=west] {$\frac{8W}{6L}$}
+;\end{circuitikz}
+\end{figure}
+\end{document}
+

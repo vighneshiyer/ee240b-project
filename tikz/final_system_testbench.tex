@@ -1,0 +1,45 @@
+\documentclass{article}
+\usepackage{tikz}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{circuitikz}
+\ctikzset{tripoles/pmos style/emptycircle}
+\ctikzset{tripoles/mos style/arrows}
+
+\begin{document}
+
+% coordinates start in the bottom left corner (0, 0) is bottom left
+% \draw (coordinate) -- (coordinate) -- (coordinate) | draws lines from each coordinate to the next
+% \draw (coordinate) -- (c) -- (c) -- cycle | loops back to the originally drawn coordinate
+% \draw (coordinate) rectangle (coordinate) | draws a rect
+% \draw (0,0) .. controls (0,5) and (5,0) .. (4,4) | draws a line from (0,0) to (4,4) with control points which 'influence' the line
+\begin{figure}[H]
+\begin{circuitikz}[line width=1pt]
+    %\draw[step=1cm,gray,very thin] (-6,-6) grid (6,6);
+    \draw
+    (0,0) node[vsourcesinshape, rotate=90](vinac) {}
+    (-1,-1) to[american voltage source] ++(-1,0) to[short] ++(-1,0) node[ground] {} ++(-1,0)
+    (-1,1) to[american voltage source] ++(-1,0) to[short] ++(-1,0) node[ground] {} ++(-1,0)
+    (0,0.5) to[short] ++(0,0.5) to[short] ++(-1,0)
+    (0,-0.5) to[short] ++(0,-0.5) to[short] ++(-1,0)
+    (1,-1.5) rectangle (4,1.5) node[pos=0.5] {OTA Stage}
+    (0,1) to[short,-*] ++(1,0) node[anchor=west] {$+$}
+    (0,-1) to[short,-*] ++(1,0) node[anchor=west] {$-$}
+    (5,-1.5) rectangle (8,1.5) node[pos=0.5] {OTA Stage}
+    (4,1) node[anchor=east] {$-$} to[short,*-*] ++(1,0) node[anchor=west] {$+$}
+    (4,-1) node[anchor=east] {$+$} to[short,*-*] ++(1,0) node[anchor=west] {$-$}
+    (8,1) node[anchor=east] {$-$} to[short,*-] ++(0,0) to[resistor,l=$R$] ++(2,0) to[short,-o] ++(1,0) node[anchor=west] {$V_{out}^-$} ++(-1,0) to[capacitor,l=$C$] ++(0,-2)
+    (8,-1) node[anchor=east] {$+$} to[short,*-*] ++(0,0) to[resistor,l=$R$] ++(2,0) to[short,-o] ++(1,0) node[anchor=west] {$V_{out}^+$}
+    (0,-2) rectangle (4,-5) node[pos=0.5] {Bias Circuits}
+    (4,-2.5) to[short,-o] ++(1,0) node[anchor=west] {$V_{b,cas,n}$}
+    (4,-3) to[short,-o] ++(1,0) node[anchor=west] {$V_{b,cas,p}$}
+    (4,-3.5) to[short,-o] ++(1,0) node[anchor=west] {$V_{biasn}$}
+    (4,-4) to[short,-o] ++(1,0) node[anchor=west] {$V_{biasp}$}
+    (4,-4.5) to[short,-o] ++(1,0) node[anchor=west] {$V_{cm}$}
+    (vinac) ++(-0.5,0) node[anchor=east] {$V_{i}$}
+    (vinac) ++(-1.5,1.5) node[anchor=south] {$V_{cm,in}$}
+    (vinac) ++(-1.5,-1.5) node[anchor=north] {$V_{cm,in}$}
+;\end{circuitikz}
+\end{figure}
+\end{document}
